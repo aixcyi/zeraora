@@ -90,3 +90,22 @@ class JsonObject(object):
         return f'JsonObject({attrs})'
 
     __str__ = __repr__
+
+
+def casting(mapper, value, default=None):
+    """
+    自动捕获以下异常，以实现安全类型转换：
+
+    - ValueError
+
+    :param mapper: 类型转换器。如果转换器不可调用，将直接返回原始值。
+    :param value: 需要转换的值。
+    :param default: 默认值。即使不提供也会默认返回 None 而不会抛出异常。
+    :return: 转换后的值。如若捕获到特定异常将返回默认值。
+    """
+    if not callable(mapper):
+        return value
+    try:
+        return mapper(value)
+    except ValueError:
+        return default
