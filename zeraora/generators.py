@@ -98,7 +98,7 @@ class SnowflakeWorker(object):
             "sequence": self._sequence,
         }
 
-    def load(self, data: dict[str, int], **kwargs: int):
+    def load(self, data: dict, **kwargs):
         values = data | kwargs
         self._stamp = values.get('stamp', self._stamp)
         self._worker = values.get('worker', self._worker)
