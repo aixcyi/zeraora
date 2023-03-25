@@ -1,6 +1,7 @@
 __all__ = [
     'JSONObject',
     'JsonObject',
+    'casting',
 ]
 
 
