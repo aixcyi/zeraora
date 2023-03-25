@@ -1,10 +1,10 @@
-<h1 align="center">Zeraora</h1>
+<h1 align="center" style="padding-top: 32px">Zeraora</h1>
 
 <div align="center"><i>包含了个人及公司项目中原创且可公开的工具类及快捷函数的工具库<br>A original utility Python package supports for my personal and company's projects</i></div>
 
 ## Description
 
-[![Python](https://img.shields.io/badge/Python-3.7%20%2B-blue.svg?logo=python&logoColor=yellow)](https://docs.python.org/zh-cn/3/whatsnew/index.html)[![PyPI](https://img.shields.io/badge/PyPI-unreleased-blue.svg)]((https://pypi.org))[![License](https://img.shields.io/badge/License-MIT-purple.svg)](https://en.wikipedia.org/wiki/MIT_License)
+[![Python](https://img.shields.io/badge/Python-3.7%20%2B-blue.svg?logo=python&logoColor=yellow)](https://docs.python.org/zh-cn/3/whatsnew/index.html) [![PyPI](https://img.shields.io/badge/PyPI-unreleased-blue.svg)]((https://pypi.org)) [![License](https://img.shields.io/badge/License-MIT-purple.svg)](https://en.wikipedia.org/wiki/MIT_License)
 
 项目初衷是解决在不同项目、不同环境之间快速使用自己编写的工具类及快捷函数的痛点。
 
