@@ -6,6 +6,7 @@ __all__ = [
 
 import sys
 from datetime import timedelta, datetime
+from functools import wraps
 from io import TextIOWrapper
 
 
@@ -82,17 +83,19 @@ class BearTimer(object):
         """
         self._start = None  # 计时开始时间
         self._point = None  # 中途标记时间（用于计算距离上次标记过去了多久）
-        self._title = title if title else self.get_context_name()
+        self._title = title
         self.file = self.file if file is None else file
 
-    def __call__(self, function):
-        def inner(*args, **kwargs):
+    def __call__(self, func):
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+            self._title = func.__name__
             self.start()
-            returns = function(*args, **kwargs)
+            returns = func(*args, **kwargs)
             self.stop()
             return returns
 
-        return inner
+        return wrapper
 
     def __enter__(self):
         self.start()
@@ -123,9 +126,10 @@ class BearTimer(object):
         """
         now = datetime.now()
         m, s = delta2ms(now - self._start) if self._start else (0, 0)
+        title = self._title if self._title else self.get_context_name()
         print(
             fmt.format(*args, head=now, minutes=m, seconds=s,
-                       title=self._title, msg=msg, **kwargs),
+                       title=title, msg=msg, **kwargs),
             file=self.file,
             end=end,
         )
