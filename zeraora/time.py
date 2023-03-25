@@ -62,6 +62,7 @@ class BearTimer(object):
     >>> bear.step('operate somethings now.')
     >>> bear.stop()
     """
+    file: TextIOWrapper = sys.stdout
 
     @staticmethod
     def get_context_name():
@@ -73,14 +74,16 @@ class BearTimer(object):
                 '当前操作系统不支持使用该工具类。'
             ) from None
 
-    def __init__(self, title: str = None):
+    def __init__(self, title: str = None, file: TextIOWrapper = None):
         """
         :param title: 计时器的标题，用以标明输出信息归属于哪个计时器。默认从上下文中获取。
+        :param file: 消息打印到哪里去。默认是系统标准输出。
         :raise RuntimeError: 当前操作系统不支持使用该工具类。仅当没有提供title且无法从上下文中获取时抛出。
         """
         self._start = None  # 计时开始时间
         self._point = None  # 中途标记时间（用于计算距离上次标记过去了多久）
         self._title = title if title else self.get_context_name()
+        self.file = self.file if file is None else file
 
     def __call__(self, function):
         def inner(*args, **kwargs):
@@ -104,7 +107,6 @@ class BearTimer(object):
             fmt: str = '{head:%H:%M:%S.%f}, {minutes:d}:{seconds:f}, {title} | {msg}',
             *args,
             end: str = '\n',
-            file: TextIOWrapper = sys.stdout,
             **kwargs,
     ) -> datetime:
         """
@@ -115,7 +117,6 @@ class BearTimer(object):
         :param msg: 要附加的消息。默认为空文本。
         :param fmt: 字符串的格式。具体参数见默认值。
         :param end: 要以什么结尾。因为一般是单行打印的，故有此参数。默认是 ”\n“ 。
-        :param file: 打印到哪里去。默认是系统标准输出。
         :param args: 其它需要打印的位置参数。
         :param kwargs: 其它需要打印的关键字参数。
         :return: 此时的时刻。
@@ -125,7 +126,7 @@ class BearTimer(object):
         print(
             fmt.format(*args, head=now, minutes=m, seconds=s,
                        title=self._title, msg=msg, **kwargs),
-            file=file,
+            file=self.file,
             end=end,
         )
         return now
