@@ -4,6 +4,8 @@ __all__ = [
     'casting',
 ]
 
+from typing import Callable
+
 
 class JSONObject(object):
     def __init__(self, dictionary: dict = None, **kvs):
@@ -93,20 +95,28 @@ class JsonObject(object):
     __str__ = __repr__
 
 
-def casting(mapper, value, default=None):
+def casting(
+        mapper: Callable,
+        raw,
+        *errs: Exception,
+        default=None,
+):
     """
-    自动捕获以下异常，以实现安全类型转换：
+    使用mapper将raw转换为所需的值，当出现异常时返回default。
 
-    - ValueError
+    默认捕获以下异常，可以通过errs参数追加更多异常：
+        - ValueError
+        - KeyboardInterrupt
 
-    :param mapper: 类型转换器。如果转换器不可调用，将直接返回原始值。
-    :param value: 需要转换的值。
+    :param mapper: 类型转换器。如果转换器不可调用，将直接返回默认值。
+    :param raw: 被转换的值。
+    :param errs: 需要捕获的其它异常。应当提供可被 except 语句接受的值，否则会出现异常。
     :param default: 默认值。即使不提供也会默认返回 None 而不会抛出异常。
     :return: 转换后的值。如若捕获到特定异常将返回默认值。
     """
     if not callable(mapper):
-        return value
+        return default
     try:
-        return mapper(value)
-    except ValueError:
+        return mapper(raw)
+    except (ValueError, KeyboardInterrupt) + errs:
         return default
