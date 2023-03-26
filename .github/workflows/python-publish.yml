@@ -6,7 +6,7 @@
 # separate terms of service, privacy policy, and support
 # documentation.
 
-name: 打包上传到PyPI
+name: 构建并发布包
 
 on:
   push:
@@ -18,25 +18,23 @@ permissions:
   contents: read
 
 jobs:
-  deploy:
-
+  deploy2pypi:
     runs-on: ubuntu-latest
-
     steps:
     - uses: actions/checkout@v3
-    - name: 设置 Python 版本
+    - name: 安装 Python 3.7
       uses: actions/setup-python@v3
       with:
         python-version: '3.7'
     - name: 安装依赖
       run: |
         python -m pip install --upgrade pip
-        python -m pip install --upgrade build
+        pip install build twine
     - name: 构建包
-      run: python setup.py sdist
+      run: python -m build
     - name: 发布包
-      uses: pypa/gh-action-pypi-publish@27b31702a0e7fc50959f5ad993c78deac1bdfc29
-      with:
-        user: __token__
-        password: ${{ secrets.TEST_PYPI_API_TOKEN }}
-        repository_url: https://test.pypi.org/legacy/
+      env:
+        TWINE_USERNAME: __token__
+        TWINE_PASSWORD: ${{ secrets.TEST_PYPI_API_TOKEN }}
+      run: |
+        twine upload --repository testpypi dist/*
