@@ -6,7 +6,7 @@
 # separate terms of service, privacy policy, and support
 # documentation.
 
-name: 构建并发布包（TestPyPI）
+name: 构建并发布包到 PyPI
 
 on:
   push:
@@ -18,35 +18,32 @@ permissions:
   contents: read
 
 jobs:
-  pack-and-publish:
+  build-and-publish:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - name: 检出 ${{ github.ref_name }} 分支
+      uses: actions/checkout@v3
     - name: 安装 Python 3.7
       uses: actions/setup-python@v3
       with:
         python-version: '3.7'
-    - name: 安装依赖
+    - name: 安装打包所需依赖
       run: |
         python -m pip install --upgrade pip
         pip install wheel build twine
-    - name: 构建sdist
+    - name: 构建源码包（sdist）
       run: python setup.py sdist
-    - name: 构建wheel
+    - name: 构建轮子（wheel）
       run: python -m build --wheel --no-isolation
-    - name: 发布包
+    - name: 发布到 TestPyPI
       env:
         TWINE_USERNAME: __token__
         TWINE_PASSWORD: ${{ secrets.TEST_PYPI_API_TOKEN }}
       run: |
         twine upload --repository testpypi dist/*
-    - name: 创建 GitHub Release
-      uses: actions/create-release@latest
+    - name: 发布到 PyPI
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        tag_name: ${{ github.ref_name }}
-        release_name: ${{ github.ref_name }}
-        body_path: CHANGELOG.md
-        draft: false
-        prerelease: false
+        TWINE_USERNAME: __token__
+        TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
+      run: |
+        twine upload dist/*
