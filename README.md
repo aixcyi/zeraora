@@ -4,7 +4,7 @@
 
 ## Description
 
-[![Python](https://img.shields.io/badge/Python-3.7%20%2B-blue.svg?logo=python&logoColor=yellow)](https://docs.python.org/zh-cn/3/whatsnew/index.html) [![License](https://img.shields.io/badge/License-MIT-purple.svg)](https://en.wikipedia.org/wiki/MIT_License) ![PyPI](https://img.shields.io/pypi/v/zeraora) ![conda](https://img.shields.io/conda/v/conda-forge/zeraora)
+[![Python](https://img.shields.io/badge/Python-3.7%20%2B-blue.svg?logo=python&logoColor=yellow)](https://docs.python.org/zh-cn/3/whatsnew/index.html) [![License](https://img.shields.io/badge/License-MIT-purple.svg)](https://en.wikipedia.org/wiki/MIT_License) [![PyPI](https://img.shields.io/pypi/v/zeraora?color=darkgreen&label=PyPI)](https://pypi.org/project/Zeraora/) ![conda](https://img.shields.io/conda/v/conda-forge/zeraora)
 
 解决在不同项目、不同环境之间快速使用自己编写的工具类及快捷函数的痛点。
 
@@ -63,7 +63,7 @@ if __name__ == '__main__':
 
 ## Compatibility
 
-[Python 3.7](https://docs.python.org/zh-cn/3/whatsnew/3.7.html#summary-release-highlights) 开始 `dict` 正式按照插入顺序存储，考虑到 `dict` 是 Python 的基石，跨越这个版本保证的兼容性的代码可能会存在不易察觉的错误，因此将该版本定为兼容下限。这也是我接触过的项目中的最低运行版本，故而不太希望维护对更低版本的兼容。
+[Python 3.7](https://docs.python.org/zh-cn/3/whatsnew/3.7.html#summary-release-highlights) 开始 `dict` 正式按照插入顺序存储，考虑到 `dict` 是 Python 的基石，为了避免出现难以察觉的错误，因而将该版本定为兼容下限。这也是我接触过的项目中的最低运行版本，故而不太希望维护对更低版本的兼容。
 
 ## Change
 
