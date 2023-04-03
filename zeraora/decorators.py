@@ -1,7 +1,3 @@
-__all__ = [
-    'start',
-]
-
 import sys
 from functools import wraps
 
