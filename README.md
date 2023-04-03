@@ -1,10 +1,10 @@
 <h1 align="center" style="padding-top: 32px">Zeraora</h1>
 
-<div align="center"><i>包含了个人及公司项目中原创且可公开的工具类及快捷函数的工具库<br>A original utility Python package supports for my personal and company's projects</i></div>
+<div align="center"><i>长期维护的个人开源工具库<br>An original utility Python package with LTS supports for my personal and company projects</i></div>
 
 ## Description
 
-[![Python](https://img.shields.io/badge/Python-3.7%20%2B-blue.svg?logo=python&logoColor=yellow)](https://docs.python.org/zh-cn/3/whatsnew/index.html) [![License](https://img.shields.io/badge/License-MIT-purple.svg)](https://en.wikipedia.org/wiki/MIT_License) ![Release](https://img.shields.io/github/v/release/:user/:repo?display_name=tag) ![PyPI](https://img.shields.io/pypi/v/zeraora) ![conda](https://img.shields.io/conda/v/conda-forge/zeraora)
+[![Python](https://img.shields.io/badge/Python-3.7%20%2B-blue.svg?logo=python&logoColor=yellow)](https://docs.python.org/zh-cn/3/whatsnew/index.html) [![License](https://img.shields.io/badge/License-MIT-purple.svg)](https://en.wikipedia.org/wiki/MIT_License) ![PyPI](https://img.shields.io/pypi/v/zeraora) ![conda](https://img.shields.io/conda/v/conda-forge/zeraora)
 
 解决在不同项目、不同环境之间快速使用自己编写的工具类及快捷函数的痛点。
 
@@ -16,10 +16,49 @@
 pip install zeraora
 ```
 
-未来计划打包到 Anaconda Cloud，以便使用 conda 安装：
+未来将发布到 Anaconda Cloud，以便使用 conda 安装：
 
 ```shell
 conda install zeraora
+```
+
+不能保证所有工具类和快捷函数自始至终都放在同一个子包，因此应该像这样直接导入：
+
+```python
+from zeraora import BearTimer
+
+with BearTimer() as bear:
+    summary = 0
+    for i in range(1000000):
+        bear.step(f'loop to {i} now.')
+        summary += i
+```
+
+亦或者像这样导入：
+
+```python
+import zeraora
+
+with BearTimer.BearTimer() as bear:
+    summary = 0
+    for i in range(1000000):
+        bear.step(f'loop to {i} now.')
+        summary += i
+```
+
+但对于 `charsets` 可以放心从子包导入：
+
+```python
+from random import choices
+from zeraora.charsets import BASE64
+
+def make_pwd(length: int) -> str:
+    return ''.join(choices(BASE64, k=length))
+
+if __name__ == '__main__':
+    [
+        print(make_pwd(16)) for _ in range(20)
+    ]
 ```
 
 ## Compatibility
