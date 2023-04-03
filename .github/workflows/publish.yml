@@ -10,8 +10,8 @@ name: 构建并发布到 PyPI
 
 on:
   push:
-    branches:
-      - release/*
+    tags:
+      - v**
   workflow_dispatch:
 
 permissions:
