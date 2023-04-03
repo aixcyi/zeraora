@@ -1,9 +1,3 @@
-__all__ = [
-    'JSONObject',
-    'JsonObject',
-    'casting',
-]
-
 from typing import Callable
 
 
@@ -120,3 +114,73 @@ def casting(
         return mapper(raw)
     except (ValueError, KeyboardInterrupt) + errs:
         return default
+
+
+class ReprMixin(object):
+    class AttributeMeta:
+        pass
+
+    class TagMeta:
+        pass
+
+    def __repr__(self):
+        kls = self.__class__.__name__
+        pkv = self._obtain_pk()
+        tags = self._obtain_tags()
+        attrs = self._obtain_attrs()
+        content = (
+                (f'({pkv})' if pkv else '') +
+                (f' {tags}' if tags else '') +
+                (f' {attrs}' if attrs else '')
+        )
+        return f'<{kls}{content}>'
+
+    @staticmethod
+    def _fmt_value(value) -> str:
+        if isinstance(value, str):
+            return f'"{value}"'
+        else:
+            return str(value)
+
+    def _obtain_attrs(self):
+        def obtain():
+            for attr, name in attributes.items():
+                if attr.startswith('_'):
+                    continue
+                mapper = annotations.get(attr, None)
+                value = getattr(self, attr)
+                value = mapper(value) if callable(mapper) else value
+                value = self._fmt_value(value)
+                yield f'{name}={value}'
+
+        attributes = self.AttributeMeta.__dict__
+        annotations = attributes.get('__annotations__', {})
+        return ', '.join(obtain())
+
+    def _obtain_tags(self):
+        def obtain():
+            for attr, option in attributes.items():
+                if attr.startswith('_'):
+                    continue
+                mapper = annotations.get(attr, None)
+                value = getattr(self, attr)
+                value = mapper(value) if callable(mapper) else value
+                if isinstance(option, str) and value:
+                    yield option
+                elif isinstance(option, tuple):
+                    yield option[bool(value)]
+                elif isinstance(option, (list, dict)):
+                    yield option[value]
+                else:
+                    pass
+
+        attributes = self.TagMeta.__dict__
+        annotations = attributes.get('__annotations__', {})
+        return ' '.join(obtain())
+
+    def _obtain_pk(self):
+        if hasattr(self, 'pk'):
+            return self._fmt_value(self.pk)
+        if hasattr(self, 'id'):
+            return self._fmt_value(self.id)
+        return ''

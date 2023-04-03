@@ -1,7 +1,3 @@
-__all__ = [
-    'remove_exponent',
-]
-
 from decimal import Decimal
 
 
