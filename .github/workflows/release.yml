@@ -1,0 +1,55 @@
+# This workflow will upload a Python Package using Twine when a release is created
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-python#publishing-to-package-registries
+
+# This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
+# documentation.
+
+name: 构建并发布包到 GitHub Release
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-and-publish:
+    runs-on: ubuntu-latest
+    steps:
+    - name: 检出 ${{ github.ref_name }} 分支
+      uses: actions/checkout@v3
+    - name: 安装 Python 3.7
+      uses: actions/setup-python@v3
+      with:
+        python-version: '3.7'
+    - name: 安装打包所需依赖
+      run: |
+        python -m pip install --upgrade pip
+        pip install wheel build twine
+    - name: 构建源码包（sdist）
+      run: python setup.py sdist
+    - name: 构建轮子（wheel）
+      run: python -m build --wheel --no-isolation
+    - name: 创建 Github Release
+      uses: actions/create-release@latest
+      with:
+        tag_name: ${{ github.ref_name }}
+        release_name: ${{ github.ref_name }}
+        body_path: CHANGELOG.md
+        draft: false
+        prerelease: false
+      env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      id: create_release
+    - name: 上传 Release Asset
+      id: upload-release-asset
+      uses: actions/upload-release-asset@latest
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: dist/*
+        asset_name: "dist"
+        asset_content_type: application/zip
