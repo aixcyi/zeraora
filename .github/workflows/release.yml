@@ -11,11 +11,9 @@ name: 构建并发布包到 GitHub Release
 on:
   workflow_dispatch:
 
-permissions:
-  contents: read
-
 jobs:
   build-and-publish:
+    permissions: write-all
     runs-on: ubuntu-latest
     steps:
     - name: 检出 ${{ github.ref_name }} 分支
@@ -47,7 +45,6 @@ jobs:
       env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       id: create_release
-      permissions: write-all
 
     - name: 上传 Release Asset
       id: upload-release-asset
