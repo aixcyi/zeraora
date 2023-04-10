@@ -121,6 +121,29 @@ def casting(
         return default
 
 
+def represent(value) -> str:
+    """
+    将任意值转换为一个易于阅读的字符串。
+
+    也是 ReprMixin 的默认格式化函数。
+
+    默认使用 repr() 函数进行转换。如果自定义的类需要实现被此函数转换，请重写 .__repr__() 方法。
+
+    :param value: 任意值。
+    :return: 字符串。
+    """
+    if isinstance(value, str):
+        return f'"{value}"'
+    elif isinstance(value, datetime.date):
+        return f'[{value:%Y-%m-%d}]'
+    elif isinstance(value, datetime.datetime):
+        return f'[{value:%Y-%m-%d %H:%M:%S,%f}]'
+    elif isinstance(value, datetime.timedelta):
+        return f'[{value.days}d,{value.seconds}s,{value.microseconds}μs]'
+    else:
+        return repr(value)
+
+
 class ReprMixin(object):
     class AttributeMeta:
         pass
@@ -128,8 +151,8 @@ class ReprMixin(object):
     class TagMeta:
         pass
 
-    def __repr__(self):
-        kls = self.__class__.__name__
+    def __repr__(self) -> str:
+        kls = self._obtain_kls()
         pkv = self._obtain_pk()
         tags = self._obtain_tags()
         attrs = self._obtain_attrs()
@@ -140,25 +163,12 @@ class ReprMixin(object):
         )
         return f'<{kls}{content}>'
 
-    @staticmethod
-    def _fmt_value(value) -> str:
-        if isinstance(value, str):
-            return f'"{value}"'
-        elif isinstance(value, datetime.date):
-            return value.strftime('[%Y-%m-%d]')
-        elif isinstance(value, datetime.datetime):
-            return value.strftime('[%Y-%m-%d %H:%M:%S,%f]')
-        elif isinstance(value, datetime.timedelta):
-            return f'[{value.days}d,{value.seconds}s,{value.microseconds}μs]'
-        else:
-            return str(value)
-
-    def _obtain_attrs(self):
+    def _obtain_attrs(self) -> str:
         def obtain():
             for attr, name in attributes.items():
                 if attr.startswith('_'):
                     continue
-                mapper = annotations.get(attr, self._fmt_value)
+                mapper = annotations.get(attr, represent)
                 value = getattr(self, attr)
                 value = mapper(value) if callable(mapper) else value
                 yield f'{name}={value}'
@@ -167,7 +177,7 @@ class ReprMixin(object):
         annotations = attributes.get('__annotations__', {})
         return ', '.join(obtain())
 
-    def _obtain_tags(self):
+    def _obtain_tags(self) -> str:
         def obtain():
             for attr, option in attributes.items():
                 if attr.startswith('_'):
@@ -188,9 +198,12 @@ class ReprMixin(object):
         annotations = attributes.get('__annotations__', {})
         return ' '.join(obtain())
 
-    def _obtain_pk(self):
+    def _obtain_pk(self) -> str:
         if hasattr(self, 'pk'):
-            return self._fmt_value(self.pk)
+            return represent(self.pk)
         if hasattr(self, 'id'):
-            return self._fmt_value(self.id)
+            return represent(self.id)
         return ''
+
+    def _obtain_kls(self) -> str:
+        return self.__class__.__name__
