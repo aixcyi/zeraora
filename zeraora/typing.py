@@ -4,6 +4,7 @@
 
 import datetime
 from typing import Callable
+from uuid import UUID
 
 
 class JSONObject(object):
@@ -140,6 +141,8 @@ def represent(value) -> str:
         return f'[{value:%Y-%m-%d %H:%M:%S,%f}]'
     elif isinstance(value, datetime.timedelta):
         return f'[{value.days}d,{value.seconds}s,{value.microseconds}μs]'
+    elif isinstance(value, UUID):
+        return value.hex
     else:
         return repr(value)
 
