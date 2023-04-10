@@ -148,11 +148,45 @@ def represent(value) -> str:
 
 
 class ReprMixin(object):
+    """
+    生成通用representation的工具类。
+
+    格式类似于 ``<User(1) female name="meow" age=12 birth=[2012-01-23]>``，
+    包含自身类名、主键、标签、属性名和值。
+
+    直接或间接继承时请放在第一父类。
+    """
+
     class AttributeMeta:
-        pass
+        """
+        用于控制生成 representation 时需要带上哪些属性。
+
+        注意：这个内部类不会被实例化！
+
+        AttributeMeta 的变量代表你的类对象在运行时已经存在的属性，
+        变量值应当是一个字符串，表示生成 representation 时这个属性的名称是什么。
+
+        AttributeMeta 的变量允许接收一个返回值为字符串的函数作为类型注解，
+        用于转换你的类对象的属性值，并直接作为 representation 里这个属性的值。
+        """
 
     class TagMeta:
-        pass
+        """
+        用于控制生成 representation 时需要带上哪些标签。
+
+        注意：这个内部类不会被实例化！
+
+        TagMeta 的变量代表你的类对象在运行时已经存在的属性，变量值可以是
+          - 一个字符串，表示这个属性为 ``True`` 时 representation 里才会出现的标签的名称；
+            如果属性为 ``False`` 则不会出现这个标签。
+          - 一个元组且仅有两个字符串，表示这个属性分别为
+            ``False`` 和 ``True`` 时 representation 里会出现的标签的名称。
+          - 一个列表或一个字典，则使用属性值对这个列表或字典进行取值，
+            以此作为 representation 里出现的标签的名称。
+
+        TagMeta 的变量允许接收一个返回值为字符串的函数作为类型注解，
+        用于进一步转换你的类对象的属性值，若未提供，默认使用 bool() 来转换。
+        """
 
     def __repr__(self) -> str:
         kls = self._obtain_kls()
@@ -178,7 +212,7 @@ class ReprMixin(object):
 
         attributes = self.AttributeMeta.__dict__
         annotations = attributes.get('__annotations__', {})
-        return ', '.join(obtain())
+        return ' '.join(obtain())
 
     def _obtain_tags(self) -> str:
         def obtain():
