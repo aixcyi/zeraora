@@ -14,9 +14,9 @@ from .time import (
     BearTimer,
 )
 from .typing import (
-    JSONObject,
-    JsonObject,
+    OnionObject,
     casting,
+    represent,
     ReprMixin,
 )
 

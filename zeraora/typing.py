@@ -3,96 +3,108 @@
 """
 
 import datetime
+import json
 from typing import Callable
 from uuid import UUID
 
 
-class JSONObject(object):
-    def __init__(self, dictionary: dict = None, **kvs):
-        """
-        将嵌套字典转化为嵌套对象（递归转化）。
+class OnionObject(object):
 
-        :param dictionary: 包含数据的字典。请确保所有键都符合标识符命名要求，且均为字符串。
+    def __translate_list(self, items: list) -> list:
+        return list(
+            self.__translate_list(list(item)) if isinstance(item, tuple)
+            else self.__translate_list(item) if isinstance(item, list)
+            else type(self)(item) if isinstance(item, dict) and self.__recurse
+            else item
+            for item in items
+        )
+
+    # OnionObject()
+    def __init__(self, dictionary: dict = None, recurse: bool = True, **kvs):
+        """
+        将字典转化为嵌套对象。
+
+        支持还原为字典：
+
+        >>> dictionary = ~OnionObject()
+
+        支持直接更新字典：
+
+        >>> oo = OnionObject()
+        >>> oo = oo | OnionObject()
+        >>> oo |= OnionObjet()
+
+        :param dictionary: 包含数据的字典。不符合标识符命名要求，
+                           或者以双下划线 “__” 开头的键不会被收录。
+        :param recurse: 是否递归转化。
         :param kvs: 任意键值对。
-        :return: JSONObject。
+        :return: OnionObject 的对象。
         :raise TypeError: 属性名称必须是字符串。
         """
+        self.__recurse = recurse
         for k, v in {**(dictionary if dictionary else {}), **kvs}.items():
             k = str(k)
-            if not k.isidentifier():
+            if not k.isidentifier() or k.startswith('__'):
                 continue
-            if v.__class__ is list:
-                self.__setattr__(k, self._translate_list(v[:]))
-            elif v.__class__ is dict:
-                self.__setattr__(k, self.__class__(v))
+            if isinstance(v, tuple):
+                self.__setattr__(k, self.__translate_list(list(v[:])))
+            elif isinstance(v, list):
+                self.__setattr__(k, self.__translate_list(v[:]))
+            elif isinstance(v, dict):
+                self.__setattr__(k, self.__class__(v) if recurse else v)
             else:
                 self.__setattr__(k, v)
 
-    def __or__(self, dictionary: dict):
+    # OnionObject() | OnionObject()
+    def __or__(self, dictionary: dict) -> 'OnionObject':
         for k, v in dictionary.items():
             k = str(k)
             if not k.isidentifier():
                 continue
-            if v.__class__ is list:
-                self.__setattr__(k, self._translate_list(v[:]))
+            if v.__class__ is tuple:
+                self.__setattr__(k, self.__translate_list(list(v[:])))
+            elif v.__class__ is list:
+                self.__setattr__(k, self.__translate_list(v[:]))
             elif v.__class__ is dict:
-                self.__setattr__(k, self.__class__(v))
+                self.__setattr__(k, self.__class__(v) if self.__recurse else v)
             else:
                 self.__setattr__(k, v)
         return self
 
-    def __repr__(self):
+    # oo = OnionObject()
+    # oo |= OnionObject()
+    __ior__ = __or__
+
+    # ~OnionObject()
+    def __invert__(self) -> dict:
+        def obtain():
+            for k, v in self.__dict__.items():
+                if k.startswith('__'):
+                    continue
+                if isinstance(v, (list, tuple)):
+                    yield k, [
+                        ~i if isinstance(i, OnionObject) else i
+                        for i in v
+                    ]
+                elif isinstance(v, OnionObject):
+                    yield k, ~v
+                else:
+                    yield k, v
+
+        return dict(obtain())
+
+    # repr(OnionObject())
+    def __repr__(self) -> str:
         attrs = ', '.join(
             f'{attr}={value!r}'
             for attr, value in self.__dict__.items()
-            if not attr.startswith('_')
+            if not attr.startswith('__')
         )
-        return f'JSONObject({attrs})'
+        return f'OnionObject({attrs})'
 
-    __str__ = __repr__
-
-    @classmethod
-    def _translate_list(cls, items: list) -> list:
-        for i in range(len(items)):
-            item = items[i]
-            if item.__class__ is list:
-                items[i] = cls._translate_list(item)
-            elif item.__class__ is dict:
-                items[i] = cls(item)
-        return items
-
-
-class JsonObject(object):
-    def __init__(self, dictionary: dict = None, **kvs):
-        """
-        将字典转化为对象（非递归）。
-
-        :param dictionary: 包含数据的字典。请确保所有键都符合标识符命名要求，且均为字符串。
-        :param kvs: 任意键值对。
-        :return: JSONObject。
-        :raise TypeError: 属性名称必须是字符串。
-        """
-        for k, v in {**(dictionary if dictionary else {}), **kvs}.items():
-            k = str(k)
-            if k.isidentifier():
-                self.__setattr__(k, v)
-
-    def __or__(self, dictionary: dict):
-        for k, v in dictionary.items():
-            k = str(k)
-            if k.isidentifier():
-                self.__setattr__(k, v)
-        return self
-
-    def __repr__(self):
-        attrs = ', '.join(
-            f'{attr}={value!r}'
-            for attr, value in self.__dict__.items()
-            if not attr.startswith('_')
-        )
-        return f'JsonObject({attrs})'
-
-    __str__ = __repr__
+    # str(OnionObject())
+    def __str__(self) -> str:
+        return json.dumps(~self, ensure_ascii=False)
 
 
 def casting(
