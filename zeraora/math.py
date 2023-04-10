@@ -1,3 +1,7 @@
+"""
+数学数字处理。
+"""
+
 from decimal import Decimal
 
 

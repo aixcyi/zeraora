@@ -1,3 +1,7 @@
+"""
+类型相关。
+"""
+
 import datetime
 from typing import Callable
 

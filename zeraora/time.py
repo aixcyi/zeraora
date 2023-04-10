@@ -1,3 +1,7 @@
+"""
+时间相关的处理。包括日期时间类型转换和计时。
+"""
+
 import sys
 from datetime import timedelta, datetime
 from functools import wraps

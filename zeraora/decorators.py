@@ -1,3 +1,7 @@
+"""
+装饰器。用于检查代码、环境等。
+"""
+
 import sys
 from functools import wraps
 

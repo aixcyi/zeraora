@@ -1,3 +1,7 @@
+"""
+生成器。主要包含随机生成和特定顺序生成的实现。
+"""
+
 import os
 from random import getrandbits
 from time import time
