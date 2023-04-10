@@ -1,3 +1,4 @@
+import datetime
 from typing import Callable
 
 
@@ -139,6 +140,12 @@ class ReprMixin(object):
     def _fmt_value(value) -> str:
         if isinstance(value, str):
             return f'"{value}"'
+        elif isinstance(value, datetime.date):
+            return value.strftime('[%Y-%m-%d]')
+        elif isinstance(value, datetime.datetime):
+            return value.strftime('[%Y-%m-%d %H:%M:%S,%f]')
+        elif isinstance(value, datetime.timedelta):
+            return f'[{value.days}d,{value.seconds}s,{value.microseconds}μs]'
         else:
             return str(value)
 
