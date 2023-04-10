@@ -169,6 +169,18 @@ class ReprMixin(object):
     直接或间接继承时请放在第一父类。
     """
 
+    def __repr__(self) -> str:
+        kls = self._obtain_kls()
+        pkv = self._obtain_pk()
+        tags = self._obtain_tags()
+        attrs = self._obtain_attrs()
+        content = (
+                (f'({pkv})' if pkv else '') +
+                (f' {tags}' if tags else '') +
+                (f' {attrs}' if attrs else '')
+        )
+        return f'<{kls}{content}>'
+
     class AttributeMeta:
         """
         用于控制生成 representation 时需要带上哪些属性。
@@ -181,6 +193,20 @@ class ReprMixin(object):
         AttributeMeta 的变量允许接收一个返回值为字符串的函数作为类型注解，
         用于转换你的类对象的属性值，并直接作为 representation 里这个属性的值。
         """
+
+    def _obtain_attrs(self) -> str:
+        def obtain():
+            for attr, name in attributes.items():
+                if attr.startswith('_'):
+                    continue
+                mapper = annotations.get(attr, represent)
+                value = getattr(self, attr)
+                value = mapper(value) if callable(mapper) else value
+                yield f'{name}={value}'
+
+        attributes = self.AttributeMeta.__dict__
+        annotations = attributes.get('__annotations__', {})
+        return ' '.join(obtain())
 
     class TagMeta:
         """
@@ -199,32 +225,6 @@ class ReprMixin(object):
         TagMeta 的变量允许接收一个返回值为字符串的函数作为类型注解，
         用于进一步转换你的类对象的属性值，若未提供，默认使用 bool() 来转换。
         """
-
-    def __repr__(self) -> str:
-        kls = self._obtain_kls()
-        pkv = self._obtain_pk()
-        tags = self._obtain_tags()
-        attrs = self._obtain_attrs()
-        content = (
-                (f'({pkv})' if pkv else '') +
-                (f' {tags}' if tags else '') +
-                (f' {attrs}' if attrs else '')
-        )
-        return f'<{kls}{content}>'
-
-    def _obtain_attrs(self) -> str:
-        def obtain():
-            for attr, name in attributes.items():
-                if attr.startswith('_'):
-                    continue
-                mapper = annotations.get(attr, represent)
-                value = getattr(self, attr)
-                value = mapper(value) if callable(mapper) else value
-                yield f'{name}={value}'
-
-        attributes = self.AttributeMeta.__dict__
-        annotations = attributes.get('__annotations__', {})
-        return ' '.join(obtain())
 
     def _obtain_tags(self) -> str:
         def obtain():

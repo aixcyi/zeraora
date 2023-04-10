@@ -40,22 +40,27 @@ class BearTimer(object):
     这个类可以让你对代码进行计时功能并输出提示。
 
     最简单的用法是使用 with 语句包裹需要计时的代码：
+
     >>> with BearTimer():
     >>>     for i in range(1000000):
     >>>         print(i)
 
     如果不方便使用 with 包裹，可以直接实例化一个类对象：
+
     >>> bear = BearTimer()
     >>> bear.start()
     >>> bear.stop()
 
     计时开始后，如果需要打印提示，请使用 .step() 方法，例如：
+
     >>> with BearTimer() as bear:
     >>>     summary = 0
     >>>     for i in range(1000000):
     >>>         bear.step(f'loop to {i} now.')
     >>>         summary += i
+
     又或者是
+
     >>> bear = BearTimer()
     >>> bear.start()
     >>> bear.step('operate somethings now.')
