@@ -147,10 +147,9 @@ class ReprMixin(object):
             for attr, name in attributes.items():
                 if attr.startswith('_'):
                     continue
-                mapper = annotations.get(attr, None)
+                mapper = annotations.get(attr, self._fmt_value)
                 value = getattr(self, attr)
                 value = mapper(value) if callable(mapper) else value
-                value = self._fmt_value(value)
                 yield f'{name}={value}'
 
         attributes = self.AttributeMeta.__dict__
