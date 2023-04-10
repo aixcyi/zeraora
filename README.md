@@ -1,28 +1,18 @@
 <h1 align="center" style="padding-top: 32px">Zeraora</h1>
 
-<div align="center"><i>长期维护的个人开源工具库<br>An original utility Python package with LTS supports for my personal and company projects</i></div>
-
-## Description
+<div align="center"><i>长期维护的个人开源工具库<br>An utility Python package supports for my personal and company projects</i></div>
 
 [![Python](https://img.shields.io/badge/Python-3.7%20%2B-blue.svg?logo=python&logoColor=yellow)](https://docs.python.org/zh-cn/3/whatsnew/index.html) [![License](https://img.shields.io/badge/License-MIT-purple.svg)](https://en.wikipedia.org/wiki/MIT_License) [![PyPI](https://img.shields.io/pypi/v/zeraora?color=darkgreen&label=PyPI)](https://pypi.org/project/Zeraora/) ![conda](https://img.shields.io/conda/v/conda-forge/zeraora)
 
-解决在不同项目、不同环境之间快速使用自己编写的工具类及快捷函数的痛点。
-
 ## Usage
 
-可以使用 pip 直接安装：
+使用 pip 直接安装：
 
 ```shell
 pip install zeraora
 ```
 
-未来将发布到 Anaconda Cloud，以便使用 conda 安装：
-
-```shell
-conda install zeraora
-```
-
-不能保证所有工具类和快捷函数自始至终都放在同一个子包，因此应该像这样直接导入：
+不能保证所有工具类和快捷函数自始至终都放在同一个子包，因此应该直接从根目录导入：
 
 ```python
 from zeraora import BearTimer
@@ -34,7 +24,7 @@ with BearTimer() as bear:
         summary += i
 ```
 
-亦或者像这样导入：
+亦或者：
 
 ```python
 import zeraora
@@ -63,15 +53,14 @@ if __name__ == '__main__':
 
 ## Compatibility
 
+> 目前仍处于早期开发阶段。
+
 [Python 3.7](https://docs.python.org/zh-cn/3/whatsnew/3.7.html#summary-release-highlights) 开始 `dict` 正式按照插入顺序存储，考虑到 `dict` 是 Python 的基石，为了避免出现难以察觉的错误，因而将该版本定为兼容下限。这也是我接触过的项目中的最低运行版本，故而不太希望维护对更低版本的兼容。
+
+项目会尽力保证向后兼容性，但还是建议在requirements中写明特定的版本号，避免因为版本更新或回退而出现难以解决的错误。
 
 ## Change
 
-此处仅列出不兼容旧版的修改，其余变动见git历史。
+> 仅列出不兼容旧版的修改，其余变动见git历史。
 
 暂无。
-
-## APIs
-
-> 一个成熟的IDE应该学会自己生成文档~
-
