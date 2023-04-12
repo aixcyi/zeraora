@@ -251,10 +251,12 @@ class ReprMixin(object):
 
     def _obtain_pk(self) -> str:
         if hasattr(self, 'pk'):
-            return represent(self.pk)
-        if hasattr(self, 'id'):
-            return represent(self.id)
-        return ''
+            pk = self.pk
+        elif hasattr(self, 'id'):
+            pk = self.id
+        else:
+            return ''
+        return pk if isinstance(pk, str) else represent(pk)
 
     def _obtain_kls(self) -> str:
         return self.__class__.__name__
