@@ -149,12 +149,12 @@ def represent(value) -> str:
     """
     if isinstance(value, str):
         return f'"{value}"'
-    elif isinstance(value, datetime.date):
-        return f'[{value:%Y-%m-%d}]'
-    elif isinstance(value, datetime.datetime):
-        return f'[{value:%Y-%m-%d %H:%M:%S,%f}]'
     elif isinstance(value, datetime.timedelta):
         return f'[{value.days}d,{value.seconds}s,{value.microseconds}μs]'
+    elif isinstance(value, datetime.datetime):
+        return f'[{value:%Y-%m-%d %H:%M:%S,%f}]'
+    elif isinstance(value, datetime.date):
+        return f'[{value:%Y-%m-%d}]'
     elif isinstance(value, UUID):
         return value.hex
     else:
