@@ -243,7 +243,7 @@ class ReprMixin(object):
                 elif isinstance(option, (list, dict)):
                     yield option[value]
                 else:
-                    pass
+                    pass  # pragma: no cover
 
         attributes = self.TagMeta.__dict__
         annotations = attributes.get('__annotations__', {})

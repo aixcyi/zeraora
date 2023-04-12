@@ -63,4 +63,6 @@ if __name__ == '__main__':
 
 > 仅列出不兼容旧版的修改，其余变动见git历史。
 
-暂无。
+### 0.2.0（2023-4-12）
+
+- 将 `JSONObject` 与 `JsonObject` 合并为 `OnionObject` ，并删去前面两个类。
