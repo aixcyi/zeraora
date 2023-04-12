@@ -59,7 +59,7 @@ class OnionObject(object):
     def __or__(self, dictionary: dict) -> 'OnionObject':
         for k, v in dictionary.items():
             k = str(k)
-            if not k.isidentifier():
+            if not k.isidentifier() or k.startswith('__'):
                 continue
             if v.__class__ is tuple:
                 self.__setattr__(k, self.__translate_list(list(v[:])))
@@ -78,8 +78,9 @@ class OnionObject(object):
     # ~OnionObject()
     def __invert__(self) -> dict:
         def obtain():
+            prefix = f'_{type(self).__name__}__'
             for k, v in self.__dict__.items():
-                if k.startswith('__'):
+                if k.startswith('__') or k.startswith(prefix):
                     continue
                 if isinstance(v, (list, tuple)):
                     yield k, [
@@ -95,10 +96,11 @@ class OnionObject(object):
 
     # repr(OnionObject())
     def __repr__(self) -> str:
+        prefix = f'_{type(self).__name__}__'
         attrs = ', '.join(
             f'{attr}={value!r}'
             for attr, value in self.__dict__.items()
-            if not attr.startswith('__')
+            if not attr.startswith('__') or attr.startswith(prefix)
         )
         return f'OnionObject({attrs})'
 
