@@ -4,7 +4,7 @@
 
 import datetime
 import json
-from typing import Callable
+from typing import Callable, Type, Union
 from uuid import UUID
 
 
@@ -112,7 +112,7 @@ class OnionObject(object):
 def casting(
         mapper: Callable,
         raw,
-        *errs: Exception,
+        *errs: Union[Exception, Type[Exception]],
         default=None,
 ):
     """
@@ -124,7 +124,7 @@ def casting(
 
     :param mapper: 类型转换器。如果转换器不可调用，将直接返回默认值。
     :param raw: 被转换的值。
-    :param errs: 需要捕获的其它异常。应当提供可被 except 语句接受的值，否则会出现异常。
+    :param errs: 需要捕获的其它异常类或异常对象。应当提供可被 except 语句接受的值。
     :param default: 默认值。即使不提供也会默认返回 None 而不会抛出异常。
     :return: 转换后的值。如若捕获到特定异常将返回默认值。
     """
