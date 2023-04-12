@@ -1,8 +1,16 @@
 <h1 align="center" style="padding-top: 32px">Zeraora</h1>
 
-<div align="center"><i>长期维护的个人开源工具库<br>An utility Python package supports for my personal and company projects</i></div>
-
-[![Python](https://img.shields.io/badge/Python-3.7%20%2B-blue.svg?logo=python&logoColor=yellow)](https://docs.python.org/zh-cn/3/whatsnew/index.html) [![License](https://img.shields.io/badge/License-MIT-purple.svg)](https://en.wikipedia.org/wiki/MIT_License) [![PyPI](https://img.shields.io/pypi/v/zeraora?color=darkgreen&label=PyPI)](https://pypi.org/project/Zeraora/) ![conda](https://img.shields.io/conda/v/conda-forge/zeraora)
+<div align="center">
+    <a href="https://docs.python.org/zh-cn/3/whatsnew/index.html"><img src="https://img.shields.io/badge/Python-3.7%20%2B-blue.svg?logo=python&logoColor=yellow"></a>
+    <a href="https://en.wikipedia.org/wiki/MIT_License"><img src="https://img.shields.io/badge/License-MIT-purple.svg"></a>
+    <a href="https://pypi.org/project/Zeraora/"><img src="https://img.shields.io/pypi/v/zeraora?color=darkgreen&label=PyPI"></a>
+    <a href=""><img src="https://img.shields.io/conda/v/conda-forge/zeraora"></a>
+</div>
+<div align="center">
+    <i>长期维护的个人开源工具库</i>
+    <br>
+    <i>An utility Python package supports for my personal and company projects</i>
+</div>
 
 ## Usage
 
@@ -65,4 +73,4 @@ if __name__ == '__main__':
 
 ### 0.2.0（2023-4-12）
 
-- 将 `JSONObject` 与 `JsonObject` 合并为 `OnionObject` ，并删去前面两个类。
+- 将 `JSONObject` 与 `JsonObject` 合并为 `OnionObject` ，并删去前述两个类。
