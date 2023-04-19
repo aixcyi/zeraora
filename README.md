@@ -44,7 +44,7 @@ with BearTimer.BearTimer() as bear:
         summary += i
 ```
 
-但对于 `charsets` 可以放心从子包导入：
+但对于 `charsets` 和 `djangobase` 可以放心从子包导入：
 
 ```python
 from random import choices
