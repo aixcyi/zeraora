@@ -208,7 +208,7 @@ class ReprMixin(object):
 
         attributes = self.AttributeMeta.__dict__
         annotations = attributes.get('__annotations__', {})
-        return ' '.join(obtain())
+        return ' '.join(filter(None, obtain()))
 
     class TagMeta:
         """
@@ -247,7 +247,7 @@ class ReprMixin(object):
 
         attributes = self.TagMeta.__dict__
         annotations = attributes.get('__annotations__', {})
-        return ' '.join(obtain())
+        return ' '.join(filter(None, obtain()))
 
     def _obtain_pk(self) -> str:
         if hasattr(self, 'pk'):

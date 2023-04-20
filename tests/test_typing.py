@@ -32,6 +32,7 @@ class Student(ReprMixin,  # 必须作为第一个父类
         self.graduated = False
         self.grade = 3
         self.subject = 1
+        self.leader = False
         super().__init__(**kwargs)
 
     @property
@@ -49,6 +50,7 @@ class Student(ReprMixin,  # 必须作为第一个父类
         subject = SUBJECT_CATEGORY
         grade = ['大一', '大二', '大三', '大四', '大五']
         graduated = '已毕业'  # False不显示，True则显示
+        leader = '', '班长'
         number = object()  # 非法值
 
 
@@ -158,12 +160,14 @@ class TypingModuleTest(TestCase):
         r03 = '<Student 男 工学 大四 姓名="叶秋然" 年龄=24 入学年份=2018 报道时间=[2018-08-29 16:29:00,000000]>'
         r04 = '<Student 男 工学 大二 姓名="叶秋然" 年龄=23 入学年份=2018 报道时间=[2018-08-29 16:29:00,000000]>'
         r05 = '<Student 男 工学 大四 已毕业 姓名="叶秋然" 年龄=23 入学年份=2018 报道时间=[2018-08-29 16:29:00,000000]>'
+        r06 = '<Student 男 工学 大四 班长 姓名="叶秋然" 年龄=23 入学年份=2018 报道时间=[2018-08-29 16:29:00,000000]>'
         self.assertEqual(r00, repr(Student()))
         self.assertEqual(r01, repr(Student(name='叶嫣然', gender=True)))
         self.assertEqual(r02, repr(Student(subject=2)))
         self.assertEqual(r03, repr(Student(birthday=date(1999, 3, 15))))
         self.assertEqual(r04, repr(Student(grade=1)))
         self.assertEqual(r05, repr(Student(graduated=True)))
+        self.assertEqual(r06, repr(Student(leader=True)))
 
         r10 = '<Student(1) 男 工学 大四 姓名="叶秋然" 年龄=23 入学年份=2018 报道时间=[2018-08-29 16:29:00,000000]>'
         r11 = '<Student(10086020) 男 工学 大四 姓名="叶秋然" 年龄=23 入学年份=2018 报道时间=[2018-08-29 16:29:00,000000]>'
