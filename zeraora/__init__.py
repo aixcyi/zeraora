@@ -21,5 +21,5 @@ from .typing import (
 )
 
 __author__ = 'aixcyi'
-__version__ = (0, 2, 2)
-version = '0.2.2'
+__version__ = (0, 2, 3)
+version = '0.2.3'

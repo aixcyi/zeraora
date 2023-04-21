@@ -58,6 +58,7 @@ class TypingModuleTest(TestCase):
     def test_casting(self):
         self.assertEqual(1234, casting(int, '1234'))
         self.assertEqual(None, casting(int, '12a4'))
+        self.assertEqual(None, casting(int, None))
         self.assertEqual(1234, casting(int, '1234', default=5678))
         self.assertEqual(5678, casting(int, '12a4', default=5678))
         self.assertEqual(5678, casting(None, '1234', default=5678))

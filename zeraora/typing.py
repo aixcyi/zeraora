@@ -119,6 +119,7 @@ def casting(
     使用mapper将raw转换为所需的值，当出现异常时返回default。
 
     默认捕获以下异常，可以通过errs参数追加更多异常：
+        - TypeError
         - ValueError
         - KeyboardInterrupt
 
@@ -132,7 +133,7 @@ def casting(
         return default
     try:
         return mapper(raw)
-    except (ValueError, KeyboardInterrupt) + errs:
+    except (TypeError, ValueError, KeyboardInterrupt) + errs:
         return default
 
 
