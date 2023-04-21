@@ -1,4 +1,4 @@
-from setuptools import setup
+from setuptools import setup, find_packages
 
 with open("./zeraora/__init__.py") as f:
     for line in f.readlines():
@@ -44,5 +44,5 @@ setup(
         "Tracker": "https://github.com/aixcyi/zeraora/issues",
     },
     python_requires='>=3.7',
-    packages=['zeraora'],
+    packages=find_packages(where=".", exclude=['test*']),
 )
