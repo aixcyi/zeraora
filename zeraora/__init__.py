@@ -18,8 +18,10 @@ from .typing import (
     casting,
     represent,
     ReprMixin,
+    datasize,
+    datasize as dsz,
 )
 
 __author__ = 'aixcyi'
-__version__ = (0, 2, 3)
-version = '0.2.3'
+__version__ = (0, 2, 4)
+version = '0.2.4'
