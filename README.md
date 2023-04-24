@@ -37,7 +37,7 @@ with BearTimer() as bear:
 ```python
 import zeraora
 
-with BearTimer.BearTimer() as bear:
+with zeraora.BearTimer() as bear:
     summary = 0
     for i in range(1000000):
         bear.step(f'loop to {i} now.')
@@ -59,13 +59,19 @@ if __name__ == '__main__':
     ]
 ```
 
+## Document
+
+部分文档以 Markdown 格式存放在 docs 目录下。
+
+源代码多数附带[类型标注](https://docs.python.org/zh-cn/3/glossary.html#term-type-hint)和[文档字符串](https://docs.python.org/zh-cn/3/glossary.html#term-docstring)（[reStructuredText](https://zh.wikipedia.org/wiki/ReStructuredText)格式），文档未尽事宜请移步源代码浏览，出现互相矛盾时也请以源代码为准。
+
 ## Compatibility
 
 > 目前仍处于早期开发阶段。
 
 [Python 3.7](https://docs.python.org/zh-cn/3/whatsnew/3.7.html#summary-release-highlights) 开始 `dict` 正式按照插入顺序存储，考虑到 `dict` 是 Python 的基石，为了避免出现难以察觉的错误，因而将该版本定为兼容下限。这也是我接触过的项目中的最低运行版本，故而不太希望维护对更低版本的兼容。
 
-项目会尽力保证向后兼容性，但还是建议在requirements中写明特定的版本号，避免因为版本更新或回退而出现难以解决的错误。
+项目会尽力保证向后兼容性，但还是建议在requirements中写明特定的版本号，避免因为版本更新或回退而出现棘手的错误。
 
 ## Change
 
