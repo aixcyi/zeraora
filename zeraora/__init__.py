@@ -11,6 +11,7 @@ from .math import remove_exponent
 from .time import (
     delta2hms,
     delta2ms,
+    delta2s,
     BearTimer,
 )
 from .typing import (
