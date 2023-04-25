@@ -55,6 +55,7 @@ class Student(ReprMixin,  # 必须作为第一个父类
 
 
 class TypingModuleTest(TestCase):
+
     def test_casting(self):
         self.assertEqual(1234, casting(int, '1234'))
         self.assertEqual(None, casting(int, '12a4'))

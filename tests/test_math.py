@@ -4,7 +4,8 @@ from unittest import TestCase
 from zeraora import remove_exponent
 
 
-class TypingModuleTest(TestCase):
+class MathModuleTest(TestCase):
+
     def test_remove_exponent(self):
         self.assertEqual(Decimal('3.14'), remove_exponent(Decimal('3.14')))
         self.assertEqual(Decimal('3.14'), remove_exponent(Decimal('3.140')))
