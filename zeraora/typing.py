@@ -27,13 +27,12 @@ class OnionObject(object):
 
         支持还原为字典：
 
-        >>> dictionary = ~OnionObject()
+        >>> data: dict = ~OnionObject()
 
         支持直接更新字典：
 
-        >>> oo = OnionObject()
-        >>> oo = oo | OnionObject()
-        >>> oo |= OnionObjet()
+        >>> obj: OnionObject = OnionObject()
+        >>> obj: OnionObject = obj | dict()  # 等价于 obj |= dict()
 
         :param dictionary: 包含数据的字典。不符合标识符命名要求，
                            或者以双下划线 “__” 开头的键不会被收录。
@@ -56,7 +55,7 @@ class OnionObject(object):
             else:
                 self.__setattr__(k, v)
 
-    # OnionObject() | OnionObject()
+    # OnionObject() | dict()
     def __or__(self, dictionary: dict) -> 'OnionObject':
         for k, v in dictionary.items():
             k = str(k)
@@ -72,8 +71,8 @@ class OnionObject(object):
                 self.__setattr__(k, v)
         return self
 
-    # oo = OnionObject()
-    # oo |= OnionObject()
+    # obj = OnionObject()
+    # obj |= dict()
     __ior__ = __or__
 
     # ~OnionObject()
