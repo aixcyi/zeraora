@@ -61,7 +61,7 @@ if __name__ == '__main__':
 
 ## Document
 
-部分文档以 Markdown 格式存放在 docs 目录下。
+部分文档以 Markdown 格式存放在 [docs](./docs/README.md) 目录下。
 
 源代码多数附带[类型标注](https://docs.python.org/zh-cn/3/glossary.html#term-type-hint)和[文档字符串](https://docs.python.org/zh-cn/3/glossary.html#term-docstring)（[reStructuredText](https://zh.wikipedia.org/wiki/ReStructuredText)格式），文档未尽事宜请移步源代码浏览，出现互相矛盾时也请以源代码为准。
 
