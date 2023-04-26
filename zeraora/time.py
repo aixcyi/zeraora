@@ -47,38 +47,37 @@ def delta2s(delta: timedelta) -> float:
 
 
 class BearTimer(object):
-    """
-    熊牌计时器。对代码运行进行计时，并打印时间和提示。
-
-    比较简单的用法是使用 with 语句包裹需要计时的部分，
-    它会在开始执行前启动计时，在执行完毕或出现异常而离开with后停止计时。
-
-    >>> with BearTimer() as bear:
-    >>>     summary = 0
-    >>>     for i in range(1000):
-    >>>         if not i % 67:
-    >>>             bear.step(f'loop to {i} now.')
-    >>>         summary += i
-
-    如果需要对一整个函数的运行进行计时，那么可以将计时器作为装饰器使用：
-
-    >>> @BearTimer()
-    >>> def prepare_order(request, *args, **kwargs):
-    >>>     # 业务逻辑
-    >>>     pass
-
-    如果不方便使用 with 包裹，可以直接实例化一个类对象。
-    每一个对象都是独立的计时器，互不影响。
-
-    >>> bear = BearTimer()
-    >>> bear.start()
-    >>> bear.stop()
-    """
     fmt = '[{head:%H:%M:%S.%f}] [{total:.6f} +{delta:.6f}] [{level}] [{title}]: {msg}'
     level = DEBUG
 
     def __init__(self, title: str = None, output: Union[TextIOWrapper, TextIO, Logger] = None):
         """
+        熊牌计时器。对代码运行进行计时，并打印时间和提示。
+
+        比较简单的用法是使用 with 语句包裹需要计时的部分，
+        它会在开始执行前启动计时，在执行完毕或出现异常而离开with后停止计时。
+
+        >>> with BearTimer() as bear:
+        >>>     summary = 0
+        >>>     for i in range(1000):
+        >>>         if not i % 67:
+        >>>             bear.step(f'loop to {i} now.')
+        >>>         summary += i
+
+        如果需要对一整个函数的运行进行计时，那么可以将计时器作为装饰器使用：
+
+        >>> @BearTimer()
+        >>> def prepare_order(request, *args, **kwargs):
+        >>>     # 业务逻辑
+        >>>     pass
+
+        如果不方便使用 with 包裹，可以直接实例化一个类对象。
+        每一个对象都是独立的计时器，互不影响。
+
+        >>> bear = BearTimer()
+        >>> bear.start()
+        >>> bear.stop()
+
         :param title: 计时器的标题，用以标明输出信息归属于哪个计时器。默认从打印消息时的上下文中获取。
         :param output: 消息打印到哪里去。默认是系统标准输出。可以是一个文件IO对象，也可以是一个日志记录器。
         """
