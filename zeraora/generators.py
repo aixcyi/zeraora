@@ -13,7 +13,7 @@ def randbytes(n: int) -> bytes:
     """
     生成 n 个随机字节。
 
-    此函数是对 Python 3.9 以前的 random.randbytes(n) 的替代。
+    此函数用于在 Python 3.9 以前代替 random.randbytes(n) 方法。
     """
     assert n >= 0
     return getrandbits(n * 8).to_bytes(n, 'little')
