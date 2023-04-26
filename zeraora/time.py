@@ -47,7 +47,7 @@ def delta2s(delta: timedelta) -> float:
 
 
 class BearTimer(object):
-    fmt = '[{head:%H:%M:%S.%f}] [{total:.6f} +{delta:.6f}] [{level}] [{title}]: {msg}'
+    fmt = '[{head:%H:%M:%S.%f}] [{level}] [{title}] [{total:.6f} +{delta:.6f}]: {msg}'
     level = DEBUG
 
     def __init__(self, title: str = None, output: Union[TextIOWrapper, TextIO, Logger] = None):

@@ -22,6 +22,7 @@ with BearTimer() as bear:
 打印的格式由 `.fmt` 控制，默认的格式如下，其中
 
 - head 代表打印的时刻；
+- level 代表日志等级，默认是 `"DEBUG"` ；
 - total 代表计时开始到现在的总计秒数，以小数形式包含毫秒和微秒；
 - delta 代表自上一条打印到此刻的间隔秒数，以小数形式包含毫秒和微秒；
 - title 是每一个 `BearTimer` 对象的名称，在实例化时传入，默认是调用计时器的函数的名称；
@@ -30,7 +31,7 @@ with BearTimer() as bear:
 如需添加更多参数，可以继承重写 `.record()` 方法。
 
 ```Python
-fmt = f'[{head:%H:%M:%S.%f}] [{total:.6f} +{delta:.6f}] [{title}]: {msg}'
+fmt = f'[{head:%H:%M:%S.%f}] [{level}] [{title}] [{total:.6f} +{delta:.6f}]: {msg}'
 ```
 
 对于跨函数或复杂嵌套代码等不方便使用 with 的场景，可以实例化 `BearTimer` 后使用。实例化的对象可以反复使用。
