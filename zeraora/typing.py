@@ -61,11 +61,11 @@ class OnionObject(object):
             k = str(k)
             if not k.isidentifier() or k.startswith('__'):
                 continue
-            if v.__class__ is tuple:
+            if isinstance(v, tuple):
                 self.__setattr__(k, self.__translate_list(list(v[:])))
-            elif v.__class__ is list:
+            elif isinstance(v, list):
                 self.__setattr__(k, self.__translate_list(v[:]))
-            elif v.__class__ is dict:
+            elif isinstance(v, dict):
                 self.__setattr__(k, self.__class__(v) if self.__recurse else v)
             else:
                 self.__setattr__(k, v)
