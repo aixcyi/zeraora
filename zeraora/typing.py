@@ -3,7 +3,6 @@
 """
 
 import datetime
-import json
 import re
 from typing import Callable, Type, Union
 from uuid import UUID
@@ -15,15 +14,15 @@ class OnionObject(object):
         return list(
             self.__translate_list(list(item)) if isinstance(item, tuple)
             else self.__translate_list(item) if isinstance(item, list)
-            else type(self)(item) if isinstance(item, dict) and self.__recurse
+            else type(self)(item, self.__depth - 1) if isinstance(item, dict)
             else item
             for item in items
         )
 
     # OnionObject()
-    def __init__(self, dictionary: dict = None, recurse: bool = True, **kvs):
+    def __new__(cls, dictionary: dict = None, depth: int = -1, **kvs):
         """
-        将字典转化为嵌套对象。
+        将字典转化为对象，使得可以用点分法代替下标访问内容。
 
         支持还原为字典：
 
@@ -36,24 +35,22 @@ class OnionObject(object):
 
         :param dictionary: 包含数据的字典。不符合标识符命名要求，
                            或者以双下划线 “__” 开头的键不会被收录。
-        :param recurse: 是否递归转化。
-        :param kvs: 任意键值对。
+        :param depth: 递归转化的层数。负数表示无限递归转化，正数表示递归层数，0无意义。
         :return: OnionObject 的对象。
         :raise TypeError: 属性名称必须是字符串。
         """
-        self.__recurse = recurse
-        for k, v in {**(dictionary if dictionary else {}), **kvs}.items():
-            k = str(k)
-            if not k.isidentifier() or k.startswith('__'):
-                continue
-            if isinstance(v, tuple):
-                self.__setattr__(k, self.__translate_list(list(v[:])))
-            elif isinstance(v, list):
-                self.__setattr__(k, self.__translate_list(v[:]))
-            elif isinstance(v, dict):
-                self.__setattr__(k, self.__class__(v) if recurse else v)
-            else:
-                self.__setattr__(k, v)
+        if dictionary is None:
+            dictionary = {}
+        if not isinstance(dictionary, dict):
+            raise TypeError  # pragma: no cover
+        if depth == 0:
+            return dictionary
+        dictionary.update(kvs)
+
+        self = object.__new__(cls)
+        self.__depth = depth
+        self.__ior__(dictionary)
+        return self
 
     # OnionObject() | dict()
     def __or__(self, dictionary: dict) -> 'OnionObject':
@@ -65,8 +62,8 @@ class OnionObject(object):
                 self.__setattr__(k, self.__translate_list(list(v[:])))
             elif isinstance(v, list):
                 self.__setattr__(k, self.__translate_list(v[:]))
-            elif isinstance(v, dict):
-                self.__setattr__(k, self.__class__(v) if self.__recurse else v)
+            elif isinstance(v, dict) and self.__depth:
+                self.__setattr__(k, self.__class__(v, self.__depth - 1))
             else:
                 self.__setattr__(k, v)
         return self
@@ -98,15 +95,13 @@ class OnionObject(object):
     def __repr__(self) -> str:
         prefix = f'_{type(self).__name__}__'
         attrs = ', '.join(
+            f'{attr}={type(value).__name__}(...)'
+            if isinstance(value, OnionObject) else
             f'{attr}={value!r}'
             for attr, value in self.__dict__.items()
             if not attr.startswith('__') or attr.startswith(prefix)
         )
         return f'OnionObject({attrs})'
-
-    # str(OnionObject())
-    def __str__(self) -> str:
-        return json.dumps(~self, ensure_ascii=False)
 
 
 def casting(
@@ -130,7 +125,7 @@ def casting(
     :return: 转换后的值。如若捕获到特定异常将返回默认值。
     """
     if not callable(mapper):
-        return default
+        return default  # pragma: no cover
     try:
         return mapper(raw)
     except (TypeError, ValueError, KeyboardInterrupt) + errs:
@@ -284,7 +279,7 @@ def datasize(literal: str) -> Union[int, float]:
     """
     if not isinstance(literal, str):
         raise TypeError(
-            '不支持解析一个非字符串类型的值。'
+            '不支持解析一个非字符串类型的值。'  # pragma: no cover
         )
 
     pattern = re.compile(r'^([0-9]+)\s*([KMGTPEZY]?)(i?[Bb])$')

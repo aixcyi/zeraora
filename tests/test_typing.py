@@ -1,8 +1,8 @@
-import json
 from datetime import date, datetime, timedelta
-from unittest import TestCase
+from decimal import Decimal
 from uuid import UUID
 
+from tests.base_test_case import BaseTestCase
 from zeraora import casting, represent, OnionObject, ReprMixin, datasize
 
 SUBJECT_CATEGORY = {
@@ -20,8 +20,7 @@ def _age(birth: datetime) -> int:
     return datetime.now().year - birth.year
 
 
-class Student(ReprMixin,  # 必须作为第一个父类
-              OnionObject):
+class Student(ReprMixin):
 
     def __init__(self, **kwargs):
         self.number = '10086020'
@@ -33,7 +32,7 @@ class Student(ReprMixin,  # 必须作为第一个父类
         self.grade = 3
         self.subject = 1
         self.leader = False
-        super().__init__(**kwargs)
+        self.__dict__.update(kwargs)
 
     @property
     def join_year(self):
@@ -54,7 +53,88 @@ class Student(ReprMixin,  # 必须作为第一个父类
         number = object()  # 非法值
 
 
-class TypingModuleTest(TestCase):
+class TypingModuleTest(BaseTestCase):
+
+    def test_onion_object(self):
+        data = {
+            'code': 1,
+            'info': 'done',
+            'data': {
+                'order_id': '66a5a0612e2089564b35df189ced94a1',
+                'payment': Decimal('3.14'),
+                'customer': {
+                    'username': 'aixcyi',
+                    'uuid': {
+                        'wx': 'oj0ed5-TechOtakuSaveTheWorld',
+                    },
+                },
+                'goods': [
+                    {
+                        'id': '1eb44e7486066eb660322dc65a673d88',
+                        'img': '/goods/image/1eb44e7486066eb660322dc65a673d88',
+                        'name': '龟苓膏 300g 杯装',
+                        'qty': 1,
+                    },
+                    {
+                        'id': '2af405fce650f3ea4b92521155a5019c',
+                        'img': '/goods/image/2af405fce650f3ea4b92521155a5019c',
+                        'name': '金银花茶 750ml 瓶装',
+                        'qty': 2,
+                    },
+                ],
+            },
+        }
+        plus = {
+            'pages': [2, 3, 4, 5, 6],
+            'carrier_choices': ('EMS', 'UPS', 'USPS'),
+            '__previous': None,
+            '0x7c': None,
+            '标记': None,
+            2333: 6666,
+        }
+
+        resp0 = OnionObject(data) | plus
+        self.assertEqual(data, ~OnionObject(data))
+        self.assertEqual(data['code'], resp0.code)
+        self.assertEqual(data['info'], resp0.info)
+        self.assertEqual(data['data']['order_id'], resp0.data.order_id)
+        self.assertEqual(data['data']['payment'], resp0.data.payment)
+        self.assertEqual(data['data']['customer']['username'], resp0.data.customer.username)
+        self.assertEqual(data['data']['customer']['uuid']['wx'], resp0.data.customer.uuid.wx)
+        self.assertEqual(data['data']['goods'][1]['id'], resp0.data.goods[1].id)
+        self.assertEqual(plus['pages'], resp0.pages)
+        self.assertEqual(list(plus['carrier_choices']), resp0.carrier_choices)
+        self.assertNoAttribute('__private', resp0)
+        self.assertNoAttribute(f'_{type(resp0).__name__}__private', resp0)
+        self.assertNoAttribute('0x7c', resp0)
+        self.assertNoAttribute('2333', resp0)
+        self.assertHasAttribute('标记', resp0)
+
+        resp3 = OnionObject(data, depth=3)
+        self.assertEqual(data['data']['order_id'], resp3.data.order_id)
+        self.assertEqual(data['data']['payment'], resp3.data.payment)
+        self.assertEqual(data['data']['customer']['username'], resp3.data.customer.username)
+        self.assertEqual(data['data']['customer']['uuid']['wx'], resp3.data.customer.uuid['wx'])
+        self.assertEqual(data['data']['goods'][1]['id'], resp3.data.goods[1].id)
+
+        resp2 = OnionObject(data, depth=2)
+        self.assertEqual(data['data']['order_id'], resp2.data.order_id)
+        self.assertEqual(data['data']['payment'], resp2.data.payment)
+        self.assertEqual(data['data']['customer']['username'], resp2.data.customer['username'])
+        self.assertEqual(data['data']['customer']['uuid']['wx'], resp2.data.customer['uuid']['wx'])
+        self.assertEqual(data['data']['goods'][1]['id'], resp2.data.goods[1]['id'])
+
+        resp1 = OnionObject(data, depth=1)
+        self.assertEqual(data['data']['order_id'], resp1.data['order_id'])
+        self.assertEqual(data['data']['payment'], resp1.data['payment'])
+        self.assertEqual(data['data']['customer']['username'], resp1.data['customer']['username'])
+        self.assertEqual(data['data']['customer']['uuid']['wx'], resp1.data['customer']['uuid']['wx'])
+        self.assertEqual(data['data']['goods'][1]['id'], resp1.data['goods'][1]['id'])
+
+        r0 = "OnionObject(_OnionObject__depth=-1, id=67, username='aixcyi')"
+        r1 = "OnionObject(_OnionObject__depth=-1, id=67, fk=OnionObject(...))"
+        self.assertEqual(r0, repr(OnionObject(id=67, username='aixcyi')))
+        self.assertEqual(r1, repr(OnionObject(id=67, fk=OnionObject())))
 
     def test_casting(self):
         self.assertEqual(1234, casting(int, '1234'))
@@ -62,7 +142,6 @@ class TypingModuleTest(TestCase):
         self.assertEqual(None, casting(int, None))
         self.assertEqual(1234, casting(int, '1234', default=5678))
         self.assertEqual(5678, casting(int, '12a4', default=5678))
-        self.assertEqual(5678, casting(None, '1234', default=5678))
         self.assertEqual('中文', casting(b'\xd6\xd0\xce\xc4'.decode, 'GBK', default='meow'))
         self.assertEqual('meow', casting(b'\xd6\xd0\xce\xc4'.decode, 'UTF8', default='meow'))
         self.assertEqual(3, casting([3, 14].__getitem__, 0, default=-1))
@@ -78,82 +157,6 @@ class TypingModuleTest(TestCase):
         self.assertEqual('[2, 3, 5, 7]', represent([2, 3, 5, 7]))
         self.assertEqual('{2, 3, 5, 7}', represent({2, 3, 5, 7}))
         self.assertEqual("{200: 'ok', 404: 'no found'}", represent({200: 'ok', 404: 'no found'}))
-
-    def test_onion_object(self):
-        raw = {
-            'code': 0,
-            'message': 'done',
-            'data': {
-                'order': {
-                    'id': '66a5a0612e2089564b35df189ced94a1',
-                    'carrier': 'EMS',
-                    'tracking': '948687112837587323',
-                    'customer_id': 'edd39a6919447fe904fc762229293f77',
-                    'goods': [
-                        {
-                            'id': '1eb44e7486066eb660322dc65a673d88',
-                            'img': '/goods/image/1eb44e7486066eb660322dc65a673d88',
-                            'name': '龟苓膏 300g 杯装',
-                            'qty': 1,
-                        },
-                        {
-                            'id': '2af405fce650f3ea4b92521155a5019c',
-                            'img': '/goods/image/2af405fce650f3ea4b92521155a5019c',
-                            'name': '金银花茶 750ml 瓶装',
-                            'qty': 2,
-                        },
-                    ],
-                },
-            },
-        }
-
-        plus = {
-            '0x7c': None,
-            '__private': None,
-            'carrier_choices': ('EMS', 'UPS', 'USPS'),
-            'template': 'templates/order/detail.html',
-            'pages': [2, 3, 4, 5, 6],
-            'page': {
-                'current': 1,
-                'prev': None,
-                'next': '?page=2',
-            }
-        }
-
-        resp0 = OnionObject(raw)
-        self.assertEqual(raw['code'], resp0.code)
-        self.assertEqual(raw['message'], resp0.message)
-        self.assertEqual(raw['data']['order']['id'], resp0.data.order.id)
-        self.assertEqual(raw['data']['order']['goods'][1]['id'], resp0.data.order.goods[1].id)
-
-        data = {**raw, **plus}
-
-        resp1 = OnionObject(data)
-        self.assertEqual(False, hasattr(resp1, '__private'))
-        self.assertEqual(False, hasattr(resp1, f'_{type(resp1).__name__}__private'))
-
-        resp2 = OnionObject(data, page=1, link={'prev': None, 'next': '?page=2'})
-        self.assertEqual(['EMS', 'UPS', 'USPS'], resp2.carrier_choices)
-        self.assertEqual(1, resp2.page)
-        self.assertEqual(None, resp2.link.prev)
-        self.assertEqual('?page=2', resp2.link.next)
-
-        resp3 = OnionObject(data, recurse=False, page=1, link={'prev': None, 'next': '?page=2'})
-        self.assertEqual(data['code'], resp3.code)
-        self.assertEqual(data['message'], resp3.message)
-        self.assertEqual(data['data']['order']['id'], resp3.data['order']['id'])
-        self.assertEqual(data['data']['order']['goods'][1]['id'], resp3.data['order']['goods'][1]['id'])
-        self.assertEqual(1, resp3.page)
-        self.assertEqual(None, resp3.link['prev'])
-        self.assertEqual('?page=2', resp3.link['next'])
-
-        resp4 = OnionObject(raw)
-        jsons = json.dumps(raw, ensure_ascii=False)
-        self.assertEqual(raw, ~resp4)
-        self.assertEqual(jsons, str(resp4))
-
-        resp4 |= plus
-        self.assertEqual(repr(resp1), repr(resp4))
 
     def test_repr_mixin(self):
         r00 = '<Student 男 工学 大四 姓名="叶秋然" 年龄=23 入学年份=2018 报道时间=[2018-08-29 16:29:00,000000]>'

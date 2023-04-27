@@ -43,7 +43,7 @@
 **O**
 
 - `charsets.OCTDIGITS`
-- `OnionObject()`，将字典构造为嵌套对象，使得可以用点分法代替下标访问内容。
+- [`OnionObject()`](./zeraora/OnionObject.md)，将字典构造为对象，使得可以用点分法代替下标访问内容。
 
 **R**
 
