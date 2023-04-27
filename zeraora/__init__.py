@@ -1,4 +1,8 @@
 from .decorators import start
+from .divisions import (
+    Province,
+    REGIONS,
+)
 from .generators import (
     randbytes,
     randb62,
@@ -21,6 +25,10 @@ from .typing import (
     ReprMixin,
     datasize,
     datasize as dsz,
+    ChoicesMeta,
+    Choices,
+    IntegerChoices,
+    TextChoices,
 )
 
 __author__ = 'aixcyi'
