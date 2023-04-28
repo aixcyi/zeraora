@@ -148,7 +148,7 @@ def represent(value) -> str:
     if isinstance(value, str):
         return f'"{value}"'
     elif isinstance(value, datetime.timedelta):
-        return f'[{value.days}d,{value.seconds}s,{value.microseconds}μs]'
+        return f'[{value.days}d+{value.seconds}.{value.microseconds:06d}s]'
     elif isinstance(value, datetime.datetime):
         return f'[{value:%Y-%m-%d %H:%M:%S,%f}]'
     elif isinstance(value, datetime.date):
