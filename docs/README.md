@@ -79,6 +79,7 @@
 **T**
 
 - [`TextChoices()`](https://docs.djangoproject.com/zh-hans/4.2/ref/models/fields/#enumeration-types)，用于创建值是字符串的带有标签文本的枚举的类。
+- `true`，将HTTP请求中 query 部分的参数值转换为 Python 的逻辑值。
 
 **U**
 

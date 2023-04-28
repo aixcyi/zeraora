@@ -12,6 +12,9 @@ from .generators import (
     SnowflakeSingleWorker,
 )
 from .math import remove_exponent
+from .shortcuts import (
+    true,
+)
 from .time import (
     delta2hms,
     delta2ms,
