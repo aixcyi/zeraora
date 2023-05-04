@@ -2,7 +2,7 @@
 中国行政区划相关。
 """
 
-from zeraora import IntegerChoices
+from .typing import IntegerChoices
 
 
 class Province(IntegerChoices):
