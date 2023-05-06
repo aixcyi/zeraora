@@ -175,7 +175,7 @@ print(repr(user))
 from django.conf import settings
 from django.db import migrations, models
 import django.db.models.deletion
-import zeraora.typing  # 可以选择将此行删除
+import zeraora.typings  # 可以选择将此行删除
 
 
 class Migration(migrations.Migration):

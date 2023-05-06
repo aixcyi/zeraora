@@ -21,7 +21,7 @@ from .time import (
     delta2s,
     BearTimer,
 )
-from .typing import (
+from .typings import (
     OnionObject,
     casting,
     represent,

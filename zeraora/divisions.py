@@ -2,7 +2,7 @@
 中国行政区划相关。
 """
 
-from .typing import IntegerChoices
+from .typings import IntegerChoices
 
 
 class Province(IntegerChoices):
