@@ -1,3 +1,4 @@
+from .choices import ChoicesMeta, Choices, IntegerChoices, TextChoices
 from .decorators import start
 from .divisions import (
     Province,
@@ -28,10 +29,6 @@ from .typings import (
     ReprMixin,
     datasize,
     datasize as dsz,
-    ChoicesMeta,
-    Choices,
-    IntegerChoices,
-    TextChoices,
 )
 
 __author__ = 'aixcyi'
