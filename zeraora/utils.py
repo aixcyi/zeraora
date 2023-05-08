@@ -1,49 +1,14 @@
 """
-时间相关的处理。包括日期时间类型转换和计时。
+纯工具类。
 """
-
 import sys
-from datetime import timedelta, datetime
+from datetime import datetime
 from functools import wraps
 from io import TextIOWrapper
 from logging import Logger, DEBUG, getLevelName
 from typing import Tuple, Optional, Union, NoReturn, TextIO
 
-
-def delta2hms(delta: timedelta) -> Tuple[int, int, float]:
-    """
-    将时间增量转换为时分秒格式，其中秒钟以小数形式包含毫秒和微秒。
-
-    :param delta: 时间增量。
-    :return: 一个三元元组。
-    """
-    h = delta.seconds // 3600
-    m = delta.seconds % 3600 // 60
-    s = delta.seconds % 60 + delta.microseconds / 1000000
-    return h, m, s
-
-
-def delta2ms(delta: timedelta) -> Tuple[int, float]:
-    """
-    将时间增量转换为分秒格式，其中秒钟以小数形式包含毫秒和微秒。
-
-    :param delta: 时间增量。
-    :return: 二元元组。前者用一个整数表示分钟数，
-             后者用一个小数表示秒钟数和纳秒数。
-    """
-    m = delta.seconds // 60
-    s = delta.seconds % 60 + delta.microseconds / 1000000
-    return m, s
-
-
-def delta2s(delta: timedelta) -> float:
-    """
-    将时间增量转换为秒钟数，以小数形式包含毫秒和微秒。
-
-    :param delta: 时间增量。
-    :return: 一个小数。
-    """
-    return delta.seconds + delta.microseconds / 1000000
+from .converters import delta2s, represent
 
 
 class BearTimer(object):
@@ -191,3 +156,104 @@ class BearTimer(object):
         curr = self.record(msg)
         self._start = None
         return curr
+
+
+class ReprMixin(object):
+    """
+    生成通用representation的工具类。
+
+    格式类似于 ``<User(1) female name="meow" age=12 birth=[2012-01-23]>``，
+    包含自身类名、主键、标签、属性名和值。
+
+    直接或间接继承时请放在第一父类。
+    """
+
+    def __repr__(self) -> str:
+        kls = self._obtain_kls()
+        pkv = self._obtain_pk()
+        tags = self._obtain_tags()
+        attrs = self._obtain_attrs()
+        content = (
+                (f'({pkv})' if pkv else '') +
+                (f' {tags}' if tags else '') +
+                (f' {attrs}' if attrs else '')
+        )
+        return f'<{kls}{content}>'
+
+    class AttributeMeta:
+        """
+        用于控制生成 representation 时需要带上哪些属性。
+
+        注意：这个内部类不会被实例化！
+
+        AttributeMeta 的变量代表你的类对象在运行时已经存在的属性，
+        变量值应当是一个字符串，表示生成 representation 时这个属性的名称是什么。
+
+        AttributeMeta 的变量允许接收一个返回值为字符串的函数作为类型注解，
+        用于转换你的类对象的属性值，并直接作为 representation 里这个属性的值。
+        """
+
+    def _obtain_attrs(self) -> str:
+        def obtain():
+            for attr, name in attributes.items():
+                if attr.startswith('_'):
+                    continue
+                mapper = annotations.get(attr, represent)
+                value = getattr(self, attr)
+                value = mapper(value) if callable(mapper) else value
+                yield f'{name}={value}'
+
+        attributes = self.AttributeMeta.__dict__
+        annotations = attributes.get('__annotations__', {})
+        return ' '.join(filter(None, obtain()))
+
+    class TagMeta:
+        """
+        用于控制生成 representation 时需要带上哪些标签。
+
+        注意：这个内部类不会被实例化！
+
+        TagMeta 的变量代表你的类对象在运行时已经存在的属性，变量值可以是
+          - 一个字符串，表示这个属性为 ``True`` 时 representation 里才会出现的标签的名称；
+            如果属性为 ``False`` 则不会出现这个标签。
+          - 一个元组且仅有两个字符串，表示这个属性分别为
+            ``False`` 和 ``True`` 时 representation 里会出现的标签的名称。
+          - 一个列表或一个字典，则使用属性值对这个列表或字典进行取值，
+            以此作为 representation 里出现的标签的名称。
+
+        TagMeta 的变量允许接收一个返回值为字符串的函数作为类型注解，
+        用于进一步转换你的类对象的属性值，若未提供，默认使用 bool() 来转换。
+        """
+
+    def _obtain_tags(self) -> str:
+        def obtain():
+            for attr, option in attributes.items():
+                if attr.startswith('_'):
+                    continue
+                mapper = annotations.get(attr, None)
+                value = getattr(self, attr)
+                value = mapper(value) if callable(mapper) else value
+                if isinstance(option, str) and value:
+                    yield option
+                elif isinstance(option, tuple):
+                    yield option[bool(value)]
+                elif isinstance(option, (list, dict)):
+                    yield option[value]
+                else:
+                    pass  # pragma: no cover
+
+        attributes = self.TagMeta.__dict__
+        annotations = attributes.get('__annotations__', {})
+        return ' '.join(filter(None, obtain()))
+
+    def _obtain_pk(self) -> str:
+        if hasattr(self, 'pk'):
+            pk = self.pk
+        elif hasattr(self, 'id'):
+            pk = self.id
+        else:
+            return ''
+        return pk if isinstance(pk, str) else represent(pk)
+
+    def _obtain_kls(self) -> str:
+        return self.__class__.__name__

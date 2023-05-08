@@ -11,6 +11,16 @@
     <br>
     <i>An utility Python package supports for my personal and company projects</i>
 </div>
+## 特点
+
+- 支持with、注解和实例化三种方式调用的计时器 [`BearTimer`](https://github.com/aixcyi/zeraora/blob/master/docs/zeraora/BearTimer.md) ；
+- 生成通用representation方便调试时查看对象内部信息的 [`ReprMixin`](https://github.com/aixcyi/zeraora/blob/master/docs/zeraora/ReprMixin.md) ；
+- 将字典的任意层级递归转化为对象，以便支持点分法访问数据的 [`OnionObject`](https://github.com/aixcyi/zeraora/blob/master/docs/zeraora/OnionObject.md) ；
+- 安全转换的 `casting()` 和链式调用安全转换的 `Cast` ；
+- 用以简化 `.as_view()` 传参的 `EasyViewSetMixin` ；
+- 仿照 `DestroyModelMixin` 实现的 `SoftDeleteModelMixin` ；
+- 不强制依赖任何非[标准库](https://docs.python.org/zh-cn/3/library/index.html)；
+- 更多……
 
 ## 安装
 
@@ -20,50 +30,21 @@
 pip install zeraora
 ```
 
-## 用法
+临时通过本地代理使用 pip 安装：
 
-不能保证所有工具类和快捷函数自始至终都放在同一个子包，因此应该直接从根目录导入：
-
-```python
-from zeraora import BearTimer
-
-with BearTimer() as bear:
-    summary = 0
-    for i in range(1000000):
-        bear.step(f'loop to {i} now.')
-        summary += i
+```shell
+pip install zeraora --proxy=127.0.0.1:6666
 ```
 
-亦或者：
+使用 pip 时临时指定安装源来安装：
 
-```python
-import zeraora
-
-with zeraora.BearTimer() as bear:
-    summary = 0
-    for i in range(1000000):
-        bear.step(f'loop to {i} now.')
-        summary += i
-```
-
-但对于 `charsets` 和 `djangobase` 可以放心从子包导入：
-
-```python
-from random import choices
-from zeraora.charsets import BASE64
-
-def make_pwd(length: int) -> str:
-    return ''.join(choices(BASE64, k=length))
-
-if __name__ == '__main__':
-    [
-        print(make_pwd(16)) for _ in range(20)
-    ]
+```shell
+pip install zeraora -i http://pypi.mirrors.ustc.edu.cn/simple/
 ```
 
 ## 文档
 
-部分文档以 Markdown 格式存放在 [docs](./docs/README.md) 目录下。
+部分文档以Markdown格式存放在docs目录下，查看该目录下的 [README.md](https://github.com/aixcyi/zeraora/blob/master/docs/README.md) 可以浏览全局公开符号的索引。
 
 源代码多数附带[类型标注](https://docs.python.org/zh-cn/3/glossary.html#term-type-hint)和[文档字符串](https://docs.python.org/zh-cn/3/glossary.html#term-docstring)（[reStructuredText](https://zh.wikipedia.org/wiki/ReStructuredText)格式），文档未尽事宜请移步源代码浏览。
 
@@ -77,13 +58,19 @@ if __name__ == '__main__':
 
 > 仅列出不兼容旧版的修改，其余变动见git历史。
 
+### 0.2.7（2023-5-09）
+
+- 快捷函数 `casting` 更名为 `safecast` ，调用参数一致。
+- 更改了内部结构，导致使用了 `ReprMixin` 的 Django 模型的迁移文件（migration）中 `CreateModel` 的 `base` 参数传入了错误值。点击[这里](https://github.com/aixcyi/zeraora/blob/master/docs/zeraora/ReprMixin.md)查看解决方案。
+
 ### 0.2.5（2023-5-02）
 
-- `OnionObject.__repr__()` 不再进行嵌套递归，现在嵌套的OnionObject对象会显示为 `OnionObject(...)` 。
+- `OnionObject.__repr__()` 不再进行嵌套递归，因为在调试模式中可以展开嵌套，在此递归并无意义。现在OnionObject对象内的OnionObject对象在 `repr()` 后会显示为 `OnionObject(...)` 。
 - 去除 `OnionObject.__str__()` 方法，可以用 `import json` 后 `json.dumps(OnionObject())` 实现原来的效果。
 - 更改 `BearTimer` 的默认打印格式。
 - 将 `BearTimer.output()` 拆分为负责准备打印的 `record()` 和实现打印的 `handle()` 。
 
 ### 0.2.0（2023-4-12）
 
-- 将 `JSONObject` 与 `JsonObject` 合并为 `OnionObject` ，并删去前述两个类。
+- 将递归转化的 `JSONObject` 与仅表层转化的 `JsonObject` 合并为 `OnionObject` ，并删去前述两个类。
+

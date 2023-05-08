@@ -1,8 +1,7 @@
 """
 中国行政区划相关。
 """
-
-from .choices import IntegerChoices
+from .typeclasses import IntegerChoices
 
 
 class Province(IntegerChoices):
