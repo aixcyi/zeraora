@@ -3,7 +3,7 @@ from decimal import Decimal
 from uuid import UUID
 
 from tests.base_test_case import BaseTestCase
-from zeraora import casting, represent, OnionObject, ReprMixin, datasize
+from zeraora import safecast, represent, OnionObject, ReprMixin, datasize
 
 SUBJECT_CATEGORY = {
     1: '工学', 8: '经济学',
@@ -136,23 +136,23 @@ class TypingModuleTest(BaseTestCase):
         self.assertEqual(r0, repr(OnionObject(id=67, username='aixcyi')))
         self.assertEqual(r1, repr(OnionObject(id=67, fk=OnionObject())))
 
-    def test_casting(self):
-        self.assertEqual(1234, casting(int, '1234'))
-        self.assertEqual(None, casting(int, '12a4'))
-        self.assertEqual(None, casting(int, None))
-        self.assertEqual(1234, casting(int, '1234', default=5678))
-        self.assertEqual(5678, casting(int, '12a4', default=5678))
-        self.assertEqual('中文', casting(b'\xd6\xd0\xce\xc4'.decode, 'GBK', default='meow'))
-        self.assertEqual('meow', casting(b'\xd6\xd0\xce\xc4'.decode, 'UTF8', default='meow'))
-        self.assertEqual(3, casting([3, 14].__getitem__, 0, default=-1))
-        self.assertEqual(-1, casting([3, 14].__getitem__, 315, IndexError, default=-1))
+    def test_safecast(self):
+        self.assertEqual(1234, safecast(int, '1234'))
+        self.assertEqual(None, safecast(int, '12a4'))
+        self.assertEqual(None, safecast(int, None))
+        self.assertEqual(1234, safecast(int, '1234', default=5678))
+        self.assertEqual(5678, safecast(int, '12a4', default=5678))
+        self.assertEqual('中文', safecast(b'\xd6\xd0\xce\xc4'.decode, 'GBK', default='meow'))
+        self.assertEqual('meow', safecast(b'\xd6\xd0\xce\xc4'.decode, 'UTF8', default='meow'))
+        self.assertEqual(3, safecast([3, 14].__getitem__, 0, default=-1))
+        self.assertEqual(-1, safecast([3, 14].__getitem__, 315, IndexError, default=-1))
 
     def test_represent(self):
         self.assertEqual('"string"', represent('string'))
         self.assertEqual('[2012-01-23]', represent(date(2012, 1, 23)))
-        self.assertEqual('[2012-01-23 08:29:59,000000]', represent(datetime(2012, 1, 23, 8, 29, 59)))
-        self.assertEqual('[3d+3599.000000s]', represent(timedelta(days=3, hours=1, seconds=-1)))
         self.assertEqual('[0d+3.141590s]', represent(timedelta(seconds=3, milliseconds=140, microseconds=1590)))
+        self.assertEqual('[3d+3599.000000s]', represent(timedelta(days=3, hours=1, seconds=-1)))
+        self.assertEqual('[2012-01-23 08:29:59,000000]', represent(datetime(2012, 1, 23, 8, 29, 59)))
         self.assertEqual('d6d0b9fac9fabbeed4daedc1d0a1d2ed', represent(UUID('d6d0b9fa-c9fa-bbee-d4da-edc1d0a1d2ed')))
         self.assertEqual('(2, 3, 5, 7)', represent((2, 3, 5, 7)))
         self.assertEqual('[2, 3, 5, 7]', represent([2, 3, 5, 7]))

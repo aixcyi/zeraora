@@ -3,11 +3,15 @@
 """
 
 import datetime
-import enum
 import re
-from types import DynamicClassAttribute
-from typing import Callable, Type, Union
+import typing as t
 from uuid import UUID
+
+Throwable = t.Union[BaseException, t.Type[BaseException]]
+
+
+class _UNSET:
+    pass
 
 
 class OnionObject(object):
@@ -106,32 +110,78 @@ class OnionObject(object):
         return f'OnionObject({attrs})'
 
 
-def casting(
-        mapper: Callable,
-        raw,
-        *errs: Union[Exception, Type[Exception]],
-        default=None,
-):
+def safecast(mapper: t.Callable, raw, *errs: Throwable, default=None) -> t.Any:
     """
-    使用mapper将raw转换为所需的值，当出现异常时返回default。
+    转换一个值，转换失败时返回default，确保不会发生指定异常。
 
     默认捕获以下异常，可以通过errs参数追加更多异常：
         - TypeError
         - ValueError
         - KeyboardInterrupt
 
-    :param mapper: 类型转换器。如果转换器不可调用，将直接返回默认值。
+    :param mapper: 用来转换raw的转换器。如果转换器不可调用，将直接返回默认值。
     :param raw: 被转换的值。
     :param errs: 需要捕获的其它异常类或异常对象。应当提供可被 except 语句接受的值。
     :param default: 默认值。即使不提供也会默认返回 None 而不会抛出异常。
     :return: 转换后的值。如若捕获到特定异常将返回默认值。
     """
+    exceptions = tuple(
+        exc for exc in errs
+        if exc.__class__ is type
+        and issubclass(exc, BaseException)
+        or isinstance(exc, BaseException)
+    )
     if not callable(mapper):
         return default  # pragma: no cover
     try:
         return mapper(raw)
-    except (TypeError, ValueError, KeyboardInterrupt) + errs:
+    except (TypeError, ValueError, KeyboardInterrupt) + exceptions:
         return default
+
+
+class SafeCaster:
+
+    def __init__(self, *exceptions: Throwable):
+        """
+        创建一个安全转换器。
+
+        :param exceptions: 可能发生的异常。应当提供可被 except 语句接受的值。
+        """
+        self._exceptions = tuple(
+            exc for exc in exceptions
+            if exc.__class__ is type
+            and issubclass(exc, BaseException)
+            or isinstance(exc, BaseException)
+        )
+
+    def __call__(self, raw: t.Any = _UNSET, *mappers: t.Callable, default=None):
+        """
+        转换一个值，转换失败时返回默认值，确保不会发生预先定义好的异常。
+
+        :param raw: 被转换的值。
+        :param mappers: 用来转换raw的转换器。如果某个转换器不可调用，将不会执行这个转换。
+        :param default: 默认值。
+        :return: 转换后的结果，或默认值。
+        """
+        if len(mappers) <= 0:
+            return default
+
+        if raw is _UNSET:
+            result = mappers[0]()
+            converters = mappers[1:]
+        else:
+            result = raw
+            converters = mappers
+
+        try:
+            for converter in converters:
+                result = converter(result) if callable(converter) else result
+            return result
+        except self._exceptions:
+            return default
+
+
+safecasts = SafeCaster(TypeError, ValueError, KeyboardInterrupt)
 
 
 def represent(value) -> str:
@@ -260,7 +310,7 @@ class ReprMixin(object):
         return self.__class__.__name__
 
 
-def datasize(literal: str) -> Union[int, float]:
+def datasize(literal: str) -> t.Union[int, float]:
     """
     将一个字面量转换为字节数目。
 
@@ -296,3 +346,13 @@ def datasize(literal: str) -> Union[int, float]:
     power = (power / 8) if 'b' in result.group(3) else power
 
     return base * power
+
+
+def true(value) -> bool:
+    """
+    将HTTP请求中 query 部分的参数值转换为 Python 的逻辑值。
+
+    :param value: query 中的参数值。
+    :return: True 或 False。
+    """
+    return value in ('true', 'True', 'TRUE', 1, True)

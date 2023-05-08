@@ -24,7 +24,9 @@ from .time import (
 )
 from .typings import (
     OnionObject,
-    casting,
+    SafeCaster,
+    safecast,
+    safecasts,
     represent,
     ReprMixin,
     datasize,
