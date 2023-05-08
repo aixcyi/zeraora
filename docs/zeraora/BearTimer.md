@@ -15,7 +15,7 @@ with BearTimer() as bear:
     summary = 0
     for i in range(1000000):
         if not i % 67:
-	        bear.step(f'loop cycle to {i} now.')
+            bear.step(f'loop cycle to {i} now.')
         summary += i
 ```
 
@@ -31,7 +31,7 @@ with BearTimer() as bear:
 如需添加更多参数，可以继承重写 `.record()` 方法。
 
 ```Python
-fmt = f'[{head:%H:%M:%S.%f}] [{level}] [{title}] [{total:.6f} +{delta:.6f}]: {msg}'
+fmt = '[{head:%H:%M:%S.%f}] [{level}] [{title}] [{total:.6f} +{delta:.6f}]: {msg}'
 ```
 
 对于跨函数或复杂嵌套代码等不方便使用 with 的场景，可以实例化 `BearTimer` 后使用。实例化的对象可以反复使用。
@@ -51,7 +51,7 @@ def prepare_order():
 def pay_now():
     # 对请求进行鉴权
     prepare_order()
-	# 拉起支付
+    # 拉起支付
     # 将结果写回订单中
     bear.stop()
     # 序列化订单数据并返回

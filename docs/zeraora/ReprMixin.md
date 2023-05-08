@@ -61,11 +61,10 @@ class User(ReprMixin):
 
     def __init__(self):
         self.age = 18
-    	self.name = '叶秋然'
+        self.name = '叶秋然'
         self.school = '哔哩哔哩矿业无限大学'
 
     class AttributeMeta:
-        school  # 必须被赋值，否则不会被展示
         name = '姓名'
         age = '年龄'
 
@@ -87,7 +86,7 @@ from zeraora import ReprMixin, represent
 class User(ReprMixin):
 
     def __init__(self):
-    	self.name = '叶秋然'
+        self.name = '叶秋然'
         self.birth = date(2000, 1, 23)
         self.join_date = date(2023, 9, 1)
         self.school_name = '哔哩哔哩矿业无限大学'
@@ -122,11 +121,11 @@ class User(ReprMixin):
     active = True
 
     def __init__(self):
-    	self.name = '叶秋然'
+        self.name = '叶秋然'
         self.gender = False
         self.graduated = True
 
-	class AttributeMeta:
+    class AttributeMeta:
         name = '姓名'
 
     class TagMeta:
@@ -147,16 +146,16 @@ from zeraora import ReprMixin
 class User(ReprMixin):
 
     def __init__(self):
-    	self.name = '叶秋然'
+        self.name = '叶秋然'
         self.subject = 0
         self.ethnicity = 'Han'
 
-	class AttributeMeta:
+    class AttributeMeta:
         name = '姓名'
 
     class TagMeta:
         subject = ['工学','哲学','法学','文学','理学','农学','医学']
-        ethnicity = {'Han': '汉族', 'Manchu': '满族', 'Zhuang': '壮族', ...}
+        ethnicity = {'Han': '汉族', 'Manchu': '满族', 'Zhuang': '壮族'}
 
 user = User()
 print(repr(user))
@@ -179,7 +178,6 @@ import zeraora.typings  # 可以选择将此行删除
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [

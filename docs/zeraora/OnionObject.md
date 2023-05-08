@@ -91,7 +91,7 @@ class PlatformResponse(OnionObject):
 
 def get_market_data() -> PlatformResponse:
     url = 'http://market.platform.com/api/poi'
-    resp = requests.get(url)
+    resp = requests.get(url).json()
     data = PlatformResponse(resp, depth=1)  # 仅转化第一层以避免污染业务数据
     if data.code < 0:
         raise Exception(data.message)
