@@ -11,6 +11,7 @@
     <br>
     <i>An utility Python package supports for my personal and company projects</i>
 </div>
+
 ## 特点
 
 - 支持with、注解和实例化三种方式调用的计时器 [`BearTimer`](https://github.com/aixcyi/zeraora/blob/master/docs/zeraora/BearTimer.md) ；
@@ -60,8 +61,8 @@ pip install zeraora -i http://pypi.mirrors.ustc.edu.cn/simple/
 
 ### 0.2.7（2023-5-09）
 
-- 快捷函数 `casting` 更名为 `safecast` ，调用参数一致。
-- 更改了内部结构，导致使用了 `ReprMixin` 的 Django 模型的迁移文件（migration）中 `CreateModel` 的 `base` 参数传入了错误值。点击[这里](https://github.com/aixcyi/zeraora/blob/master/docs/zeraora/ReprMixin.md)查看解决方案。
+- 快捷函数 `casting` 更名为 `safecast` ，调用参数保持一致。
+- 更改了内部包结构。使用了 `ReprMixin` 的 Django 模型的迁移文件（migration）中 `CreateModel` 的 `base` 参数可能会因为 `ReprMixin` 而传入了错误值，更新后可能因为找不到 `zeraora.typing.ReprMixin` 而无法进行迁移（`manage.py migrate`）。点击[这里](https://github.com/aixcyi/zeraora/blob/master/docs/zeraora/ReprMixin.md)查看解决方案。
 
 ### 0.2.5（2023-5-02）
 
