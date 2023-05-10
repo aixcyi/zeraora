@@ -62,6 +62,7 @@
 
 **R**
 
+- `RadixInteger()`，一个以元组表述各个数位的 N 进制整数。
 - `randb62()`，生成 n 个 base62 随机字符。
 - `randb64()`，生成 n 个 base64 随机字符。
 - `randbytes()`，生成 n 个随机字节。此函数用于在 Python 3.9 以前代替 random.randbytes(n) 方法。

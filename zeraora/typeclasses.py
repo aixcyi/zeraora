@@ -1,9 +1,9 @@
 """
-类型类或类型别名。
+数据类型类、枚举类、空类、类型别名等。
 """
 import enum
 from types import DynamicClassAttribute
-from typing import Type, Union
+from typing import Type, Union, Tuple, Dict
 
 Throwable = Union[BaseException, Type[BaseException]]
 
@@ -108,10 +108,90 @@ class OnionObject(object):
         return f'OnionObject({attrs})'
 
 
+# Little Endian
+class RadixInteger(Tuple[int, ...]):
+
+    def __new__(cls, x: Union[int, Tuple[int, ...]], n: int, be=False, negative=False) -> 'RadixInteger':
+        """
+        一个以元组表述各个数位的 N 进制整数。
+
+        :param x: 一个int类型的整数，或者一个包含非负整数的元组。
+        :param n: 进位制（的基数）。必须是一个大于等于 2 的正整数。
+        :param be: 给定元组使用大端字节序？
+        :param negative: 给定元组应当表示一个负数？
+        """
+
+        def dec2seq(i: int):
+            while i >= n:
+                yield i % n
+                i //= n
+            yield i
+
+        if n < 2:
+            raise ValueError('无法表述基数比 2 更低的进位制。')
+
+        if isinstance(x, int):
+            self = tuple.__new__(cls, dec2seq(abs(x)))
+            self._radix = n
+            self._integer = x
+
+        elif isinstance(x, cls):
+            self = tuple.__new__(cls, dec2seq(abs(x.numeric)))
+            self._radix = n
+            self._integer = x.numeric
+
+        elif isinstance(x, tuple):
+            bits = (i for i in x if i < 0 or i % 1 != 0)
+            if tuple(bits):
+                raise ValueError(
+                    'x 只能包含非负整数。'
+                )
+            radix = max(bits)
+            if not radix <= n:
+                raise ValueError(
+                    f'x 的进位制最低是 {radix}，高于给定的 {n} 。'
+                )
+            pairs = zip(x, reversed(range(len(x))))
+            self = tuple.__new__(cls, x[::-1] if be else x)
+            self._radix = n
+            self._integer = sum(map(lambda pair: pair[0] * n ** pair[1], pairs))
+            self._integer = -self._integer if negative else self._integer
+
+        else:
+            raise TypeError(
+                f'{cls.__name__}() 不接受 {type(x).__name__} 类型的参数。'
+            )
+
+        return self
+
+    @property
+    def radix(self):
+        """整数的进位制。"""
+        return self._radix
+
+    @property
+    def numeric(self):
+        """对应的以阿拉伯数字表述的十进制整数。"""
+        return self._integer
+
+    def map2str(self, mapping: Union[str, Dict[int, str]], be=True) -> str:
+        """
+        按照规则将每一位数映射到一个字符串中。
+        """
+        return ''.join(map(lambda i: mapping[i], self[::-1] if be else self))
+
+    def map2bytes(self, mapping: Union[bytes, Dict[int, bytes]], be=True) -> bytes:
+        """
+        按照规则将每一位数映射到一个字节串中。
+        """
+        return bytes(map(lambda i: mapping[i], self[::-1] if be else self))
+
+
 # copy from https://github.com/django/django/blob/stable/4.2.x/django/db/models/enums.py
 class ChoicesMeta(enum.EnumMeta):
     """用于创建带有标签文本的枚举的元类。"""
 
+    # noinspection PyUnresolvedReferences,PyProtectedMember,PyTypeChecker
     def __new__(metacls, classname, bases, classdict, **kwds):
         labels = []
         for key in classdict._member_names:
@@ -194,5 +274,6 @@ class IntegerChoices(int, Choices):
 class TextChoices(str, Choices):
     """用于创建值是字符串的带有标签文本的枚举的类。"""
 
+    # noinspection PyMethodParameters
     def _generate_next_value_(name, start, count, last_values):
         return name

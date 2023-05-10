@@ -26,6 +26,7 @@ from .generators import (
 )
 from .typeclasses import (
     OnionObject,
+    RadixInteger,
     ChoicesMeta,
     Choices,
     IntegerChoices,

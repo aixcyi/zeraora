@@ -1,7 +1,7 @@
 from decimal import Decimal
 
 from tests.base_test_case import BaseTestCase
-from zeraora import OnionObject
+from zeraora import OnionObject, RadixInteger
 
 
 class TypeclassesTest(BaseTestCase):
@@ -86,3 +86,11 @@ class TypeclassesTest(BaseTestCase):
         r1 = "OnionObject(_OnionObject__depth=-1, id=67, fk=OnionObject(...))"
         self.assertEqual(r0, repr(OnionObject(id=67, username='aixcyi')))
         self.assertEqual(r1, repr(OnionObject(id=67, fk=OnionObject())))
+
+    def test_radix_integer(self):
+        ri256 = RadixInteger(2217343354, 256)
+        self.assertEqual(2217343354, int.from_bytes(bytes(ri256), 'little'))
+
+        ri16 = RadixInteger(2217343354, 16)
+        self.assertEqual('8429F97A', ri16.map2str('0123456789ABCDEF'))
+        self.assertEqual(b'8429F97A', ri16.map2bytes(b'0123456789ABCDEF'))
