@@ -59,6 +59,10 @@ pip install zeraora -i http://pypi.mirrors.ustc.edu.cn/simple/
 
 > 仅列出不兼容旧版的修改，其余变动见git历史。
 
+### unrelease
+
+- 省份枚举 `Province` 的值从 `int` 改为 `str` 。
+
 ### 0.2.7（2023-5-09）
 
 - 快捷函数 `casting` 更名为 `safecast` ，调用参数保持一致。

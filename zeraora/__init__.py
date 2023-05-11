@@ -13,8 +13,8 @@ from .converters import (
     safecasts,
 )
 from .divisions import (
+    Region,
     Province,
-    REGIONS,
 )
 from .generators import (
     randbytes,
@@ -31,6 +31,8 @@ from .typeclasses import (
     Choices,
     IntegerChoices,
     TextChoices,
+    ItemsMeta,
+    Items,
 )
 from .utils import (
     BearTimer,

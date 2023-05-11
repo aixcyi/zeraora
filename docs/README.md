@@ -20,8 +20,8 @@
 **C**
 
 - `casting()`，转换一个值或返回默认值，以确保不会发生异常。
-- [`Choices()`](https://docs.djangoproject.com/zh-hans/4.2/ref/models/fields/#enumeration-types)，用于创建带有标签文本的枚举的类。
-- [`ChoicesMeta()`](https://docs.djangoproject.com/zh-hans/4.2/ref/models/fields/#enumeration-types)，用于创建带有标签文本的枚举的元类。
+- [`Choices()`](https://docs.djangoproject.com/zh-hans/4.2/ref/models/fields/#enumeration-types)，用于创建带有标签文本的枚举。
+- [`ChoicesMeta()`](https://docs.djangoproject.com/zh-hans/4.2/ref/models/fields/#enumeration-types)，用于创建带有标签文本的枚举的类（元类）。
 
 **D**
 
@@ -42,7 +42,9 @@
 
 **I**
 
-- [`IntegerChoices()`](https://docs.djangoproject.com/zh-hans/4.2/ref/models/fields/#enumeration-types)，用于创建值是整数的带有标签文本的枚举的类。
+- [`IntegerChoices()`](https://docs.djangoproject.com/zh-hans/4.2/ref/models/fields/#enumeration-types)，用于创建值是整数的带有标签文本的枚举。
+- `Items()`，用于创建带有任意属性的枚举。
+- `ItemsMeta()`，用于创建带有任意属性的枚举的类（元类）。
 
 **L**
 
@@ -84,7 +86,7 @@
 
 **T**
 
-- [`TextChoices()`](https://docs.djangoproject.com/zh-hans/4.2/ref/models/fields/#enumeration-types)，用于创建值是字符串的带有标签文本的枚举的类。
+- [`TextChoices()`](https://docs.djangoproject.com/zh-hans/4.2/ref/models/fields/#enumeration-types)，用于创建值是字符串的带有标签文本的枚举。
 - `true`，将HTTP请求中 query 部分的参数值转换为 Python 的逻辑值。
 
 **U**

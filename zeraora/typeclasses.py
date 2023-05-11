@@ -189,9 +189,8 @@ class RadixInteger(Tuple[int, ...]):
 
 # copy from https://github.com/django/django/blob/stable/4.2.x/django/db/models/enums.py
 class ChoicesMeta(enum.EnumMeta):
-    """用于创建带有标签文本的枚举的元类。"""
+    """用于创建带有标签文本的枚举的类（元类）。"""
 
-    # noinspection PyUnresolvedReferences,PyProtectedMember,PyTypeChecker
     def __new__(metacls, classname, bases, classdict, **kwds):
         labels = []
         for key in classdict._member_names:
@@ -241,7 +240,7 @@ class ChoicesMeta(enum.EnumMeta):
 
 # copy from https://github.com/django/django/blob/stable/4.2.x/django/db/models/enums.py
 class Choices(enum.Enum, metaclass=ChoicesMeta):
-    """用于创建带有标签文本的枚举的类。"""
+    """用于创建带有标签文本的枚举。"""
 
     @DynamicClassAttribute
     def label(self):
@@ -265,15 +264,133 @@ class Choices(enum.Enum, metaclass=ChoicesMeta):
 
 # copy from https://github.com/django/django/blob/stable/4.2.x/django/db/models/enums.py
 class IntegerChoices(int, Choices):
-    """用于创建值是整数的带有标签文本的枚举的类。"""
+    """用于创建值是整数的带有标签文本的枚举。"""
 
     pass
 
 
 # copy from https://github.com/django/django/blob/stable/4.2.x/django/db/models/enums.py
 class TextChoices(str, Choices):
-    """用于创建值是字符串的带有标签文本的枚举的类。"""
+    """用于创建值是字符串的带有标签文本的枚举。"""
 
-    # noinspection PyMethodParameters
     def _generate_next_value_(name, start, count, last_values):
         return name
+
+
+class ItemsMeta(enum.EnumMeta):
+    """
+    用于创建带有任意属性的枚举的类（元类）。
+
+    >>> from enum import Enum
+    >>>
+    >>> class YearInSchool(Enum, metaclass=ItemsMeta):
+    >>>     FRESHMAN = 1, 'FR', 0xE35314, 'Freshman'
+    >>>     SOPHOMORE = 2, 'SO', 0xED15B4, 'Sophomore'
+    >>>     JUNIOR = 3, 'JR', 0x9B3CED, 'Junior'
+    >>>     SENIOR = 4, 'SR', 0xA0408E, 'Senior'
+    >>>     GRADUATE = 5, 'GR', 0x518CCC, 'Graduate'
+    >>>
+    >>>     __properties__ = 'code', 'color', 'label'
+    >>>
+    >>>     @property
+    >>>     def code(self) -> str:
+    >>>         return self._code_
+    >>>
+    >>>     @property
+    >>>     def color(self) -> int:
+    >>>         return self._color_
+    >>>
+    >>>     @property
+    >>>     def label(self) -> str:
+    >>>         return self._label_
+    >>>
+    >>> print(YearInSchool.SENIOR.name)  # 'SENIOR'
+    >>> print(YearInSchool.SENIOR.value)  # 4
+    >>> print(YearInSchool.SENIOR.code)  # 'SR'
+    >>> print(hex(YearInSchool.SENIOR.color))  # '0xa0408e'
+    >>> print(YearInSchool.SENIOR.label)  # 'Senior'
+    >>>
+    >>> print(YearInSchool.names)  # ['FRESHMAN', 'SOPHOMORE', ...]
+    >>> print(YearInSchool.values)  # [1, 2, 3, 4, 5]
+    >>> print(YearInSchool.codes)  # ['FR', 'SO', 'JR', 'SR', 'GR']
+    >>> print(YearInSchool.colors)  # [14897940, 15537588, ...]
+    >>> print(YearInSchool.labels)  # ['Freshman', 'Sophomore', ...]
+    """
+
+    def __new__(metacls, classname, bases, classdict, **kwds):
+        # 获取属性名（pks）
+        if '__properties__' not in classdict:
+            raise AttributeError(
+                f'{classname} 使用了 {metacls.__name__}，'
+                f'因此必须定义一个名为 __properties__ 的属性。'
+            )
+        pks = classdict['__properties__']
+        if not isinstance(pks, (tuple, list)):
+            raise TypeError(
+                f'{classname}.__properties__ 的值只允许是 tuple 或 list 。'
+            )
+        if not all(isinstance(pk, str) and not pk.startswith('_') for pk in pks):
+            raise TypeError(
+                f'{classname}.__properties__ 的值必须是字符串且不以下划线 “_” 开头。'
+            )
+        pks = tuple(f'_{pk}_' for pk in pks)
+        qty = len(pks) + 1  # 等号右侧所有元素的总数
+
+        # 获取属性值（pvs）和枚举值（value）
+        pvs_list = []
+        for key in classdict._member_names:
+            value = classdict[key]
+            pvs = ()
+            if isinstance(value, tuple) and len(value) == qty:
+                value, *pvs = value
+                pvs = tuple(pvs)
+            pvs_list.append(pvs)
+            dict.__setitem__(classdict, key, value)
+
+        # 为每个枚举添加私有属性
+        cls = super().__new__(metacls, classname, bases, classdict, **kwds)
+        for member, pvs in zip(cls.__members__.values(), pvs_list):
+            member.__dict__.update(zip(pks, pvs))
+
+        return enum.unique(cls)
+
+    def __contains__(cls, member):
+        if not isinstance(member, enum.Enum):
+            # Allow non-enums to match against member values.
+            return any(x.value == member for x in cls)
+        return super().__contains__(member)
+
+    def __getattr__(cls, name):
+        if not isinstance(name, str):
+            raise TypeError
+        if name[:-1] in cls.__properties__ and name.endswith('s'):
+            return [getattr(member, name[:-1]) for member in cls]
+        if name[:-2] in cls.__properties__ and name.endswith('es'):
+            return [getattr(member, name[:-2]) for member in cls]
+        return cls.__getattribute__(cls, name)
+
+    @property
+    def names(cls):
+        empty = ["__empty__"] if hasattr(cls, "__empty__") else []
+        return empty + [member.name for member in cls]
+
+    @property
+    def values(cls):
+        empty = [None] if hasattr(cls, "__empty__") else []
+        return empty + [member.value for member in cls]
+
+    @property
+    def choices(cls):
+        empty = [(None, cls.__empty__)] if hasattr(cls, "__empty__") else []
+        return empty + [(member.value, member.label) for member in cls]
+
+
+class Items(enum.Enum, metaclass=ItemsMeta):
+    """
+    用于创建带有任意属性的枚举。
+    """
+    __properties__ = ()
+
+    def __repr__(self):
+        # 枚举也算一种常量，直接按路径查找即可，故舍去附加的属性
+        return f"{self.__class__.__qualname__}.{self._name_}"
