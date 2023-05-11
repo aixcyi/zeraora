@@ -40,8 +40,8 @@ from .utils import (
 )
 
 __author__ = 'aixcyi'
-__version__ = (0, 2, 7)
-version = '0.2.7'
+__version__ = (0, 2, 8)
+version = '0.2.8'
 
 # Django makemigrations 会在 CreateModel 里插入参数
 # bases=(zeraora.utils.ReprMixin, models.Model)
