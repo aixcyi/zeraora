@@ -278,44 +278,7 @@ class TextChoices(str, Choices):
 
 
 class ItemsMeta(enum.EnumMeta):
-    """
-    用于创建带有任意属性的枚举的类（元类）。
-
-    >>> from enum import Enum
-    >>>
-    >>> class YearInSchool(Enum, metaclass=ItemsMeta):
-    >>>     FRESHMAN = 1, 'FR', 0xE35314, 'Freshman'
-    >>>     SOPHOMORE = 2, 'SO', 0xED15B4, 'Sophomore'
-    >>>     JUNIOR = 3, 'JR', 0x9B3CED, 'Junior'
-    >>>     SENIOR = 4, 'SR', 0xA0408E, 'Senior'
-    >>>     GRADUATE = 5, 'GR', 0x518CCC, 'Graduate'
-    >>>
-    >>>     __properties__ = 'code', 'color', 'label'
-    >>>
-    >>>     @property
-    >>>     def code(self) -> str:
-    >>>         return self._code_
-    >>>
-    >>>     @property
-    >>>     def color(self) -> int:
-    >>>         return self._color_
-    >>>
-    >>>     @property
-    >>>     def label(self) -> str:
-    >>>         return self._label_
-    >>>
-    >>> print(YearInSchool.SENIOR.name)  # 'SENIOR'
-    >>> print(YearInSchool.SENIOR.value)  # 4
-    >>> print(YearInSchool.SENIOR.code)  # 'SR'
-    >>> print(hex(YearInSchool.SENIOR.color))  # '0xa0408e'
-    >>> print(YearInSchool.SENIOR.label)  # 'Senior'
-    >>>
-    >>> print(YearInSchool.names)  # ['FRESHMAN', 'SOPHOMORE', ...]
-    >>> print(YearInSchool.values)  # [1, 2, 3, 4, 5]
-    >>> print(YearInSchool.codes)  # ['FR', 'SO', 'JR', 'SR', 'GR']
-    >>> print(YearInSchool.colors)  # [14897940, 15537588, ...]
-    >>> print(YearInSchool.labels)  # ['Freshman', 'Sophomore', ...]
-    """
+    """用于创建带有任意属性的枚举的类（元类）。"""
 
     def __new__(metacls, classname, bases, classdict, **kwds):
         # 获取属性名（pks）
@@ -388,6 +351,41 @@ class ItemsMeta(enum.EnumMeta):
 class Items(enum.Enum, metaclass=ItemsMeta):
     """
     用于创建带有任意属性的枚举。
+
+    >>> from enum import Enum
+    >>>
+    >>> class YearInSchool(Items):
+    >>>     FRESHMAN = 1, 'FR', 0xE35314, 'Freshman'
+    >>>     SOPHOMORE = 2, 'SO', 0xED15B4, 'Sophomore'
+    >>>     JUNIOR = 3, 'JR', 0x9B3CED, 'Junior'
+    >>>     SENIOR = 4, 'SR', 0xA0408E, 'Senior'
+    >>>     GRADUATE = 5, 'GR', 0x518CCC, 'Graduate'
+    >>>
+    >>>     __properties__ = 'code', 'color', 'label'
+    >>>
+    >>>     @property
+    >>>     def code(self) -> str:
+    >>>         return self._code_
+    >>>
+    >>>     @property
+    >>>     def color(self) -> int:
+    >>>         return self._color_
+    >>>
+    >>>     @property
+    >>>     def label(self) -> str:
+    >>>         return self._label_
+    >>>
+    >>> print(YearInSchool.SENIOR.name)  # 'SENIOR'
+    >>> print(YearInSchool.SENIOR.value)  # 4
+    >>> print(YearInSchool.SENIOR.code)  # 'SR'
+    >>> print(hex(YearInSchool.SENIOR.color))  # '0xa0408e'
+    >>> print(YearInSchool.SENIOR.label)  # 'Senior'
+    >>>
+    >>> print(YearInSchool.names)  # ['FRESHMAN', 'SOPHOMORE', ...]
+    >>> print(YearInSchool.values)  # [1, 2, 3, 4, 5]
+    >>> print(YearInSchool.codes)  # ['FR', 'SO', 'JR', 'SR', 'GR']
+    >>> print(YearInSchool.colors)  # [14897940, 15537588, ...]
+    >>> print(YearInSchool.labels)  # ['Freshman', 'Sophomore', ...]
     """
     __properties__ = ()
 
