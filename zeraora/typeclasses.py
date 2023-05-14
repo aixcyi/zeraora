@@ -330,7 +330,7 @@ class ItemsMeta(enum.EnumMeta):
             return [getattr(member, name[:-1]) for member in cls]
         if name[:-2] in cls.__properties__ and name.endswith('es'):
             return [getattr(member, name[:-2]) for member in cls]
-        return cls.__getattribute__(cls, name)
+        return object.__getattribute__(cls, name)
 
     @property
     def names(cls):
