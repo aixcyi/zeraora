@@ -20,6 +20,7 @@
 - 安全转换的 `casting()` 和链式调用安全转换的 `Cast` ；
 - 用以简化 `.as_view()` 传参的 `EasyViewSetMixin` ；
 - 仿照 `DestroyModelMixin` 实现的 `SoftDeleteModelMixin` ；
+- 受 Django 的 `Choices` 启发的、可为枚举添加任意属性的 `Items` ；
 - 不强制依赖任何非[标准库](https://docs.python.org/zh-cn/3/library/index.html)；
 - 更多……
 
@@ -51,7 +52,8 @@ pip install zeraora -i http://pypi.mirrors.ustc.edu.cn/simple/
 
 ## 兼容性
 
-[Python 3.7](https://docs.python.org/zh-cn/3/whatsnew/3.7.html#summary-release-highlights) 开始 `dict` 正式按照插入顺序存储，考虑到 `dict` 是 Python 的基石，为了避免出现难以察觉的错误，因而将该版本定为兼容下限。这也是我接触过的项目中的最低运行版本，故而不太希望维护对更低版本的兼容。
+高情商：[Python 3.7](https://docs.python.org/zh-cn/3/whatsnew/3.7.html#summary-release-highlights) 是本项目开始时的最后一个[安全版本](https://devguide.python.org/versions/)，因而将该版本定为兼容下限。  
+低情商：这是我接触过的最低运行版本。
 
-项目会尽力保证向后兼容性，但还是建议在requirements中写明特定的版本号，避免因为版本更新或回退而出现棘手的错误。
+~~项目会尽力保证向后兼容性，但还是~~建议在requirements中写明特定的版本号，避免因为版本更新或回退而出现棘手的错误。
 

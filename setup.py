@@ -20,8 +20,8 @@ setup(
     license='MIT',
     author='aixcyi',
     author_email='75880483+aixcyi@users.noreply.github.com',
-    description="一个包含原创工具类及快捷函数的工具库。"
-                "A original utility Python package.",
+    description="长期维护的个人开源工具库。"
+                "An utility Python package supports for my personal and company projects.",
     long_description=long_description,
     long_description_content_type='text/markdown',
     classifiers=[
@@ -32,6 +32,7 @@ setup(
         "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3.10",
         "Programming Language :: Python :: 3.11",
+        "Programming Language :: Python :: 3.12",
         "Intended Audience :: Developers",
         "Operating System :: OS Independent",
         "Natural Language :: Chinese (Simplified)",
