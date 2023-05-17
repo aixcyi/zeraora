@@ -3,7 +3,7 @@
 """
 import enum
 from types import DynamicClassAttribute
-from typing import Type, Union, Tuple, Dict
+from typing import Type, Union, Tuple, Dict, List
 
 Throwable = Union[BaseException, Type[BaseException]]
 
@@ -111,14 +111,18 @@ class OnionObject(object):
 # Little Endian
 class RadixInteger(Tuple[int, ...]):
 
-    def __new__(cls, x: Union[int, Tuple[int, ...]], n: int, be=False, negative=False) -> 'RadixInteger':
+    def __new__(cls,
+                x: Union[int, Tuple[int, ...], List[int, ...], bytes, bytearray],
+                n: int,
+                be=False,
+                negative=False) -> 'RadixInteger':
         """
         一个以元组表述各个数位的 N 进制整数。
 
-        :param x: 一个int类型的整数，或者一个包含非负整数的元组。
+        :param x: 一个int类型的整数，一个包含非负整数的元组，或者一个字节串。
         :param n: 进位制（的基数）。必须是一个大于等于 2 的正整数。
-        :param be: 给定元组使用大端字节序？
-        :param negative: 给定元组应当表示一个负数？
+        :param be: 表示给定元组是否使用大端字节序。
+        :param negative: 表示给定元组是否应当表示一个负数，或给定字节串是否使用二进制补码表示整数。
         """
 
         def dec2seq(i: int):
@@ -140,7 +144,12 @@ class RadixInteger(Tuple[int, ...]):
             self._radix = n
             self._integer = x.numeric
 
-        elif isinstance(x, tuple):
+        elif isinstance(x, (bytes, bytearray)):
+            self = tuple.__new__(cls, x[::-1] if be else x)
+            self._radix = 256
+            self._integer = int.from_bytes(x, 'big' if be else 'little', signed=negative)
+
+        elif isinstance(x, (tuple, list)):
             bits = (i for i in x if i < 0 or i % 1 != 0)
             if tuple(bits):
                 raise ValueError(
