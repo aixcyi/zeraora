@@ -344,6 +344,11 @@ class ItemsMeta(enum.EnumMeta):
 
     @property
     def choices(cls):
+        if 'label' not in cls.__properties__:
+            raise AttributeError(
+                '如需使用 .choices 属性，必须在 __properties__ 中'
+                '添加一个名为 "label" 的属性，且必须保证枚举值中有相应的属性值。'
+            )
         empty = [(None, cls.__empty__)] if hasattr(cls, "__empty__") else []
         return empty + [(member.value, member.label) for member in cls]
 
