@@ -8,10 +8,10 @@
 ## 工具类
 
 - [`BearTimer()`](./zeraora/BearTimer.md)，对代码运行进行计时，并打印时间和提示。
-
-## Mixin
-
 - [`ReprMixin()`](./zeraora/ReprMixin.md)，用最小改动来生成通用representation的工具类。
+
+## 优化／增强
+
 - `djangobase.EasyViewSetMixin()`，提供两个方法来简化 `ViewSetMixin.as_view()` 的传参。
 - `djangobase.SoftDeleteModelMixin()`，将一个模型实例标记为已删除（软删除）。
 
@@ -20,15 +20,12 @@
 - [`OnionObject()`](./zeraora/OnionObject.md)，将字典构造为对象，使得可以用点分法代替下标访问内容。
 - `RadixInteger()`，一个以元组表述各个数位的 N 进制整数。
 - 枚举相关
+  - [`ChoicesMeta()`](https://docs.djangoproject.com/zh-hans/4.2/ref/models/fields/#enumeration-types)，创建带有标题的枚举的类。摘录自[Django 4.2.x](https://github.com/django/django/blob/stable/4.2.x/django/db/models/enums.py)。
   - [`Choices()`](https://docs.djangoproject.com/zh-hans/4.2/ref/models/fields/#enumeration-types)，带有标题的枚举。摘录自[Django 4.2.x](https://github.com/django/django/blob/stable/4.2.x/django/db/models/enums.py)。
   - [`TextChoices()`](https://docs.djangoproject.com/zh-hans/4.2/ref/models/fields/#enumeration-types)，值是字符串的、带有标题的枚举。摘录自[Django 4.2.x](https://github.com/django/django/blob/stable/4.2.x/django/db/models/enums.py)。
   - [`IntegerChoices()`](https://docs.djangoproject.com/zh-hans/4.2/ref/models/fields/#enumeration-types)，值是整数的、带有标题的枚举。摘录自[Django 4.2.x](https://github.com/django/django/blob/stable/4.2.x/django/db/models/enums.py)。
+  - `ItemsMeta()`，创建带有任意属性的枚举的类。
   - `Items()`，每个值都带有任意属性的枚举。
-
-## 元类
-
-- [`ChoicesMeta()`](https://docs.djangoproject.com/zh-hans/4.2/ref/models/fields/#enumeration-types)，创建带有标题的枚举的类。摘录自[Django 4.2.x](https://github.com/django/django/blob/stable/4.2.x/django/db/models/enums.py)。
-- `ItemsMeta()`，创建带有任意属性的枚举的类。
 
 ## 转换器
 
