@@ -39,8 +39,8 @@ from .utils import (
     ReprMixin,
 )
 
-__version__ = (0, 2, 10)
-version = '0.2.10'
+__version__ = (0, 2, 11)
+version = '0.2.11'
 
 # 概念与Python一致，参见 https://devguide.python.org/versions/
 status = 'feature'

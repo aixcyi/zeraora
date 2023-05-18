@@ -112,7 +112,7 @@ class OnionObject(object):
 class RadixInteger(Tuple[int, ...]):
 
     def __new__(cls,
-                x: Union[int, Tuple[int, ...], List[int, ...], bytes, bytearray],
+                x: Union[int, Tuple[int, ...], List[int], bytes, bytearray],
                 n: int,
                 be=False,
                 negative=False) -> 'RadixInteger':
@@ -150,12 +150,9 @@ class RadixInteger(Tuple[int, ...]):
             self._integer = int.from_bytes(x, 'big' if be else 'little', signed=negative)
 
         elif isinstance(x, (tuple, list)):
-            bits = (i for i in x if i < 0 or i % 1 != 0)
-            if tuple(bits):
-                raise ValueError(
-                    'x 只能包含非负整数。'
-                )
-            radix = max(bits)
+            if min(x) < 0:
+                raise ValueError('x 只能包含非负整数。')
+            radix = max(x)
             if not radix <= n:
                 raise ValueError(
                     f'x 的进位制最低是 {radix}，高于给定的 {n} 。'
