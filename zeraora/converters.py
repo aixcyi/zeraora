@@ -160,11 +160,22 @@ def safecast(mapper: Callable, raw, *errs: Throwable, default=None) -> Any:
 
 class SafeCaster:
 
-    def __init__(self, *exceptions: Throwable):
+    def __init__(self, raw: Any = UNSET):
         """
-        创建一个安全转换器。
+        创建一个安全转换器，用于转换某个值而不发生特定异常。若不提供初值，则第一个转换器也必须允许无参调用。
+        """
+        self._value = raw
+        self._default = None
+        self._converters = tuple()
+        self._exceptions = tuple()
 
-        :param exceptions: 可能发生的异常。应当提供可被 except 语句接受的值。
+    def __call__(self, raw: Any = UNSET) -> 'SafeCaster':
+        self._value = raw
+        return self
+
+    def catch(self, *exceptions: Throwable) -> 'SafeCaster':
+        """
+        置入需要捕获的异常。应当提供可被 except 语句接受的值。
         """
         self._exceptions = tuple(
             exc for exc in exceptions
@@ -172,25 +183,31 @@ class SafeCaster:
             and issubclass(exc, BaseException)
             or isinstance(exc, BaseException)
         )
+        return self
 
-    def __call__(self, raw: Any = UNSET, *mappers: Callable, default=None):
+    def by(self, *mappers: Callable) -> 'SafeCaster':
         """
-        转换一个值，转换失败时返回默认值，确保不会发生预先定义好的异常。
+        置入转换器。若未提供初值，则第一个转换器也必须允许无参调用。
+        """
+        self._converters = tuple(
+            mapper for mapper in mappers
+            if callable(mapper)
+        )
+        return self
 
-        :param raw: 被转换的值。
-        :param mappers: 用来转换raw的转换器。如果某个转换器不可调用，将不会执行这个转换。
-        :param default: 默认值。
-        :return: 转换后的结果，或默认值。
+    def get(self, default=None) -> Any:
         """
-        if len(mappers) <= 0:
+        执行转换并返回转换结果。若触发置入的异常或没有置入转换器则返回默认值；若触发未被置入的异常将原样抛出。
+        """
+        if len(self._converters) <= 0:
             return default
 
-        if raw is UNSET:
-            result = mappers[0]()
-            converters = mappers[1:]
+        if self._value is UNSET:
+            result = self._converters[0]()
+            converters = self._converters[1:]
         else:
-            result = raw
-            converters = mappers
+            result = self._value
+            converters = self._converters
 
         try:
             for converter in converters:
@@ -200,4 +217,4 @@ class SafeCaster:
             return default
 
 
-safecasts = SafeCaster(TypeError, ValueError, KeyboardInterrupt)
+safecasts = SafeCaster().catch(TypeError, ValueError, KeyboardInterrupt)

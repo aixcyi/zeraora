@@ -4,6 +4,29 @@
 
 ## v0.2
 
+### unreleased
+
+- `SafeCast` 从函数式调用改为链式调用。
+
+旧版调用方式：
+
+```Python
+from zeraora import SafeCaster
+
+caster = SafeCaster(TypeError, ValueError)
+value = caster("3.14", float, round, default=None)
+print(value)  # 3
+```
+
+新调用方式：
+
+```Python
+from zeraora import SafeCaster
+
+value = SafeCaster("3.14").catch(TypeError, ValueError).by(float, round).get(default=None)
+print(value)  # 3
+```
+
 ### 0.2.11（2023-5-18）
 
 - 紧急修复 0.2.10 中 `RadixInteger` 的类型标注错误，该错误会导致引入了Zeraora的项目都无法启动。
