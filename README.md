@@ -17,10 +17,10 @@
 - 支持with、注解和实例化三种方式调用的计时器 [`BearTimer`](https://github.com/aixcyi/zeraora/blob/master/docs/zeraora/BearTimer.md) ；
 - 生成通用representation方便调试时查看对象内部信息的 [`ReprMixin`](https://github.com/aixcyi/zeraora/blob/master/docs/zeraora/ReprMixin.md) ；
 - 将字典的任意层级递归转化为对象，以便支持点分法访问数据的 [`OnionObject`](https://github.com/aixcyi/zeraora/blob/master/docs/zeraora/OnionObject.md) ；
-- 安全转换的 `casting()` 和链式调用安全转换的 `Cast` ；
+- 受 Django 的 `Choices` 启发的、可为枚举添加任意属性的 `Items` ；
 - 用以简化 `.as_view()` 传参的 `EasyViewSetMixin` ；
 - 仿照 `DestroyModelMixin` 实现的 `SoftDeleteModelMixin` ；
-- 受 Django 的 `Choices` 启发的、可为枚举添加任意属性的 `Items` ；
+- 安全转换快捷函数 `safecast()` 和链式调用安全转换的 `SafeCast` ；
 - 不强制依赖任何非[标准库](https://docs.python.org/zh-cn/3/library/index.html)；
 - 更多……
 
