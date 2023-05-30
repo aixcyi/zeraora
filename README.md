@@ -46,13 +46,23 @@ pip install zeraora -i http://pypi.mirrors.ustc.edu.cn/simple/
 
 ## 文档
 
-部分文档以Markdown格式存放在docs目录下，查看该目录下的 [README.md](https://github.com/aixcyi/zeraora/blob/master/docs/README.md) 可以浏览全局公开符号的索引。
+见[全局符号索引](https://github.com/aixcyi/zeraora/blob/master/docs/README.md)（Markdown格式）或源码中的[类型标注](https://docs.python.org/zh-cn/3/glossary.html#term-type-hint)和[文档字符串](https://docs.python.org/zh-cn/3/glossary.html#term-docstring)（[reStructuredText](https://zh.wikipedia.org/wiki/ReStructuredText)格式）。
 
-源代码多数附带[类型标注](https://docs.python.org/zh-cn/3/glossary.html#term-type-hint)和[文档字符串](https://docs.python.org/zh-cn/3/glossary.html#term-docstring)（[reStructuredText](https://zh.wikipedia.org/wiki/ReStructuredText)格式），文档未尽事宜请移步源代码浏览。
+## 版本
+
+|        | 状态[^1] | 安全版本[^2] | 最新版本 | 最后支持 | 兼容[^3]    |
+| ------ | -------- | ------------ | -------- | -------- | ----------- |
+| v0.3.x | 🆕feature | 未发布       | 未发布   | -        | Python 3.7+ |
+| v0.2.x | ✅bugfix  | v0.2.12      | v0.2.12  | 长期     | Python 3.7+ |
+| v0.1.x | ❌EOL     | v0.1.1       | v0.1.1   | 不再支持 | Python 3.7+ |
+
+[^1]: 概念参见[Python版本状态](https://devguide.python.org/versions/)。
+[^2]: 指这个版本开始从prerelease转为bugfix，不再包含不兼容改动。
+[^3]: 指Python版本需要大于或等于某个版本。
 
 ## 兼容性
 
-高情商：[Python 3.7](https://docs.python.org/zh-cn/3/whatsnew/3.7.html#summary-release-highlights) 是本项目开始时的最后一个[安全版本](https://devguide.python.org/versions/)，因而将该版本定为兼容下限。  
+高情商：[Python 3.7](https://docs.python.org/zh-cn/3/whatsnew/3.7.html#summary-release-highlights) 是本项目开始时的最后一个安全版本，因而将该版本定为兼容下限。  
 低情商：这是我接触过的最低运行版本。
 
 ~~项目会尽力保证向后兼容性，但还是~~建议在requirements中写明特定的版本号，避免因为版本更新或回退而出现棘手的错误。

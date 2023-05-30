@@ -79,4 +79,3 @@
 - `charsets.UPPERS_SAFE`
 - `__version__`，一个元组。表示Zeraora的版本。
 - `version`，一个字符串。表示Zeraora的版本。
-- `status`，一个字符串。表示Zeraora该版本所属状态。
