@@ -147,7 +147,11 @@ class RadixInteger(Tuple[int, ...]):
         elif isinstance(x, (bytes, bytearray)):
             self = tuple.__new__(cls, x[::-1] if be else x)
             self._radix = 256
-            self._integer = int.from_bytes(x, 'big' if be else 'little', signed=negative)
+            self._integer = (
+                int.from_bytes(x, 'big', signed=negative)
+                if be else
+                int.from_bytes(x, 'little', signed=negative)
+            )
 
         elif isinstance(x, (tuple, list)):
             if min(x) < 0:
