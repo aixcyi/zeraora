@@ -2,12 +2,49 @@ from typing import Any, Dict
 
 try:
     from django.utils.decorators import classonlymethod
+    from django.db import models
     from rest_framework import status
     from rest_framework.response import Response
     from rest_framework.viewsets import ViewSetMixin
 except ImportError:
     print('需要安装Django以及DRF框架：pip install django djangorestframework')
     raise
+
+
+class CreateTimeMixin(models.Model):
+    """
+    附加一个用于记录创建时间的字段 ``created_at`` 。
+
+    - ``created_at`` 记录的是第一次创建对象时的日期和时间。
+    """
+    created_at = models.DateTimeField('创建时间', auto_now_add=True)
+
+    class Meta:
+        abstract = True
+
+
+class TimeMixin(models.Model):
+    """
+    附加一个记录创建时间的字段 ``created_at`` 和一个记录修改时间的字段 ``updated_at`` 。
+
+    - ``created_at`` 记录的是第一次创建对象时的日期和时间。
+    - ``updated_at`` 记录的是每次保存对象时的日期和时间。仅当调用 ``Model.save()`` 时被更新。
+    """
+    created_at = models.DateTimeField('创建时间', auto_now_add=True)
+    updated_at = models.DateTimeField('修改时间', auto_now=True)
+
+    class Meta:
+        abstract = True
+
+
+class DeletionMixin(models.Model):
+    """
+    附加一个用于标记删除的字段 ``deleted`` ，默认为 ``False`` ，当为 ``True`` 时表示已被标记删除。
+    """
+    deleted = models.BooleanField(default=False, blank=True)
+
+    class Meta:
+        abstract = True
 
 
 class EasyViewSetMixin(ViewSetMixin):

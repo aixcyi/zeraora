@@ -12,8 +12,14 @@
 
 ## 优化／增强
 
-- `djangobase.EasyViewSetMixin()`，提供两个方法来简化 `ViewSetMixin.as_view()` 的传参。
-- `djangobase.SoftDeleteModelMixin()`，将一个模型实例标记为已删除（软删除）。
+- ORM模型
+  - `djangobase.CreateTimeMixin()`，附加一个创建时间字段。
+  - `djangobase.DeletionMixin()`，附加一个标记删除字段。
+  - `djangobase.TimeMixin()`，附加一个创建时间和一个修改时间字段。
+
+- 视图类
+  - `djangobase.EasyViewSetMixin()`，提供两个方法来简化 `ViewSetMixin.as_view()` 的传参。
+  - `djangobase.SoftDeleteModelMixin()`，将一个模型实例标记为已删除（软删除）。
 
 ## 数据类型
 

@@ -39,8 +39,8 @@ from .utils import (
     ReprMixin,
 )
 
-__version__ = (0, 2, 12)
-version = '0.2.12'
+__version__ = (0, 2, 13)
+version = '0.2.13'
 
 # Django makemigrations 会在 CreateModel 里插入参数
 # bases=(zeraora.utils.ReprMixin, models.Model)
