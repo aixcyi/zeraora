@@ -1,8 +1,10 @@
-from .mixins import (
+from .models import (
     SnakeModel,
     CreateTimeMixin,
     TimeMixin,
     DeletionMixin,
+)
+from .viewsets import (
     EasyViewSetMixin,
     SoftDeleteModelMixin,
 )

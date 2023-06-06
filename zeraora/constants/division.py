@@ -1,11 +1,11 @@
 """
-中国行政区划相关。
+省级行政区划相关。
 """
 
-from .typeclasses import IntegerChoices, Items
+from ..typeclasses import Items
 
 
-class Region(IntegerChoices):
+class Region(int, Items):
     NORTH = 1, '华北'
     NORTHEAST = 2, '东北'
     EAST = 3, '华东'
@@ -13,6 +13,12 @@ class Region(IntegerChoices):
     SOUTHWEST = 5, '西南'
     NORTHWEST = 6, '西北'
     HMT = 0, '港澳台'
+
+    __properties__ = 'label',
+
+    @property
+    def label(self) -> str:
+        return self._label_
 
 
 class Province(Items):
@@ -97,4 +103,4 @@ class Province(Items):
         return self.value[0].ljust(12, '0')
 
     def __int__(self) -> int:
-        return self._numeric__
+        return self._numeric_

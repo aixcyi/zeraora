@@ -12,7 +12,7 @@
     <i>An utility Python package supports for my personal and company projects</i>
 </div>
 
-## 特点
+## 特性
 
 - 支持with、注解和实例化三种方式调用的计时器 [`BearTimer`](https://github.com/aixcyi/zeraora/blob/master/docs/zeraora/BearTimer.md) ；
 - 生成通用representation方便调试时查看对象内部信息的 [`ReprMixin`](https://github.com/aixcyi/zeraora/blob/master/docs/zeraora/ReprMixin.md) ；
@@ -46,24 +46,40 @@ pip install zeraora -i http://pypi.mirrors.ustc.edu.cn/simple/
 
 ## 文档
 
-见[全局符号索引](https://github.com/aixcyi/zeraora/blob/master/docs/README.md)（Markdown格式）或源码中的[类型标注](https://docs.python.org/zh-cn/3/glossary.html#term-type-hint)和[文档字符串](https://docs.python.org/zh-cn/3/glossary.html#term-docstring)（[reStructuredText](https://zh.wikipedia.org/wiki/ReStructuredText)格式）。
+见[全局符号索引](https://github.com/aixcyi/zeraora/blob/master/docs/README.md)或源码中的[类型标注](https://docs.python.org/zh-cn/3/glossary.html#term-type-hint)和[reStructuredText](https://zh.wikipedia.org/wiki/ReStructuredText)格式的[文档字符串](https://docs.python.org/zh-cn/3/glossary.html#term-docstring)。
 
 ## 版本
 
-|        | 状态[^1] | 安全版本[^2] | 最新版本 | 最后支持 | 兼容[^3]    |
-| ------ | -------- | ------------ | -------- | -------- | ----------- |
-| v0.3.x | 🆕feature | 未发布       | 未发布   | -        | Python 3.7+ |
-| v0.2.x | ✅bugfix  | v0.2.12      | v0.2.12  | 长期     | Python 3.7+ |
-| v0.1.x | ❌EOL     | v0.1.1       | v0.1.1   | 不再支持 | Python 3.7+ |
+|      | 状态[^1] | 支持时间 | 兼容   | 依赖              |
+| ---- | -------- | -------- | ------ | ----------------- |
+| v0.3 | 🆕feature | 长期     | -      | Python 3.7 或更新 |
+| v0.2 | ✅bugfix  | 长期     | v0.1.x | Python 3.7 或更新 |
+| v0.1 | ❌EOL     | 不再支持 | -      | Python 3.7 或更新 |
 
-[^1]: 概念参见[Python版本状态](https://devguide.python.org/versions/)。
-[^2]: 指这个版本开始从prerelease转为bugfix，不再包含不兼容改动。
-[^3]: 指Python版本需要大于或等于某个版本。
+[^1]: 概念参见[Python版本状态](https://devguide.python.org/versions/#status-key)。
 
-## 兼容性
+## 内部架构
 
-高情商：[Python 3.7](https://docs.python.org/zh-cn/3/whatsnew/3.7.html#summary-release-highlights) 是本项目开始时的最后一个安全版本，因而将该版本定为兼容下限。  
-低情商：这是我接触过的最低运行版本。
+对于不依赖任何第三方库的符号，按照功能划分内部包，但会统一公开在 `zeraora` 这个顶层包中。  
+对于依赖第三方库的符号，会以依赖库为包名划分一级公开包，然后按照功能划分二级内部包，最后统一公开在上一级包中。  
+统一存放是为了规避内部包结构改动带来的影响。
 
-~~项目会尽力保证向后兼容性，但还是~~建议在requirements中写明特定的版本号，避免因为版本更新或回退而出现棘手的错误。
+对外公开的包结构如下：
 
+- `zeraora`
+  - `constants`
+  - `djangobase`
+
+实际文件结构大致如下：
+
+- `zeraora`
+  - `constants`
+    - `charsets`
+    - `division`
+  - `djangobase`
+    - `models`
+    - `viewsets`
+- `converters`
+- `generators`
+- `utils`
+- ……

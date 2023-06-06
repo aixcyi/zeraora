@@ -1,9 +1,25 @@
 # Zeraora Index
 
-> 按用途分类。
->
-> - `djangobase` 模块主要存放一些基于[Django](https://pypi.org/project/Django/)的扩展。
-> - `charsets` 模块主要存放一些常见常用的字符集。
+#### 食用指南
+
+- 列出的符号是在 `from zeraora import (*)` 的情形下的表述，譬如以下示例中的 `BearTimer` 和 `djangobase.SoftDeleteModelMixin`
+
+但这只是**表述方式**，实际上可以通过任何方式来导入，不必拘泥于此。
+
+```Python
+from rest_framework.generics import GenericAPIView
+from zeraora import BearTimer, djangobase
+
+@BearTimer()
+class AccountView(djangobase.SoftDeleteModelMixin,
+                  GenericAPIView):
+    pass
+```
+
+#### 可食用子包
+
+- `djangobase`，包含对 Django 及 DRF 的增强。
+- `constants`，包含常量及枚举。
 
 ## 工具类
 
@@ -26,13 +42,8 @@
 
 - [`OnionObject()`](./zeraora/OnionObject.md)，将字典构造为对象，使得可以用点分法代替下标访问内容。
 - `RadixInteger()`，一个以元组表述各个数位的 N 进制整数。
-- 枚举相关
-  - [`ChoicesMeta()`](https://docs.djangoproject.com/zh-hans/4.2/ref/models/fields/#enumeration-types)，创建带有标题的枚举的类。摘录自[Django 4.2.x](https://github.com/django/django/blob/stable/4.2.x/django/db/models/enums.py)。
-  - [`Choices()`](https://docs.djangoproject.com/zh-hans/4.2/ref/models/fields/#enumeration-types)，带有标题的枚举。摘录自[Django 4.2.x](https://github.com/django/django/blob/stable/4.2.x/django/db/models/enums.py)。
-  - [`TextChoices()`](https://docs.djangoproject.com/zh-hans/4.2/ref/models/fields/#enumeration-types)，值是字符串的、带有标题的枚举。摘录自[Django 4.2.x](https://github.com/django/django/blob/stable/4.2.x/django/db/models/enums.py)。
-  - [`IntegerChoices()`](https://docs.djangoproject.com/zh-hans/4.2/ref/models/fields/#enumeration-types)，值是整数的、带有标题的枚举。摘录自[Django 4.2.x](https://github.com/django/django/blob/stable/4.2.x/django/db/models/enums.py)。
-  - `ItemsMeta()`，创建带有任意属性的枚举的类。
-  - `Items()`，每个值都带有任意属性的枚举。
+- `ItemsMeta()`，创建带有任意属性的枚举的类。
+- `Items()`，每个值都带有任意属性的枚举。
 
 ## 转换器
 
@@ -63,8 +74,8 @@
 
 ## 常量／枚举
 
-- `Region`，一个枚举。包含中国的大区。
-- `Province`，一个枚举。包含中国省级行政区名称、区划代码、字母码、大区、简称、缩写。
+- `charsets.Region`，一个枚举。包含用于划分省级行政区的大区。
+- `charsets.Province`，一个枚举。包含34个省级行政区名称、区划代码、字母码、大区、简称、缩写。
 - `charsets.BASE8`
 - `charsets.BASE16`
 - `charsets.BASE36`

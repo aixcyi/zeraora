@@ -5,7 +5,7 @@ import os
 from random import getrandbits
 from time import time
 
-from .charsets import BASE62, BASE64
+from .constants.charsets import BASE62, BASE64
 
 
 def randbytes(n: int) -> bytes:

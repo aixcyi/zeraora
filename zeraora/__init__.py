@@ -12,10 +12,6 @@ from .converters import (
     safecast,
     safecasts,
 )
-from .divisions import (
-    Region,
-    Province,
-)
 from .generators import (
     randbytes,
     randb62,
@@ -27,10 +23,6 @@ from .generators import (
 from .typeclasses import (
     OnionObject,
     RadixInteger,
-    ChoicesMeta,
-    Choices,
-    IntegerChoices,
-    TextChoices,
     ItemsMeta,
     Items,
 )
