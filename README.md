@@ -68,7 +68,8 @@ pip install zeraora -i http://pypi.mirrors.ustc.edu.cn/simple/
 
 - `zeraora`
   - `constants`
-  - `djangobase`
+  - `dj`
+  - `drf`
 
 实际文件结构大致如下：
 
@@ -76,9 +77,12 @@ pip install zeraora -i http://pypi.mirrors.ustc.edu.cn/simple/
   - `constants`
     - `charsets`
     - `division`
-  - `djangobase`
+  - `dj`
     - `models`
+    - ……
+  - `drf`
     - `viewsets`
+    - ……
 - `converters`
 - `generators`
 - `utils`

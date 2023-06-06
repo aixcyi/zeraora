@@ -2,23 +2,25 @@
 
 #### 食用指南
 
-- 列出的符号是在 `from zeraora import (*)` 的情形下的表述，譬如以下示例中的 `BearTimer` 和 `djangobase.SoftDeleteModelMixin`
+- 列出的符号是在 `from zeraora import (*)` 的情形下的表述，譬如以下示例中的 `BearTimer` 和 `drf.SoftDeleteModelMixin`
 
 但这只是**表述方式**，实际上可以通过任何方式来导入，不必拘泥于此。
 
 ```Python
 from rest_framework.generics import GenericAPIView
-from zeraora import BearTimer, djangobase
+from zeraora import BearTimer, drf
+
 
 @BearTimer()
-class AccountView(djangobase.SoftDeleteModelMixin,
+class AccountView(drf.SoftDeleteModelMixin,
                   GenericAPIView):
-    pass
+  pass
 ```
 
 #### 可食用子包
 
-- `djangobase`，包含对 Django 及 DRF 的增强。
+- `dj`，包含对 Django 的增强。
+- `drf`，包含对 Django REST Framework 的增强。
 - `constants`，包含常量及枚举。
 
 ## 工具类
@@ -29,14 +31,14 @@ class AccountView(djangobase.SoftDeleteModelMixin,
 ## 优化／增强
 
 - ORM模型
-  - `djangobase.SnakeModel`，一个元类，为模型生成一个下划线小写的（蛇形）数据表名。
-  - `djangobase.CreateTimeMixin`，附加一个创建时间字段。
-  - `djangobase.DeletionMixin`，附加一个标记删除字段。
-  - `djangobase.TimeMixin`，附加一个创建时间和一个修改时间字段。
+  - `dj.SnakeModel`，一个元类，为模型生成一个下划线小写的（蛇形）数据表名。
+  - `dj.CreateTimeMixin`，附加一个创建时间字段。
+  - `dj.DeletionMixin`，附加一个标记删除字段。
+  - `dj.TimeMixin`，附加一个创建时间和一个修改时间字段。
   
 - 视图类
-  - `djangobase.EasyViewSetMixin`，提供两个方法来简化 `ViewSetMixin.as_view()` 的传参。
-  - `djangobase.SoftDeleteModelMixin`，将一个模型实例标记为已删除（软删除）。
+  - `drf.EasyViewSetMixin`，提供两个方法来简化 `ViewSetMixin.as_view()` 的传参。
+  - `drf.SoftDeleteModelMixin`，将一个模型实例标记为已删除（软删除）。
 
 ## 数据类型
 
