@@ -1,7 +1,7 @@
 from decimal import Decimal
 
 from tests.base_test_case import BaseTestCase
-from zeraora import OnionObject, RadixInteger
+from zeraora.typeclasses import OnionObject, RadixInteger
 
 
 class TypeclassesTest(BaseTestCase):

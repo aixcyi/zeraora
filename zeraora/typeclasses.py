@@ -1,6 +1,12 @@
 """
-数据类型类、枚举类、别名等。
+类型包。包含数据类型类、枚举类、枚举元类、类型别名等。
 """
+
+__all__ = [
+    'Throwable', 'UNSET', 'OnionObject', 'RadixInteger',
+    'ItemsMeta', 'Items',
+]
+
 import enum
 from typing import Type, Union, Tuple, Dict, List
 

@@ -3,7 +3,7 @@ from random import random
 from time import sleep
 
 from tests.base_test_case import BaseTestCase
-from zeraora import ReprMixin, BearTimer
+from zeraora.utils import ReprMixin, BearTimer
 
 SUBJECT_CATEGORY = {
     1: '工学', 8: '经济学',

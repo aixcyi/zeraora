@@ -1,6 +1,14 @@
 """
 用于将一种值转换为另一种值的转换器。
 """
+
+__all__ = [
+    'delta2hms', 'delta2ms', 'delta2s',
+    'represent', 'datasize', 'dsz', 'true',
+    'SafeCaster', 'safecast', 'safecasts',
+    'remove_exponent',
+]
+
 import re
 from datetime import timedelta, datetime, date
 from decimal import Decimal
@@ -117,6 +125,9 @@ def datasize(literal: str) -> Union[int, float]:
     power = (power / 8) if 'b' in result.group(3) else power
 
     return base * power
+
+
+dsz = datasize
 
 
 def true(value) -> bool:
