@@ -64,7 +64,7 @@ def delta2s(delta: timedelta) -> float:
     return delta.seconds + delta.microseconds / 1000000
 
 
-def represent(value) -> str:
+def represent(value: Any) -> str:
     """
     将任意值转换为一个易于阅读的字符串。
 
@@ -75,7 +75,9 @@ def represent(value) -> str:
     :param value: 任意值。
     :return: 字符串。
     """
-    if isinstance(value, str):
+    if hasattr(value, 'label'):  # 兼容像 Django 的 Choices 那样的枚举
+        return value.label
+    elif isinstance(value, str):
         return f'"{value}"'
     elif isinstance(value, timedelta):
         return f'[{value.days}d+{value.seconds}.{value.microseconds:06d}s]'
