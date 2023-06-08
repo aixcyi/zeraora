@@ -40,7 +40,7 @@ class SnakeModel(models.base.ModelBase):
 
         app_name = app_config.label
 
-        model_name = re.sub(r'[A-Z]', (lambda s: f'_{s.group(0).lower()}'), name, re.I)
+        model_name = re.sub(r'[A-Z]', (lambda s: f'_{s.group(0).lower()}'), name)
         model_name = model_name[1:] if model_name.startswith('_') else model_name
 
         table_name = f'{app_name}_{model_name}'
