@@ -9,7 +9,7 @@
 计时开始和停止时都且只会各自打印一条消息，计时开始后可以使用 `.step()` 方法打印需要的消息。
 
 ```Python
-from zeraora import BearTimer
+from zeraora.utils import BearTimer
 
 with BearTimer() as bear:
     summary = 0
@@ -39,7 +39,7 @@ fmt = '[{head:%H:%M:%S.%f}] [{level}] [{title}] [{total:.6f} +{delta:.6f}]: {msg
 不同对象的计时是相互独立的。某一个对象的计时的启停不会影响到其它对象。
 
 ```Python
-from zeraora import BearTimer
+from zeraora.utils import BearTimer
 
 bear = BearTimer()
 

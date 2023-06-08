@@ -38,7 +38,7 @@ data = {
 将字典转化为嵌套对象：
 
 ```Python
-from zeraora import OnionObject
+from zeraora.typeclasses import OnionObject
 
 resp = OnionObject(data)
 print(resp.code == 0)  # True
@@ -52,7 +52,7 @@ print(resp.data.goods[1].img_url)
 仅转化字典第一层：
 
 ```Python
-from zeraora import OnionObject
+from zeraora.typeclasses import OnionObject
 
 resp = OnionObject(data, depth=1)
 print(resp.code == 0)  # True
@@ -66,7 +66,7 @@ print(resp.data['goods'][1]['img_url'])
 转化字典的前两层：
 
 ```Python
-from zeraora import OnionObject
+from zeraora.typeclasses import OnionObject
 
 resp = OnionObject(data, depth=2)
 print(resp.code == 0)  # True
@@ -82,7 +82,7 @@ print(resp.data.goods[1]['img_url'])
 ```Python
 import requests
 from typing import Union, Any
-from zeraora import OnionObject
+from zeraora.typeclasses import OnionObject
 
 class PlatformResponse(OnionObject):
     code: int
