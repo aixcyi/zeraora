@@ -15,16 +15,21 @@ class SnakeModel(models.base.ModelBase):
     """
     自动生成一个下划线小写的（蛇形）数据表名。
 
-    >>> class Meta:
+    >>> class YourModel(models.Model,
+    >>>                 metaclass=SnakeModel):
+    >>>     # 字段声明...
     >>>
-    >>>     # SnakeModel 生成的格式
-    >>>     db_table = "{app_name}_{snake_model_name}"
+    >>>     class Meta:
+    >>>         # SnakeModel的生成格式
+    >>>         db_table = "{app}_{snake_model_name}"
     >>>
-    >>>     # Django 生成的格式
-    >>>     # db_table = "{app_name}_{lowermodelname}"
+    >>>         # Django的生成格式
+    >>>         # db_table = "{app}_{lowermodelname}"
 
     - 不会覆盖已经指定了的表名。
     - 可以用于抽象模型中，但只会为继承了抽象模型的非抽象模型生成表名。
+
+    适用于：``django.db.models.Model`` 的子类
     """
 
     def __new__(cls, name, bases, attrs, **kwargs):
@@ -52,9 +57,11 @@ class SnakeModel(models.base.ModelBase):
 
 class CreateTimeMixin(models.Model):
     """
-    附加一个用于记录创建时间的字段 ``created_at`` 。
+    为模型附加以下字段：
 
-    - ``created_at`` 记录的是第一次创建对象时的日期和时间。
+    - ``created_at`` ，只读，记录模型创建时刻（日期+时间）。
+
+    适用于：``django.db.models.Model`` 的子类
     """
     created_at = models.DateTimeField('创建时间', auto_now_add=True)
 
@@ -64,10 +71,12 @@ class CreateTimeMixin(models.Model):
 
 class TimeMixin(models.Model):
     """
-    附加一个记录创建时间的字段 ``created_at`` 和一个记录修改时间的字段 ``updated_at`` 。
+    为模型附加以下字段：
 
-    - ``created_at`` 记录的是第一次创建对象时的日期和时间。
-    - ``updated_at`` 记录的是每次保存对象时的日期和时间。仅当调用 ``Model.save()`` 时被更新。
+    - ``created_at`` ，只读，记录模型创建时刻（日期+时间）。
+    - ``updated_at`` ，记录模型修改时刻（日期+时间），仅当 ``Model.save()`` 被调用时被自动设置。
+
+    适用于：``django.db.models.Model`` 的子类
     """
     created_at = models.DateTimeField('创建时间', auto_now_add=True)
     updated_at = models.DateTimeField('修改时间', auto_now=True)
@@ -78,7 +87,11 @@ class TimeMixin(models.Model):
 
 class DeletionMixin(models.Model):
     """
-    附加一个用于标记删除的字段 ``deleted`` ，默认为 ``False`` ，当为 ``True`` 时表示已被标记删除。
+    为模型附加以下字段：
+
+    - ``deleted`` ，用于标记删除状态。默认为 ``False`` ，当被设置为 ``True`` 时表示被标记为已删除。
+
+    适用于：``django.db.models.Model`` 的子类
     """
     deleted = models.BooleanField(default=False, blank=True)
 

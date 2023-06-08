@@ -1,7 +1,7 @@
 <h1 align="center" style="padding-top: 32px">Zeraora</h1>
 
 <div align="center">
-    <a href="https://docs.python.org/zh-cn/3/whatsnew/index.html"><img src="https://img.shields.io/badge/Python-3.7%20%2B-blue.svg?logo=python&logoColor=yellow"></a>
+    <a href="https://docs.python.org/zh-cn/3/whatsnew/index.html"><img src="https://img.shields.io/pypi/pyversions/zeraora?label=Python&logo=python&logoColor=yellow"></a>
     <a href="https://en.wikipedia.org/wiki/MIT_License"><img src="https://img.shields.io/badge/License-MIT-purple.svg"></a>
     <a href="https://pypi.org/project/Zeraora/"><img src="https://img.shields.io/pypi/v/zeraora?color=darkgreen&label=PyPI"></a>
     <a href=""><img src="https://img.shields.io/conda/v/conda-forge/zeraora"></a>
@@ -46,7 +46,7 @@ pip install zeraora -i http://pypi.mirrors.ustc.edu.cn/simple/
 
 ## 文档
 
-见[全局符号索引](https://github.com/aixcyi/zeraora/blob/master/docs/README.md)。
+见[全局符号索引](./docs/README.md)。
 
 ## 版本
 

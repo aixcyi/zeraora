@@ -16,6 +16,11 @@ except ImportError:
 class EasyViewSetMixin(ViewSetMixin):
     """
     提供了两个方法来简化 ``.as_view()`` 的传参。
+
+    适用于：
+      - ``rest_framework.viewsets.ViewSet`` 的子类
+      - ``rest_framework.viewsets.GenericViewSet`` 的子类
+      - 需要 ``rest_framework.viewsets.ViewSetMixin`` 的类
     """
 
     @classonlymethod
@@ -81,6 +86,11 @@ class EasyViewSetMixin(ViewSetMixin):
 class SoftDeleteModelMixin:
     """
     将一个模型实例标记为已删除。（软删除）
+
+    - 通过 ``self.deletion_field`` 配置存储标记的字段，默认是 ``deleted``。
+    - 通过 ``self.deletion_mark`` 配置标记是什么，默认是布尔值 ``True`` 。
+
+    适用于：``rest_framework.generics.GenericAPIView`` 的子类
     """
     deletion_field = 'deleted'
     deletion_mark = True
