@@ -97,4 +97,4 @@ class Province(Items):
         return self.value[0].ljust(12, '0')
 
     def __int__(self) -> int:
-        return self._numeric__
+        return self._numeric_
