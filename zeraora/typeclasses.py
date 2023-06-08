@@ -8,9 +8,9 @@ __all__ = [
 ]
 
 import enum
-from typing import Type, Union, Tuple, Dict, List
+import typing as t
 
-Throwable = Union[BaseException, Type[BaseException]]
+Throwable = t.Union[BaseException, t.Type[BaseException]]
 
 
 class UNSET:
@@ -114,10 +114,10 @@ class OnionObject(object):
 
 
 # Little Endian
-class RadixInteger(Tuple[int, ...]):
+class RadixInteger(t.Tuple[int, ...]):
 
     def __new__(cls,
-                x: Union[int, Tuple[int, ...], List[int], bytes, bytearray],
+                x: t.Union[int, t.Tuple[int, ...], t.List[int], bytes, bytearray],
                 n: int,
                 be=False,
                 negative=False) -> 'RadixInteger':
@@ -189,13 +189,13 @@ class RadixInteger(Tuple[int, ...]):
         """对应的以阿拉伯数字表述的十进制整数。"""
         return self._integer
 
-    def map2str(self, mapping: Union[str, Dict[int, str]], be=True) -> str:
+    def map2str(self, mapping: t.Union[str, t.Dict[int, str]], be=True) -> str:
         """
         按照规则将每一位数映射到一个字符串中。
         """
         return ''.join(map(lambda i: mapping[i], self[::-1] if be else self))
 
-    def map2bytes(self, mapping: Union[bytes, Dict[int, bytes]], be=True) -> bytes:
+    def map2bytes(self, mapping: t.Union[bytes, t.Dict[int, bytes]], be=True) -> bytes:
         """
         按照规则将每一位数映射到一个字节串中。
         """
@@ -215,7 +215,7 @@ class ItemsMeta(enum.EnumMeta):
         pks = classdict['__properties__']
         if not isinstance(pks, (tuple, list)):
             raise TypeError(
-                f'{classname}.__properties__ 的值只允许是 tuple 或 list 。'
+                f'{classname}.__properties__ 只允许是一个 tuple 或 list 。'
             )
         if not all(isinstance(pk, str) and not pk.startswith('_') for pk in pks):
             raise TypeError(
@@ -257,25 +257,46 @@ class ItemsMeta(enum.EnumMeta):
             return [getattr(member, name[:-2]) for member in cls]
         return object.__getattribute__(cls, name)
 
+    # 对 __empty__ 属性的支持是为了与 Django 的 Choices 相兼容，可参见：
+    # https://docs.djangoproject.com/zh-hans/4.2/ref/models/fields/#enumeration-types
+
     @property
-    def names(cls):
+    def names(cls) -> t.List[str]:
         empty = ["__empty__"] if hasattr(cls, "__empty__") else []
         return empty + [member.name for member in cls]
 
     @property
-    def values(cls):
+    def values(cls) -> list:
         empty = [None] if hasattr(cls, "__empty__") else []
         return empty + [member.value for member in cls]
 
     @property
-    def choices(cls):
+    def items(cls) -> t.Dict[str, t.Any]:
+        its = {"__empty__": None} if hasattr(cls, "__empty__") else {}
+        its.update({member.name: member.value for member in cls})
+        return its
+
+    @property
+    def choices(cls) -> t.List[t.Tuple[t.Union[str, None], t.Any]]:
         if 'label' not in cls.__properties__:
             raise AttributeError(
-                '如需使用 .choices 属性，必须在 __properties__ 中'
+                '使用 .choices 属性前必须在 __properties__ 中'
                 '添加一个名为 "label" 的属性，且必须保证枚举值中有相应的属性值。'
             )
         empty = [(None, cls.__empty__)] if hasattr(cls, "__empty__") else []
         return empty + [(member.value, member.label) for member in cls]
+
+    def value_of(cls, value: str) -> enum.Enum:
+        """
+        将一个枚举值转换为一个枚举。
+
+        :raise ValueError: 在枚举类中没有找到相应的枚举.
+        """
+        if value not in cls._value2member_map_:
+            raise ValueError(
+                f'{cls.__name__} 不存在值为 {value!s} 的枚举。'
+            )
+        return cls._value2member_map_[value]
 
 
 class Items(enum.Enum, metaclass=ItemsMeta):
@@ -284,7 +305,7 @@ class Items(enum.Enum, metaclass=ItemsMeta):
 
     >>> from enum import Enum
     >>>
-    >>> class YearInSchool(Items):
+    >>> class Grade(Items):
     >>>     FRESHMAN = 1, 'FR', 0xE35314, 'Freshman'
     >>>     SOPHOMORE = 2, 'SO', 0xED15B4, 'Sophomore'
     >>>     JUNIOR = 3, 'JR', 0x9B3CED, 'Junior'
@@ -305,20 +326,23 @@ class Items(enum.Enum, metaclass=ItemsMeta):
     >>>     def label(self) -> str:
     >>>         return self._label_
     >>>
-    >>> print(YearInSchool.SENIOR.name)  # 'SENIOR'
-    >>> print(YearInSchool.SENIOR.value)  # 4
-    >>> print(YearInSchool.SENIOR.code)  # 'SR'
-    >>> print(hex(YearInSchool.SENIOR.color))  # '0xa0408e'
-    >>> print(YearInSchool.SENIOR.label)  # 'Senior'
+    >>> print(Grade.SENIOR.name)  # 'SENIOR'
+    >>> print(Grade.SENIOR.value)  # 4
+    >>> print(Grade.SENIOR.code)  # 'SR'
+    >>> print(hex(Grade.SENIOR.color))  # '0xa0408e'
+    >>> print(Grade.SENIOR.label)  # 'Senior'
     >>>
-    >>> print(YearInSchool.names)  # ['FRESHMAN', 'SOPHOMORE', ...]
-    >>> print(YearInSchool.values)  # [1, 2, 3, 4, 5]
-    >>> print(YearInSchool.codes)  # ['FR', 'SO', 'JR', 'SR', 'GR']
-    >>> print(YearInSchool.colors)  # [14897940, 15537588, ...]
-    >>> print(YearInSchool.labels)  # ['Freshman', 'Sophomore', ...]
+    >>> print(Grade.names)  # ['FRESHMAN', 'SOPHOMORE', ...]
+    >>> print(Grade.values)  # [1, 2, 3, 4, 5]
+    >>> print(Grade.codes)  # ['FR', 'SO', 'JR', 'SR', 'GR']
+    >>> print(Grade.colors)  # [14897940, 15537588, ...]
+    >>> print(Grade.labels)  # ['Freshman', 'Sophomore', ...]
     """
+
     __properties__ = ()
 
+    def __str__(self):
+        return str(self.value)
+
     def __repr__(self):
-        # 枚举也算一种常量，直接按路径查找即可，故舍去附加的属性
         return f"{self.__class__.__qualname__}.{self._name_}"
