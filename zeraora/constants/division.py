@@ -2,6 +2,10 @@
 省级行政区划相关。
 """
 
+__all__ = [
+    'Region', 'Province',
+]
+
 from ..typeclasses import Items
 
 

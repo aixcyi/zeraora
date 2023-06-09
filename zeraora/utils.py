@@ -1,6 +1,11 @@
 """
 偏工具属性的类与函数。
 """
+
+__all__ = [
+    'bear_config', 'BearTimer', 'ReprMixin',
+]
+
 import logging
 import sys
 from datetime import datetime

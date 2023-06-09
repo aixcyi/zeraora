@@ -1,6 +1,12 @@
 """
 对 Django REST Framework 视图集（viewset）的增强。
 """
+
+__all__ = [
+    'EasyViewSetMixin',
+    'SoftDeleteModelMixin',
+]
+
 from typing import Any, Dict
 
 try:
