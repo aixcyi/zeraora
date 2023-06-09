@@ -4,5 +4,5 @@
 A utility Python package supports for my personal and company projects.
 """
 
-__version__ = (0, 2, 14)
-version = '0.2.14'
+__version__ = (0, 3, 0)
+version = '0.3.0'

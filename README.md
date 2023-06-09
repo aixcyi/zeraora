@@ -50,11 +50,14 @@ pip install zeraora -i http://pypi.mirrors.ustc.edu.cn/simple/
 
 ## 版本
 
-|      | 状态[^1] | 支持时间 | 兼容   | 依赖              |
-| ---- | -------- | -------- | ------ | ----------------- |
-| v0.3 | 🆕feature | 长期     | -      | Python 3.7 或更新 |
-| v0.2 | ✅bugfix  | 长期     | v0.1.x | Python 3.7 或更新 |
-| v0.1 | ❌EOL     | 不再支持 | -      | Python 3.7 或更新 |
+|      | 状态[^1] | 支持时间 | 依赖              | 备注                                       |
+| ---- | -------- | -------- | ----------------- | ------------------------------------------ |
+| v0.3 | 🆕feature | 长期     | Python 3.7 或更新 | 趋于稳定，但改了包结构，不向下兼容。       |
+| v0.2 | ✅bugfix  | 长期     | Python 3.7 或更新 | 探索包结构，完善核心特性，补充非核心特性。 |
+| v0.1 | ❌EOL     | 不再支持 | Python 3.7 或更新 | 试验自动部署，只有核心特性。               |
 
-[^1]: 概念参见[Python版本状态](https://devguide.python.org/versions/#status-key)。
+[^1]: 概念参见[Python版本状态](https://devguide.python.org/versions/#status-key)，目前只借用了以上三种。
 
+## 计划
+
+- [ ] 打包到conda（未来，未来。）
