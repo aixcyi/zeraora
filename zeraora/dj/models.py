@@ -5,6 +5,7 @@
 __all__ = [
     'SnakeModel', 'CreateTimeMixin',
     'TimeMixin', 'DeletionMixin',
+    'IndexMixin', 'ShortIndexMixin',
 ]
 
 import re
@@ -93,13 +94,72 @@ class TimeMixin(models.Model):
 
 class DeletionMixin(models.Model):
     """
-    为模型附加以下字段：
+    为模型附加以下字段和方法：
 
     - ``deleted`` ，用于标记删除状态。默认为 ``False`` ，当被设置为 ``True`` 时表示被标记为已删除。
+    - ``get_existing_set()`` ，获取未被删除的行，返回一个查询集。
 
     适用于：``django.db.models.Model`` 的子类
     """
     deleted = models.BooleanField(default=False, blank=True)
+
+    @classmethod
+    def get_existing_set(cls, *args, **kwargs) -> models.QuerySet:
+        return cls.objects.all().filter(*args, **kwargs, deleted=False)
+
+    class Meta:
+        abstract = True
+
+
+class IndexMixin(models.Model):
+    """
+    为模型附加以下字段和方法：
+
+    - ``index`` ，用于存放自定义索引（32位有符号整数）。默认值 ``0`` 。
+    - ``get_ordered_set()`` ，获取一个按 ``index`` 字段从大到小排序的查询集。
+    - ``get_reversed_set()`` ，获取一个按 ``index`` 字段从小到大排序的查询集。
+
+    适用于：``django.db.models.Model`` 的子类
+    """
+    index = models.IntegerField(default=0, blank=True)
+
+    @classmethod
+    def get_ordered_set(cls, *args, **kwargs) -> models.QuerySet:
+        """
+        返回一个按 ``index`` 字段 **从大到小** 排序的查询集。
+
+        :param args: 传递给 Model.objects.filter() 的 *args 参数。
+        :param kwargs: 传递给 Model.objects.filter() 的 **kwargs 参数。
+        :return: 对应模型的查询集。
+        """
+        return cls.objects.all().filter(*args, **kwargs).order_by('-index')
+
+    @classmethod
+    def get_reversed_set(cls, *args, **kwargs) -> models.QuerySet:
+        """
+        返回一个按 ``index`` 字段 **从小到大** 排序的查询集。
+
+        :param args: 传递给 Model.objects.filter() 的 *args 参数。
+        :param kwargs: 传递给 Model.objects.filter() 的 **kwargs 参数。
+        :return: 对应模型的查询集。
+        """
+        return cls.objects.all().filter(*args, **kwargs).order_by('index')
+
+    class Meta:
+        abstract = True
+
+
+class ShortIndexMixin(IndexMixin):
+    """
+    为模型附加以下字段和方法：
+
+    - ``index`` ，用于存放自定义索引（16位有符号整数）。默认值 ``0`` 。
+    - ``get_ordered_set()`` ，获取一个按 index 字段从大到小排序的查询集。
+    - ``get_reversed_set()`` ，获取一个按 ``index`` 字段从小到大排序的查询集。
+
+    适用于：``django.db.models.Model`` 的子类
+    """
+    index = models.SmallIntegerField(default=0, blank=True)
 
     class Meta:
         abstract = True

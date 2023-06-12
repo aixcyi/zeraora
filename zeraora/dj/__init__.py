@@ -6,4 +6,6 @@ from .models import (
     CreateTimeMixin,
     TimeMixin,
     DeletionMixin,
+    IndexMixin,
+    ShortIndexMixin,
 )

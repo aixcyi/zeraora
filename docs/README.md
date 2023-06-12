@@ -57,6 +57,8 @@
 - `CreateTimeMixin`，附加一个创建时间字段。
 - `DeletionMixin`，附加一个标记删除字段。
 - `TimeMixin`，附加一个创建时间和一个修改时间字段。
+- `IndexMixin`，附加一个自定义索引字段（ShortIntegerField）以及获取逆序和顺序查询集的两个类方法。
+- `ShortIndexMixin`，附加一个自定义索引字段（IntegerField）以及获取逆序和顺序查询集的两个类方法。
 
 
 ## zeraora.drf
