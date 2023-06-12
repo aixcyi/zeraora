@@ -67,6 +67,7 @@
 
 - `EasyViewSetMixin`，提供两个方法来简化 `ViewSetMixin.as_view()` 的传参。
 - `SoftDeleteModelMixin`，将一个模型实例标记为已删除（软删除）。
+- `ExistingFilterBackend`，一个筛选中间件，用于筛选掉查询集中标记为已删除的结果。
 
 ## zeraora.constants
 
