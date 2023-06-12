@@ -4,6 +4,8 @@
 
 __all__ = [
     'delta2hms', 'delta2ms', 'delta2s',
+    'wdate', 'get_week_range', 'get_week_side',
+    'get_week_in_year',
     'represent', 'datasize', 'dsz', 'true',
     'SafeCaster', 'safecast', 'safecasts',
     'remove_exponent',
@@ -12,7 +14,7 @@ __all__ = [
 import re
 from datetime import timedelta, datetime, date
 from decimal import Decimal
-from typing import Callable, Any, Tuple, Union
+from typing import Callable, Any, Tuple, Union, List
 from uuid import UUID
 
 from .typeclasses import Throwable, UNSET
@@ -62,6 +64,94 @@ def delta2s(delta: timedelta) -> float:
     :return: 一个小数。
     """
     return delta.seconds + delta.microseconds / 1000000
+
+
+# 仿构造器命名
+def wdate(year: int, week_in_year: int, day_in_week: int, sunday_first=False) -> date:
+    """
+    将某一年的某一周的星期几转换为一个具体的日期。
+
+    :param year: 具体年份。比如 2012、2023 等。
+    :param week_in_year: 一年中的第几周。从 0 开始。
+    :param day_in_week: 星期几。0 表示周日、1 表示周一，以此类推。
+    :param sunday_first: 是否以周日为一周的开始。
+    :return: 一个日期。
+    """
+    day = f'{year:04d}-{week_in_year:02d}-{day_in_week:1d}'
+    fmt = '%Y-%U-%w' if sunday_first else '%Y-%W-%w'
+    return datetime.strptime(day, fmt).date()
+
+
+def get_week_range(year: int,
+                   week_in_year: int,
+                   month: int = UNSET,
+                   sunday_first=False) -> List[date, ...]:
+    """
+    计算一年中某一周对应的所有日期。
+
+    :param year: 具体年份。比如 2012、2023 等。
+    :param week_in_year: 一年中的第几周。从 0 开始。
+    :param month: 具体月份。若指定了这个参数，则只计算这个月的那一部分日期。
+    :param sunday_first: 是否以周日为一周的开始。
+    :return: 若指定了不恰当的月份，有可能返回空列表。
+    """
+    fmt = '%Y-%U-%w' if sunday_first else '%Y-%W-%w'
+    start = f'{year:04d}-{week_in_year:02d}-{0 if sunday_first else 1}'
+    start = datetime.strptime(start, fmt).date()
+    days = [start + timedelta(days=i) for i in range(7)]
+    days = days if month is UNSET else [day for day in days if day.month == month]
+    if not days:
+        raise ValueError(
+            f'{year} 年的 {week_in_year} 周不在当年的 {month} 月里。'
+        )
+    return days
+
+
+def get_week_side(year: int,
+                  week_in_year: int,
+                  month: int = UNSET,
+                  sunday_first=False) -> Tuple[date, date]:
+    """
+    计算一年中某一周对应的第一天和最后一天。
+
+    :param year: 具体年份。比如 2012、2023 等。
+    :param week_in_year: 一年中的第几周。从 0 开始。
+    :param month: 具体月份。若指定了这个参数，则只计算这个月的那一部分日期。
+    :param sunday_first: 是否以周日为一周的开始。
+    :return: 两个日期，表示（这个月的）这一周的第一天和最后一天。
+    :raise ValueError:
+    """
+    days = get_week_range(year, week_in_year, month, sunday_first)
+    if not days:
+        raise ValueError(
+            f'{year} 年的 {week_in_year} 周不在当年的 {month} 月里。'
+        )
+    return days[0], days[-1]
+
+
+def get_week_in_year(*args, sunday_first=False) -> int:
+    """
+    计算一个具体日期自一年开始的周序号。
+
+    如果 ``sunday_first=False`` ，那么一年中第一个星期一之前的日子都算作第 0 周。
+    如果 ``sunday_first=True`` ，那么一年中第一个星期日之前的日子都算作第 0 周。
+
+    - ``get_week_in_year(date)`` ，提供一个日期。
+    - ``get_week_in_year(datetime)`` ，提供一个时刻。
+    - ``get_week_in_year(int, int, int)`` ，分别提供年月日。
+
+    :param args: 参数。
+    :param sunday_first: 是否以周日作为一周的开始。
+    :return: 一个从 0 开始递增的整数。
+    """
+    if len(args) == 1 and isinstance(args[0], date):
+        day = args[0]
+    elif len(args) >= 3 and all(isinstance(a, int) for a in args):
+        day = date(*args[:3])
+    else:
+        raise ValueError
+    week = day.strftime('%U') if sunday_first else day.strftime('%W')
+    return int(week)
 
 
 def represent(value: Any) -> str:
