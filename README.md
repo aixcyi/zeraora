@@ -60,6 +60,10 @@ pip install zeraora -i http://pypi.mirrors.ustc.edu.cn/simple/
 
 [^1]: 概念参见[Python版本状态](https://devguide.python.org/versions/#status-key)。
 
+## 分支
+
+主分支将从名为 `master` 的分支切换为 `main` 分支并且前者会与后者同步更新，直到 0.3.x 版本结束支持。原因是后者听起来确实比前者要舒服一点点，若要深究的话参见[这里](https://stackoverflow.com/a/65021103)。
+
 ## 帮助
 
 目前已经趋于稳定，部署生产环境时请优先考虑0.3.x，或更新到0.2.x最新子版本。如有需要，请优先通过 Issue 或 Pull Request 、其次通过QQ群 699090940 来反馈问题、提出创意或协助修复漏洞。
