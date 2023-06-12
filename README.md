@@ -1,15 +1,17 @@
 <h1 align="center" style="padding-top: 32px">Zeraora</h1>
 
 <div align="center">
-    <a href="https://docs.python.org/zh-cn/3/whatsnew/index.html"><img src="https://img.shields.io/pypi/pyversions/zeraora?label=Python&logo=python&logoColor=yellow"></a>
-    <a href="https://en.wikipedia.org/wiki/MIT_License"><img src="https://img.shields.io/badge/License-MIT-purple.svg"></a>
-    <a href="https://pypi.org/project/Zeraora/"><img src="https://img.shields.io/pypi/v/zeraora?color=darkgreen&label=PyPI"></a>
-    <a href=""><img src="https://img.shields.io/conda/v/conda-forge/zeraora"></a>
+    <a href="https://docs.python.org/zh-cn/3/whatsnew/index.html"><img src="https://img.shields.io/pypi/pyversions/zeraora?logo=python&logoColor=yellow"></a>
+    <a href="https://en.wikipedia.org/wiki/MIT_License"><img src="https://img.shields.io/pypi/l/Zeraora?color=purple"></a>
+    <a href="https://pypi.org/project/Zeraora/"><img src="https://img.shields.io/pypi/v/zeraora?color=darkgreen"></a>
+    <a href=""><img src="https://img.shields.io/pypi/dm/zeraora?color=C72777"></a>
+    <a href=""><img src="https://img.shields.io/pypi/status/Zeraora"></a>
+    <!--a href=""><img src="https://img.shields.io/conda/v/conda-forge/zeraora"></a-->
 </div>
 <div align="center">
-    <i>长期维护的个人开源工具库</i>
+    <i>实际应用积累的长期维护的个人开源工具库</i>
     <br>
-    <i>An utility Python package supports for my personal and company projects</i>
+    <i>A utility Python package for my personal and corporate projects, with long time support</i>
 </div>
 
 ## 特性
@@ -56,8 +58,8 @@ pip install zeraora -i http://pypi.mirrors.ustc.edu.cn/simple/
 | v0.2 | ✅bugfix  | 长期     | Python 3.7 或更新 | 探索包结构，完善核心特性，补充非核心特性。 |
 | v0.1 | ❌EOL     | 不再支持 | Python 3.7 或更新 | 试验自动部署，只有核心特性。               |
 
-[^1]: 概念参见[Python版本状态](https://devguide.python.org/versions/#status-key)，目前只借用了以上三种。
+[^1]: 概念参见[Python版本状态](https://devguide.python.org/versions/#status-key)。
 
-## 计划
+## 帮助
 
-- [ ] 打包到conda（未来，未来。）
+目前已经趋于稳定，部署生产环境时请优先考虑0.3.x，或更新到0.2.x最新子版本。如有需要，请优先通过 Issue 或 Pull Request 、其次通过QQ群 699090940 来反馈问题、提出创意或协助修复漏洞。
