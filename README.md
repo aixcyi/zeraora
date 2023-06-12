@@ -62,7 +62,7 @@ pip install zeraora -i http://pypi.mirrors.ustc.edu.cn/simple/
 
 ## 分支
 
-主分支将从名为 `master` 的分支切换为 `main` 分支并且前者会与后者同步更新，直到 0.3.x 版本结束支持。原因是后者听起来确实比前者要舒服一点点，若要深究的话参见[这里](https://stackoverflow.com/a/65021103)。
+主分支将从名为 `master` 的分支切换为 `main` 并且前者将于2023年6月12日删除（自动同步不好做所以躺平了），原因是后者听起来确实比前者要舒服一点点，若要深究的话参见[这里](https://stackoverflow.com/a/65021103)。
 
 ## 帮助
 
