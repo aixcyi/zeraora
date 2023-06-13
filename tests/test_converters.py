@@ -76,6 +76,8 @@ class ConvertersTest(TestCase):
         self.assertEqual(22, get_week_in_year(date(2023, 6, 4)))
 
     def test_represent(self):
+        from zeraora.constants.division import Province
+
         self.assertEqual('"string"', represent('string'))
         self.assertEqual('[2012-01-23]', represent(date(2012, 1, 23)))
         self.assertEqual('[0d+3.141590s]', represent(timedelta(seconds=3, milliseconds=140, microseconds=1590)))
@@ -86,6 +88,7 @@ class ConvertersTest(TestCase):
         self.assertEqual('[2, 3, 5, 7]', represent([2, 3, 5, 7]))
         self.assertEqual('{2, 3, 5, 7}', represent({2, 3, 5, 7}))
         self.assertEqual("{200: 'ok', 404: 'no found'}", represent({200: 'ok', 404: 'no found'}))
+        self.assertEqual(str(Province.GUANGDONG.label), represent(Province.GUANGDONG))
 
     def test_datasize(self):
         self.assertEqual(1, datasize('1B'))
