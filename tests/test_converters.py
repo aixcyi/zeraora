@@ -30,6 +30,51 @@ class ConvertersTest(TestCase):
         self.assertEqual(3.14159, delta2s(timedelta(seconds=3, milliseconds=140, microseconds=1590)))
         self.assertEqual(18030.14159, delta2s(timedelta(seconds=18030, milliseconds=140, microseconds=1590)))
 
+    def test_wdate(self):
+        self.assertEqual(date(2023, 5, 28), wdate(2023, 22, 0, sunday_first=True))
+        self.assertEqual(date(2023, 5, 29), wdate(2023, 22, 1))
+        self.assertEqual(date(2023, 5, 30), wdate(2023, 22, 2))
+        self.assertEqual(date(2023, 5, 31), wdate(2023, 22, 3))
+        self.assertEqual(date(2023, 6, 1), wdate(2023, 22, 4))
+        self.assertEqual(date(2023, 6, 2), wdate(2023, 22, 5))
+        self.assertEqual(date(2023, 6, 3), wdate(2023, 22, 6))
+        self.assertEqual(date(2023, 6, 4), wdate(2023, 22, 0))
+
+    def test_get_week_range_and_side(self):
+        # Monday First / Sunday First
+        dateset_mf = tuple(date(2023, 5, 29) + timedelta(days=i) for i in range(7))
+        dateset_sf = tuple(date(2023, 5, 28) + timedelta(days=i) for i in range(7))
+        dateset_mf5 = tuple(d for d in dateset_mf if d.month == 5)
+        dateset_mf6 = tuple(d for d in dateset_mf if d.month == 6)
+        dateset_sf5 = tuple(d for d in dateset_sf if d.month == 5)
+        dateset_sf6 = tuple(d for d in dateset_sf if d.month == 6)
+        self.assertEqual(dateset_mf, get_week_range(2023, 22))
+        self.assertEqual(dateset_sf, get_week_range(2023, 22, sunday_first=True))
+        self.assertEqual(dateset_mf5, get_week_range(2023, 22, 5))
+        self.assertEqual(dateset_mf6, get_week_range(2023, 22, 6))
+        self.assertEqual(dateset_sf5, get_week_range(2023, 22, 5, sunday_first=True))
+        self.assertEqual(dateset_sf6, get_week_range(2023, 22, 6, sunday_first=True))
+        self.assertEqual((dateset_mf[0], dateset_mf[-1]), get_week_side(2023, 22))
+        self.assertEqual((dateset_sf[0], dateset_sf[-1]), get_week_side(2023, 22, sunday_first=True))
+        self.assertEqual((dateset_mf5[0], dateset_mf5[-1]), get_week_side(2023, 22, 5))
+        self.assertEqual((dateset_mf6[0], dateset_mf6[-1]), get_week_side(2023, 22, 6))
+        self.assertEqual((dateset_sf5[0], dateset_sf5[-1]), get_week_side(2023, 22, 5, sunday_first=True))
+        self.assertEqual((dateset_sf6[0], dateset_sf6[-1]), get_week_side(2023, 22, 6, sunday_first=True))
+
+    def test_get_week_in_year(self):
+        self.assertEqual(22, get_week_in_year(date(2023, 6, 1)))
+        self.assertEqual(22, get_week_in_year(datetime(2023, 6, 1, 8, 0, 0)))
+        self.assertEqual(22, get_week_in_year(2023, 6, 1))
+        self.assertEqual(22, get_week_in_year(2023, 6, 1, 8, 0, 0))
+        self.assertEqual(22, get_week_in_year(date(2023, 5, 28), sunday_first=True))
+        self.assertEqual(22, get_week_in_year(date(2023, 5, 29)))
+        self.assertEqual(22, get_week_in_year(date(2023, 5, 30)))
+        self.assertEqual(22, get_week_in_year(date(2023, 5, 31)))
+        self.assertEqual(22, get_week_in_year(date(2023, 6, 1)))
+        self.assertEqual(22, get_week_in_year(date(2023, 6, 2)))
+        self.assertEqual(22, get_week_in_year(date(2023, 6, 3)))
+        self.assertEqual(22, get_week_in_year(date(2023, 6, 4)))
+
     def test_represent(self):
         self.assertEqual('"string"', represent('string'))
         self.assertEqual('[2012-01-23]', represent(date(2012, 1, 23)))

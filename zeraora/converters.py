@@ -14,7 +14,7 @@ __all__ = [
 import re
 from datetime import timedelta, datetime, date
 from decimal import Decimal
-from typing import Callable, Any, Tuple, Union, List
+from typing import Callable, Any, Tuple, Union
 from uuid import UUID
 
 from .typeclasses import Throwable, UNSET
@@ -85,7 +85,7 @@ def wdate(year: int, week_in_year: int, day_in_week: int, sunday_first=False) ->
 def get_week_range(year: int,
                    week_in_year: int,
                    month: int = UNSET,
-                   sunday_first=False) -> List[date, ...]:
+                   sunday_first=False) -> Tuple[date, ...]:
     """
     计算一年中某一周对应的所有日期。
 
@@ -98,11 +98,11 @@ def get_week_range(year: int,
     fmt = '%Y-%U-%w' if sunday_first else '%Y-%W-%w'
     start = f'{year:04d}-{week_in_year:02d}-{0 if sunday_first else 1}'
     start = datetime.strptime(start, fmt).date()
-    days = [start + timedelta(days=i) for i in range(7)]
-    days = days if month is UNSET else [day for day in days if day.month == month]
+    days = tuple(start + timedelta(days=i) for i in range(7))
+    days = days if month is UNSET else tuple(day for day in days if day.month == month)
     if not days:
         raise ValueError(
-            f'{year} 年的 {week_in_year} 周不在当年的 {month} 月里。'
+            f'{year} 年的 {week_in_year} 周不在当年的 {month} 月里。'  # pragma: no cover
         )
     return days
 
@@ -124,7 +124,7 @@ def get_week_side(year: int,
     days = get_week_range(year, week_in_year, month, sunday_first)
     if not days:
         raise ValueError(
-            f'{year} 年的 {week_in_year} 周不在当年的 {month} 月里。'
+            f'{year} 年的 {week_in_year} 周不在当年的 {month} 月里。'  # pragma: no cover
         )
     return days[0], days[-1]
 
@@ -149,7 +149,7 @@ def get_week_in_year(*args, sunday_first=False) -> int:
     elif len(args) >= 3 and all(isinstance(a, int) for a in args):
         day = date(*args[:3])
     else:
-        raise ValueError
+        raise ValueError  # pragma: no cover
     week = day.strftime('%U') if sunday_first else day.strftime('%W')
     return int(week)
 
