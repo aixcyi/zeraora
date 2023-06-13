@@ -229,7 +229,7 @@ def true(value) -> bool:
     :param value: query 中的参数值。
     :return: True 或 False。
     """
-    return value in ('true', 'True', 'TRUE', 1, True)
+    return value in ('true', 'True', 'TRUE', 1, True, '1')
 
 
 def safecast(mapper: Callable, raw, *errs: Throwable, default=None) -> Any:

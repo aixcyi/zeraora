@@ -105,6 +105,20 @@ class ConvertersTest(TestCase):
         self.assertEqual(0, datasize('47'))
         self.assertEqual(0, datasize('47KiBytes'))
 
+    def test_trulize(self):
+        self.assertEqual(True, true(True))
+        self.assertEqual(True, true('True'))
+        self.assertEqual(True, true('true'))
+        self.assertEqual(True, true('TRUE'))
+        self.assertEqual(True, true(1))
+        self.assertEqual(True, true('1'))
+        self.assertEqual(False, true(False))
+        self.assertEqual(False, true('False'))
+        self.assertEqual(False, true('false'))
+        self.assertEqual(False, true('FALSE'))
+        self.assertEqual(False, true(0))
+        self.assertEqual(False, true('0'))
+
     def test_safecast(self):
         self.assertEqual(1234, safecast(int, '1234'))
         self.assertEqual(None, safecast(int, '12a4'))
