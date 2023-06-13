@@ -218,7 +218,7 @@ class ItemsMeta(enum.EnumMeta):
                 f'{classname}.__properties__ 只允许是一个 tuple 或 list 。'
             )
         if not all(isinstance(pk, str) and not pk.startswith('_') for pk in pks):
-            raise TypeError(
+            raise ValueError(
                 f'{classname}.__properties__ 的值必须是字符串且不以下划线 “_” 开头。'
             )
         pks = tuple(f'_{pk}_' for pk in pks)
