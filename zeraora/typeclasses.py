@@ -161,7 +161,7 @@ class RadixInteger(t.Tuple[int, ...]):
         elif isinstance(x, (tuple, list)):
             if min(x) < 0:
                 raise ValueError('x 只能包含非负整数。')
-            radix = max(x)
+            radix = max(x) + 1
             if not radix <= n:
                 raise ValueError(
                     f'x 的进位制最低是 {radix}，高于给定的 {n} 。'
