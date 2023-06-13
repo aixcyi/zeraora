@@ -132,3 +132,22 @@ class ConvertersTest(TestCase):
         self.assertEqual('meow', safecast(b'\xd6\xd0\xce\xc4'.decode, 'UTF8', default='meow'))
         self.assertEqual(3, safecast([3, 14].__getitem__, 0, default=-1))
         self.assertEqual(-1, safecast([3, 14].__getitem__, 315, IndexError, default=-1))
+
+    def test_safecasts(self):
+        self.assertEqual(1234, safecasts('1234').by(int).get())
+        self.assertEqual(None, safecasts('12a4').by(int).get())
+        self.assertEqual(None, safecasts(None).by(int).get())
+        self.assertEqual(1234, safecasts('1234').by(int).get(default=5678))
+        self.assertEqual(5678, safecasts('12a4').by(int).get(default=5678))
+        self.assertEqual('中文', safecasts('GBK').by(b'\xd6\xd0\xce\xc4'.decode).get(default='meow'))
+        self.assertEqual('meow', safecasts('UTF8').by(b'\xd6\xd0\xce\xc4'.decode).get(default='meow'))
+        self.assertEqual(3, safecasts(0).by([3, 14].__getitem__).catch(IndexError).get(default=-1))
+        self.assertEqual(-1, safecasts(315).by([3, 14].__getitem__).catch(IndexError).get(default=-1))
+
+        self.assertEqual(-1, safecasts('12a4').get(default=-1))
+
+        def generator():
+            return 3.14
+
+        self.assertEqual('3.14', safecasts().by(generator, str).get(default=0))
+        self.assertEqual(0, safecasts().by(generator).by(float).get(default=0))

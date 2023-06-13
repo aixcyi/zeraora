@@ -262,6 +262,7 @@ def safecast(mapper: Callable, raw, *errs: Throwable, default=None) -> Any:
 
 
 class SafeCaster:
+    _exceptions = ()
 
     def __init__(self, raw: Any = UNSET):
         """
@@ -270,7 +271,6 @@ class SafeCaster:
         self._value = raw
         self._default = None
         self._converters = tuple()
-        self._exceptions = tuple()
 
     def __call__(self, raw: Any = UNSET) -> 'SafeCaster':
         self._value = raw
@@ -302,15 +302,20 @@ class SafeCaster:
         """
         执行转换并返回转换结果。若触发置入的异常或没有置入转换器则返回默认值；若触发未被置入的异常将原样抛出。
         """
-        if len(self._converters) <= 0:
-            return default
+        result = self.__invoke(default)
+        self.__init__()
+        return result
 
+    def __invoke(self, default) -> Any:
         if self._value is UNSET:
             result = self._converters[0]()
             converters = self._converters[1:]
         else:
             result = self._value
             converters = self._converters
+
+        if len(self._converters) <= 0:
+            return default
 
         try:
             for converter in converters:
