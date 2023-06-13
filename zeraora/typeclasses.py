@@ -250,7 +250,7 @@ class ItemsMeta(enum.EnumMeta):
 
     def __getattr__(cls, name):
         if not isinstance(name, str):
-            raise TypeError
+            raise TypeError  # pragma: no cover
         if name[:-1] in cls.__properties__ and name.endswith('s'):
             return [getattr(member, name[:-1]) for member in cls]
         if name[:-2] in cls.__properties__ and name.endswith('es'):

@@ -1,7 +1,7 @@
 from decimal import Decimal
 
 from tests.base_test_case import BaseTestCase
-from zeraora.typeclasses import OnionObject, RadixInteger
+from zeraora.typeclasses import *
 
 
 class TypeclassesTest(BaseTestCase):
@@ -90,9 +90,90 @@ class TypeclassesTest(BaseTestCase):
         self.assertRaises(TypeError, OnionObject, [1, 2, 3])
 
     def test_radix_integer(self):
-        ri256 = RadixInteger(2217343354, 256)
-        self.assertEqual(2217343354, int.from_bytes(bytes(ri256), 'little'))
+        ri256 = RadixInteger(33882121, 256)
+        self.assertEqual(33882121, int.from_bytes(bytes(ri256), 'little'))
+        self.assertEqual(256, ri256.radix)
 
-        ri16 = RadixInteger(2217343354, 16)
-        self.assertEqual('8429F97A', ri16.map2str('0123456789ABCDEF'))
-        self.assertEqual(b'8429F97A', ri16.map2bytes(b'0123456789ABCDEF'))
+        ri16 = RadixInteger(33882121, 16)
+        self.assertEqual('2050009', ri16.map2str('0123456789ABCDEF'))
+        self.assertEqual(b'2050009', ri16.map2bytes(b'0123456789ABCDEF'))
+
+        self.assertTupleEqual(ri16, RadixInteger(ri256, 16))
+        self.assertTupleEqual(ri16, RadixInteger([9, 0, 0, 0, 5, 0, 2], 16))
+        self.assertTupleEqual(ri256, RadixInteger(b'\x09\x00\x05\x02', 256))
+
+        with self.assertRaises(ValueError):
+            _ = RadixInteger(33882121, 1)
+        with self.assertRaises(ValueError):
+            _ = RadixInteger([1, 2, -3], 10)
+        with self.assertRaises(ValueError):
+            _ = RadixInteger([1, 2, 16], 16)
+        with self.assertRaises(TypeError):
+            _ = RadixInteger('meow', 16)
+
+    def test_items_enum(self):
+        from zeraora.constants.division import Province, Region
+
+        self.assertEqual('ANHUI', Province.ANHUI.name)
+        self.assertEqual('34', Province.ANHUI.value)
+        self.assertEqual(34, Province.ANHUI.numeric)
+        self.assertEqual('皖', Province.ANHUI.short)
+        self.assertEqual('AH', Province.ANHUI.code)
+        self.assertEqual('安徽', Province.ANHUI.nick)
+        self.assertEqual('安徽省', Province.ANHUI.label)
+        self.assertEqual(Region.EAST, Province.ANHUI.region)
+        self.assertEqual('300000', Province.ANHUI.id_code)
+        self.assertEqual('300000000000', Province.ANHUI.statistics_code)
+        self.assertEqual(34, len(set(Province.names)))
+        self.assertEqual(34, len(set(Province.values)))
+        self.assertEqual(34, len(set(Province.items)))
+        self.assertEqual(34, len(set(Province.choices)))
+        self.assertEqual(34, len(set(Province.numerics)))
+        self.assertEqual(34, len(set(Province.shorts)))
+        self.assertEqual(34, len(set(Province.codes)))
+        self.assertEqual(34, len(set(Province.nicks)))
+        self.assertEqual(34, len(set(Province.labels)))
+        self.assertNoAttribute('numbers', Province)
+        self.assertEqual(len(Region.items), len(set(Province.regions)))
+        self.assertEqual('34', str(Province.ANHUI))
+        self.assertEqual('Province.ANHUI', repr(Province.ANHUI))
+        self.assertIs(Province.GUANGDONG, Province.value_of('44'))
+        self.assertTrue(Province.GUANGDONG in Province)
+        self.assertTrue('34' in Province)
+        self.assertFalse(Region.EAST in Province)
+        self.assertFalse(34 in Province)
+        with self.assertRaises(ValueError):
+            _ = Province.value_of('99')
+
+        class SizeLevel(Items):
+            NORMAL = 0, 'bag'
+            BIG = 10, 'carton'
+            LARGE = 100, 'container'
+            __properties__ = 'box',
+
+            @property
+            def box(self):
+                return self._box_
+
+        self.assertTrue(SizeLevel.boxes)
+        with self.assertRaises(AttributeError):
+            _ = SizeLevel.choices
+
+    def test_items_meta(self):
+        with self.assertRaises(AttributeError):
+            class UrgencyLevel(Items):
+                HIGH = 10, 'WARNING'
+                NORMAL = 0, 'INFO'
+                LOW = -10, 'DEBUG'
+        with self.assertRaises(TypeError):
+            class UrgencyLevel2(Items):
+                HIGH = 10, 'WARNING'
+                NORMAL = 0, 'INFO'
+                LOW = -10, 'DEBUG'
+                __properties__ = 'loglevel'
+        with self.assertRaises(ValueError):
+            class UrgencyLevel3(Items):
+                HIGH = 10, 'WARNING'
+                NORMAL = 0, 'INFO'
+                LOW = -10, 'DEBUG'
+                __properties__ = '_loglevel',
