@@ -1,7 +1,5 @@
 from datetime import date, timedelta, datetime
-from decimal import Decimal
 from unittest import TestCase
-from uuid import UUID
 
 from zeraora.converters import *
 
@@ -9,6 +7,8 @@ from zeraora.converters import *
 class ConvertersTest(TestCase):
 
     def test_remove_exponent(self):
+        from decimal import Decimal
+
         self.assertEqual(Decimal('3.14'), remove_exponent(Decimal('3.14')))
         self.assertEqual(Decimal('3.14'), remove_exponent(Decimal('3.140')))
         self.assertEqual(Decimal('3.14'), remove_exponent(Decimal('3.1400')))
@@ -54,12 +54,16 @@ class ConvertersTest(TestCase):
         self.assertEqual(dateset_mf6, get_week_range(2023, 22, 6))
         self.assertEqual(dateset_sf5, get_week_range(2023, 22, 5, sunday_first=True))
         self.assertEqual(dateset_sf6, get_week_range(2023, 22, 6, sunday_first=True))
+        self.assertRaises(ValueError, get_week_range, 2023, 21, 6)
+        self.assertRaises(ValueError, get_week_range, 2023, 23, 5)
         self.assertEqual((dateset_mf[0], dateset_mf[-1]), get_week_side(2023, 22))
         self.assertEqual((dateset_sf[0], dateset_sf[-1]), get_week_side(2023, 22, sunday_first=True))
         self.assertEqual((dateset_mf5[0], dateset_mf5[-1]), get_week_side(2023, 22, 5))
         self.assertEqual((dateset_mf6[0], dateset_mf6[-1]), get_week_side(2023, 22, 6))
         self.assertEqual((dateset_sf5[0], dateset_sf5[-1]), get_week_side(2023, 22, 5, sunday_first=True))
         self.assertEqual((dateset_sf6[0], dateset_sf6[-1]), get_week_side(2023, 22, 6, sunday_first=True))
+        self.assertRaises(ValueError, get_week_side, 2023, 21, 6)
+        self.assertRaises(ValueError, get_week_side, 2023, 23, 5)
 
     def test_get_week_in_year(self):
         self.assertEqual(22, get_week_in_year(date(2023, 6, 1)))
@@ -74,8 +78,12 @@ class ConvertersTest(TestCase):
         self.assertEqual(22, get_week_in_year(date(2023, 6, 2)))
         self.assertEqual(22, get_week_in_year(date(2023, 6, 3)))
         self.assertEqual(22, get_week_in_year(date(2023, 6, 4)))
+        self.assertRaises(ValueError, get_week_in_year, timedelta(days=1))
+        self.assertRaises(ValueError, get_week_in_year, 2023.6, 1)
+        self.assertRaises(ValueError, get_week_in_year, '2023', '6', '1')
 
     def test_represent(self):
+        from uuid import UUID
         from zeraora.constants.division import Province
 
         self.assertEqual('"string"', represent('string'))
@@ -107,6 +115,7 @@ class ConvertersTest(TestCase):
         self.assertEqual(31 * 1024 * 1024 * 1024 / 8, datasize('31 Gib'))
         self.assertEqual(0, datasize('47'))
         self.assertEqual(0, datasize('47KiBytes'))
+        self.assertRaises(TypeError, datasize, 1024)
 
     def test_trulize(self):
         self.assertEqual(True, true(True))
@@ -132,6 +141,7 @@ class ConvertersTest(TestCase):
         self.assertEqual('meow', safecast(b'\xd6\xd0\xce\xc4'.decode, 'UTF8', default='meow'))
         self.assertEqual(3, safecast([3, 14].__getitem__, 0, default=-1))
         self.assertEqual(-1, safecast([3, 14].__getitem__, 315, IndexError, default=-1))
+        self.assertEqual(-1, safecast('meow', 1, default=-1))
 
     def test_safecasts(self):
         self.assertEqual(1234, safecasts('1234').by(int).get())

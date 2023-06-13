@@ -87,6 +87,8 @@ class TypeclassesTest(BaseTestCase):
         self.assertEqual(r0, repr(OnionObject(id=67, username='aixcyi')))
         self.assertEqual(r1, repr(OnionObject(id=67, fk=OnionObject())))
 
+        self.assertRaises(TypeError, OnionObject, [1, 2, 3])
+
     def test_radix_integer(self):
         ri256 = RadixInteger(2217343354, 256)
         self.assertEqual(2217343354, int.from_bytes(bytes(ri256), 'little'))

@@ -3,7 +3,7 @@
 """
 
 __all__ = [
-    'bear_config', 'BearTimer', 'ReprMixin',
+    'bear_config', 'BearTimer', 'ReprMixin', 'start',
 ]
 
 import logging
@@ -138,7 +138,9 @@ class BearTimer(object):
         total = delta2s(now - self._start) if self._start else 0
         delta = delta2s(now - self._point) if self._point else 0
         if self._print:
-            print(f'[{now:%H:%M:%S.%f}] [{self._label}] [{total:.6f} +{delta:.6f}]: {msg}')
+            print(f'[{now:%H:%M:%S.%f}] '
+                  f'[{self._label}] [{total:.6f} +{delta:.6f}]: '
+                  f'{msg}')  # pragma: no cover
         else:
             logger_bear.debug(f'[{self._label}] [{total:.6f} +{delta:.6f}]: {msg}')
         self._point = now
@@ -358,19 +360,23 @@ class ReprMixin(object):
         return self.__class__.__name__
 
 
-def start(*version: int, note=None):
+def start(*version, note: str = None):
     """
     检查 Python 版本是否高于或等于指定值，
     如果低于指定的版本就会抛出 RuntimeError。
+
+    若提供了 ``note`` 参数，则会在末尾输出。
     """
 
     def decorator(func):
         @wraps(func)
         def wrapper(*args, **kwargs):
             if sys.version_info < version:
+                v = '.'.join(map(str, version))
                 raise RuntimeError(
-                    f'Require Python version {version:s} to run. '
-                    f'运行此函数/类需要Python版本在 {version:s} 及以上。'
+                    # 英文在前保证控制台出现乱码时不会掩盖该错误信息
+                    f'Require Python version {v} or above to run. '
+                    f'Python运行版本需要在 {v} 或以上。'
                     + ('' if note is None else note)
                 )
             return func(*args, **kwargs)

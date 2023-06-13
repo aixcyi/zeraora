@@ -1,10 +1,9 @@
-import logging.config
 from datetime import date, datetime
 from random import random
 from time import sleep
 
 from tests.base_test_case import BaseTestCase
-from zeraora.utils import ReprMixin, BearTimer, bear_config
+from zeraora.utils import *
 
 SUBJECT_CATEGORY = {
     1: '工学', 8: '经济学',
@@ -79,29 +78,26 @@ class UtilsTest(BaseTestCase):
         self.assertEqual(r11, repr(Student(pk='10086020')))
         self.assertEqual(r12, repr(Student(id=1, pk='10086020')))
 
-    def test_bear_timer_via_object(self, printable=True):
-        bear = BearTimer(printable=printable)
-        bear.start()
-        for _ in range(3):
-            st = random()
-            sleep(st)
-            bear.step(st)
-        bear.stop()
-        self.assertEqual(1, 1)
+    def test_bear_timer_via_object(self):
+        with self.assertLogs('zeraora.bear', 'DEBUG'):
+            bear = BearTimer(printable=False)
+            bear.start()
+            for _ in range(3):
+                st = random()
+                sleep(st)
+                bear.step(st)
+            bear.stop()
+            self.assertEqual(1, 1)
 
-    def test_bear_timer_via_context(self, printable=True):
-        with BearTimer(printable=printable):
-            return sum(range(100_0000))
+    def test_bear_timer_via_context(self):
+        with self.assertLogs('zeraora.bear', 'DEBUG'):
+            with BearTimer(printable=False):
+                return sum(range(100_0000))
 
-    def test_bear_timer_via_decorator(self, printable=True):
-        @BearTimer(printable=printable)
-        def calc_summary(length: int) -> int:
-            return sum(range(length))
+    def test_bear_timer_via_decorator(self):
+        with self.assertLogs('zeraora.bear', 'DEBUG'):
+            @BearTimer(printable=False)
+            def calc_summary(length: int) -> int:
+                return sum(range(length))
 
-        _ = calc_summary(100_0000)
-
-    def test_bear_timer_with_logger(self):
-        logging.config.dictConfig(bear_config)
-        self.test_bear_timer_via_object(False)
-        self.test_bear_timer_via_context(False)
-        self.test_bear_timer_via_decorator(False)
+            _ = calc_summary(100_0000)

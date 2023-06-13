@@ -94,6 +94,7 @@ def get_week_range(year: int,
     :param month: 具体月份。若指定了这个参数，则只计算这个月的那一部分日期。
     :param sunday_first: 是否以周日为一周的开始。
     :return: 若指定了不恰当的月份，有可能返回空列表。
+    :raise ValueError: year 年的 week_in_year 周不在当年的 month 月里。
     """
     fmt = '%Y-%U-%w' if sunday_first else '%Y-%W-%w'
     start = f'{year:04d}-{week_in_year:02d}-{0 if sunday_first else 1}'
@@ -102,7 +103,7 @@ def get_week_range(year: int,
     days = days if month is UNSET else tuple(day for day in days if day.month == month)
     if not days:
         raise ValueError(
-            f'{year} 年的 {week_in_year} 周不在当年的 {month} 月里。'  # pragma: no cover
+            f'{year} 年的 {week_in_year} 周不在当年的 {month} 月里。'
         )
     return days
 
@@ -119,13 +120,9 @@ def get_week_side(year: int,
     :param month: 具体月份。若指定了这个参数，则只计算这个月的那一部分日期。
     :param sunday_first: 是否以周日为一周的开始。
     :return: 两个日期，表示（这个月的）这一周的第一天和最后一天。
-    :raise ValueError:
+    :raise ValueError: year 年的 week_in_year 周不在当年的 month 月里。
     """
     days = get_week_range(year, week_in_year, month, sunday_first)
-    if not days:
-        raise ValueError(
-            f'{year} 年的 {week_in_year} 周不在当年的 {month} 月里。'  # pragma: no cover
-        )
     return days[0], days[-1]
 
 
@@ -149,7 +146,7 @@ def get_week_in_year(*args, sunday_first=False) -> int:
     elif len(args) >= 3 and all(isinstance(a, int) for a in args):
         day = date(*args[:3])
     else:
-        raise ValueError  # pragma: no cover
+        raise ValueError
     week = day.strftime('%U') if sunday_first else day.strftime('%W')
     return int(week)
 
@@ -201,9 +198,7 @@ def datasize(literal: str) -> Union[int, float]:
     :return:
     """
     if not isinstance(literal, str):
-        raise TypeError(
-            '不支持解析一个非字符串类型的值。'  # pragma: no cover
-        )
+        raise TypeError('不支持解析一个非字符串类型的值。')
 
     pattern = re.compile(r'^([0-9]+)\s*([KMGTPEZY]?)(i?[Bb])$')
     result = re.fullmatch(pattern, literal)
@@ -254,7 +249,7 @@ def safecast(mapper: Callable, raw, *errs: Throwable, default=None) -> Any:
         or isinstance(exc, BaseException)
     )
     if not callable(mapper):
-        return default  # pragma: no cover
+        return default
     try:
         return mapper(raw)
     except (TypeError, ValueError, KeyboardInterrupt) + exceptions:

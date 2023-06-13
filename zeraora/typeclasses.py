@@ -51,7 +51,7 @@ class OnionObject(object):
         if dictionary is None:
             dictionary = {}
         if not isinstance(dictionary, dict):
-            raise TypeError  # pragma: no cover
+            raise TypeError
         if depth == 0:
             return dictionary
         dictionary.update(kvs)
