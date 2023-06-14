@@ -46,4 +46,4 @@ class ExistingFilterBackend(BaseFilterBackend):
                 ),
             )
 
-        return queryset.filter(**{field: mark})
+        return queryset.exclude(**{field: mark})
