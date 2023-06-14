@@ -3,13 +3,20 @@
 """
 
 __all__ = [
-    'Region', 'Province',
+    'Region', 'Province', 'DivisionLevel',
 ]
+
+from enum import Enum
 
 from ..typeclasses import Items
 
 
 class Region(int, Items):
+    """
+    用于划分省级行政区的大区。
+
+    可视为 ``django.db.models.enums.IntegerChoices`` 子类使用。
+    """
     NORTH = 1, '华北'
     NORTHEAST = 2, '东北'
     EAST = 3, '华东'
@@ -25,9 +32,11 @@ class Region(int, Items):
         return self._label_
 
 
-class Province(Items):
+class Province(str, Items):
     """
     中国省级行政区。
+
+    可视为 ``django.db.models.enums.TextChoices`` 子类使用。
     """
     BEIJING = '11', 11, '京', 'BJ', '北京', Region.NORTH, '北京市'
     TIANJIN = '12', 12, '津', 'TJ', '天津', Region.NORTH, '天津市'
@@ -108,3 +117,25 @@ class Province(Items):
 
     def __int__(self) -> int:
         return self._numeric_
+
+    def _generate_next_value_(name, start, count, last_values):
+        return name
+
+
+class DivisionLevel(Enum):
+    """
+    行政区划的层次级别。
+
+    主要参照 `统计用区划代码编制规则 <http://www.stats.gov.cn/sj/tjbz/gjtjbz/202302/t20230213_1902741.html>`_ 。
+    """
+
+    PROVINCE = 1
+    """省级。自顶向下的第一个层级，包括省、直辖市、自治区、特别行政区。"""
+    PREFECTURE = 2
+    """市级。自顶向下的第二个层级，包括地级市、地级县、自治州、盟等。"""
+    COUNTY = 3
+    """县级。自顶向下的第三个层级，包括县、自治县、县级市、旗、自治旗、市辖区等。"""
+    TOWNSHIP = 4
+    """乡级。自顶向下的第四个层级，包括县辖区、乡、镇、街道等。"""
+    VILLAGE = 5
+    """村级。自顶向下的第五个层级。"""
