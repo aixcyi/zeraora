@@ -20,8 +20,8 @@ setup(
     license='MIT',
     author='aixcyi',
     author_email='75880483+aixcyi@users.noreply.github.com',
-    description="一个长期维护的个人开源工具库。"
-                "A utility Python package supports for my personal and company projects.",
+    description="实际应用积累的长期维护的实用开源工具库。"
+                "A utility Python package for our personal and corporate projects, with long time support.",
     long_description=long_description,
     long_description_content_type='text/markdown',
     classifiers=[
