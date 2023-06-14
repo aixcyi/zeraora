@@ -10,6 +10,7 @@ https://www.django-rest-framework.org/api-guide/filtering/#custom-generic-filter
 
 __all__ = [
     'ExistingFilterBackend',
+    'ActiveStatusFilterBackend',
 ]
 
 try:
@@ -47,3 +48,32 @@ class ExistingFilterBackend(BaseFilterBackend):
             )
 
         return queryset.exclude(**{field: mark})
+
+
+class ActiveStatusFilterBackend(BaseFilterBackend):
+    """
+    筛选查询集中已启用的结果。
+
+    - 启用标记默认为 ``True`` ，可以通过在视图类中添加 ``active_mark`` 属性来更改。
+    - 标记启用的字段默认是 ``activated`` ，可以通过在视图类中添加 ``active_field`` 属性来更改。
+      若字段不存在，会抛出 ``django.core.exceptions.FieldDoesNotExist`` 。
+
+    适用于：
+      - ``rest_framework.viewsets.GenericViewSet`` 子类的 ``filter_backends`` 属性
+      - ``rest_framework.settings.DEFAULT_FILTER_BACKENDS``
+      - ``django.conf.settings.REST_FRAMEWORK["DEFAULT_FILTER_BACKENDS"]``
+    """
+
+    def filter_queryset(self, request, queryset, view):
+        field = getattr(view, 'active_field', 'activated')
+        mark = getattr(view, 'active_mark', True)
+
+        if field not in queryset.model.fields:
+            raise FieldDoesNotExist(
+                '模型 %s 缺少用于标记删除的字段 %s' % (
+                    queryset.model._meta.object_name,
+                    field,
+                ),
+            )
+
+        return queryset.filter(**{field: mark})

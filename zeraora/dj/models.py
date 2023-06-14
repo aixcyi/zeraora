@@ -4,7 +4,7 @@
 
 __all__ = [
     'SnakeModel', 'CreateTimeMixin',
-    'TimeMixin', 'DeletionMixin',
+    'TimeMixin', 'ActiveStatusMixin', 'DeletionMixin',
     'IndexMixin', 'ShortIndexMixin',
 ]
 
@@ -87,6 +87,25 @@ class TimeMixin(models.Model):
     """
     created_at = models.DateTimeField('创建时间', auto_now_add=True)
     updated_at = models.DateTimeField('修改时间', auto_now=True)
+
+    class Meta:
+        abstract = True
+
+
+class ActiveStatusMixin(models.Model):
+    """
+    为模型附加以下字段和方法：
+
+    - ``activated`` ，用于标记禁用状态。默认为 ``True`` ，当被设置为 ``False`` 时表示被标记为已禁用。
+    - ``get_active_set()`` ，获取已启用的行，返回一个查询集。
+
+    适用于：``django.db.models.Model`` 的子类
+    """
+    activated = models.BooleanField(default=True, blank=True)
+
+    @classmethod
+    def get_active_set(cls, *args, **kwargs) -> models.QuerySet:
+        return cls.objects.all().filter(*args, **kwargs, activated=True)
 
     class Meta:
         abstract = True
