@@ -221,6 +221,18 @@ class ItemsMeta(enum.EnumMeta):
             raise ValueError(
                 f'{classname}.__properties__ 的值必须是字符串且不以下划线 “_” 开头。'
             )
+        for pk in pks:
+            # https://docs.python.org/zh-cn/3/library/enum.html#supported-sunder-names
+            if pk in ('name', 'value'):
+                raise KeyError(
+                    f'不能也不必在 {classname}.__properties__ 中定义 name 和 value，'
+                    f'它们是原生枚举就已经支持的。'
+                )
+            if pk in ('generate_next_value',):
+                raise KeyError(
+                    f'不能在 {classname}.__properties__ 中定义 {pk}，'
+                    f'因为它会被转化成 _{pk}_ ，而这属于保留名称。'
+                )
         pks = tuple(f'_{pk}_' for pk in pks)
         qty = len(pks) + 1  # 等号右侧所有元素的总数
 

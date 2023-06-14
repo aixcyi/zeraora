@@ -177,3 +177,15 @@ class TypeclassesTest(BaseTestCase):
                 NORMAL = 0, 'INFO'
                 LOW = -10, 'DEBUG'
                 __properties__ = '_loglevel',
+        with self.assertRaises(KeyError):
+            class UrgencyLevel4(Items):
+                HIGH = 10, 'WARNING'
+                NORMAL = 0, 'INFO'
+                LOW = -10, 'DEBUG'
+                __properties__ = 'value', 'loglevel'
+        with self.assertRaises(KeyError):
+            class UrgencyLevel5(Items):
+                HIGH = 10, 'WARNING'
+                NORMAL = 0, 'INFO'
+                LOW = -10, 'DEBUG'
+                __properties__ = 'generate_next_value',
