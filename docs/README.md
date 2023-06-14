@@ -12,6 +12,7 @@
 - [`BearTimer()`](./zeraora/BearTimer.md)，对代码运行进行计时，并打印时间和提示。
 - [`ReprMixin()`](./zeraora/ReprMixin.md)，用最小改动来生成通用representation的工具类。
 - `@start()`，检查 Python 版本是否高于或等于指定值。
+- `@deprecate()`，为一个函数作废弃标记。指示被装饰的函数在当前版本下将于/已于某个版本废弃。
 
 ## zeraora.typeclasses
 
