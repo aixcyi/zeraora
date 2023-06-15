@@ -7,9 +7,11 @@ __all__ = [
     'TimeMixin', 'ActiveStatusMixin', 'DeletionMixin',
     'IndexMixin', 'ShortIndexMixin',
     'UrgencyMixin', 'ImportanceMixin',
+    'BizMixin',
 ]
 
 import re
+import uuid
 
 from ..constants import Degree
 
@@ -214,6 +216,27 @@ class ImportanceMixin(models.Model):
     适用于：``django.db.models.Model`` 的子类
     """
     importance = models.SmallIntegerField(default=Degree.NORMAL, choices=Degree.choices, blank=True)
+
+    class Meta:
+        abstract = True
+
+
+def biz_id() -> str:
+    """
+    使用 ``uuid4()`` 生成一个biz_id，即32位小写HEX字符串，正则表达式为 ``^[0-9a-z]{32}$`` 。
+    """
+    return uuid.uuid4().hex
+
+
+class BizMixin(models.Model):
+    """
+    为模型附加以下字段和方法：
+
+    - ``biz`` ，索引，唯一。用于提供业务ID（32位小写HEX字符串），默认值通过使用 ``uuid4()`` 来生成。
+
+    适用于：``django.db.models.Model`` 的子类
+    """
+    biz = models.CharField(max_length=32, default=biz_id, unique=True, db_index=True, blank=True)
 
     class Meta:
         abstract = True

@@ -73,6 +73,7 @@
 - `ShortIndexMixin`，附加一个自定义索引字段（IntegerField）以及获取逆序和顺序查询集的两个类方法。
 - `UrgencyMixin`，附加一个紧急程度字段。
 - `ImportanceMixin`，附加一个重要程度字段。
+- `BizMixin`，附加一个自动生成业务ID（32位小写HEX字符串）的字段。
 
 
 ## zeraora.drf
