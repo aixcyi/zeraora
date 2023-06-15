@@ -1,12 +1,11 @@
-from decimal import Decimal
-
 from tests.base_test_case import BaseTestCase
 from zeraora.typeclasses import *
 
 
 class TypeclassesTest(BaseTestCase):
 
-    def test_onion_object(self):
+    def testOnionObject(self):
+        from decimal import Decimal
         data = {
             'code': 1,
             'info': 'done',
@@ -89,7 +88,7 @@ class TypeclassesTest(BaseTestCase):
 
         self.assertRaises(TypeError, OnionObject, [1, 2, 3])
 
-    def test_radix_integer(self):
+    def testRadixInteger(self):
         ri256 = RadixInteger(33882121, 256)
         self.assertEqual(33882121, int.from_bytes(bytes(ri256), 'little'))
         self.assertEqual(256, ri256.radix)
@@ -111,7 +110,7 @@ class TypeclassesTest(BaseTestCase):
         with self.assertRaises(TypeError):
             _ = RadixInteger('meow', 16)
 
-    def test_items_enum(self):
+    def testItems(self):
         from zeraora.constants.division import Province, Region
 
         self.assertEqual('ANHUI', Province.ANHUI.name)
@@ -124,15 +123,24 @@ class TypeclassesTest(BaseTestCase):
         self.assertEqual(Region.EAST, Province.ANHUI.region)
         self.assertEqual('300000', Province.ANHUI.id_code)
         self.assertEqual('300000000000', Province.ANHUI.statistics_code)
-        self.assertEqual(34, len(set(Province.names)))
-        self.assertEqual(34, len(set(Province.values)))
-        self.assertEqual(34, len(set(Province.items)))
-        self.assertEqual(34, len(set(Province.choices)))
-        self.assertEqual(34, len(set(Province.numerics)))
-        self.assertEqual(34, len(set(Province.shorts)))
-        self.assertEqual(34, len(set(Province.codes)))
-        self.assertEqual(34, len(set(Province.nicks)))
-        self.assertEqual(34, len(set(Province.labels)))
+        self.assertLengthEqual(34, set(Province.names))
+        self.assertLengthEqual(34, set(Province.values))
+        self.assertLengthEqual(34, set(Province.items))
+        self.assertLengthEqual(34, set(Province.choices))
+        self.assertLengthEqual(34, set(Province.numerics))
+        self.assertLengthEqual(34, set(Province.shorts))
+        self.assertLengthEqual(34, set(Province.codes))
+        self.assertLengthEqual(34, set(Province.nicks))
+        self.assertLengthEqual(34, set(Province.labels))
+        self.assertMemberTypeIs(str, Province.names)
+        self.assertMemberTypeIs(str, Province.values)
+        self.assertMemberTypeIs(str, Province.items)
+        self.assertMemberIsInstance(tuple, Province.choices)
+        self.assertMemberTypeIs(int, Province.numerics)
+        self.assertMemberTypeIs(str, Province.shorts)
+        self.assertMemberTypeIs(str, Province.codes)
+        self.assertMemberTypeIs(str, Province.nicks)
+        self.assertMemberTypeIs(str, Province.labels)
         self.assertNoAttribute('numbers', Province)
         self.assertEqual(len(Region.items), len(set(Province.regions)))
         self.assertEqual('34', str(Province.ANHUI))
@@ -152,34 +160,38 @@ class TypeclassesTest(BaseTestCase):
             def box(self):
                 return self._box_
 
-        self.assertTrue(SizeLevel.boxes)
+        self.assertHasAttribute('boxes', SizeLevel)
         with self.assertRaises(AttributeError):
             _ = SizeLevel.choices
 
-    def test_items_meta(self):
+    def testItemsMeta(self):
         with self.assertRaises(AttributeError):
             class UrgencyLevel(Items):
                 HIGH = 10, 'WARNING'
                 NORMAL = 0, 'INFO'
                 LOW = -10, 'DEBUG'
+
         with self.assertRaises(TypeError):
             class UrgencyLevel2(Items):
                 HIGH = 10, 'WARNING'
                 NORMAL = 0, 'INFO'
                 LOW = -10, 'DEBUG'
                 __properties__ = 'loglevel'
+
         with self.assertRaises(ValueError):
             class UrgencyLevel3(Items):
                 HIGH = 10, 'WARNING'
                 NORMAL = 0, 'INFO'
                 LOW = -10, 'DEBUG'
                 __properties__ = '_loglevel',
+
         with self.assertRaises(KeyError):
             class UrgencyLevel4(Items):
                 HIGH = 10, 'WARNING'
                 NORMAL = 0, 'INFO'
                 LOW = -10, 'DEBUG'
                 __properties__ = 'value', 'loglevel'
+
         with self.assertRaises(KeyError):
             class UrgencyLevel5(Items):
                 HIGH = 10, 'WARNING'

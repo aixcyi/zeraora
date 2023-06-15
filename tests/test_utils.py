@@ -15,7 +15,7 @@ SUBJECT_CATEGORY = {
 }
 
 
-def _age(birth: datetime) -> int:
+def age(birth: datetime) -> int:
     return datetime.now().year - birth.year
 
 
@@ -39,7 +39,7 @@ class Student(ReprMixin):
 
     class AttributeMeta:
         name = '姓名'
-        birthday: _age = '年龄'
+        birthday: age = '年龄'
         join_year = '入学年份'
         join_date = '报道时间'
 
@@ -54,7 +54,7 @@ class Student(ReprMixin):
 
 class UtilsTest(BaseTestCase):
 
-    def test_repr_mixin(self):
+    def testReprMixin(self):
         r00 = '<Student 男 工学 大四 姓名="叶秋然" 年龄=23 入学年份=2018 报道时间=[2018-08-29 16:29:00,000000]>'
         r01 = '<Student 女 工学 大四 姓名="叶嫣然" 年龄=23 入学年份=2018 报道时间=[2018-08-29 16:29:00,000000]>'
         r02 = '<Student 男 哲学 大四 姓名="叶秋然" 年龄=23 入学年份=2018 报道时间=[2018-08-29 16:29:00,000000]>'
@@ -77,7 +77,7 @@ class UtilsTest(BaseTestCase):
         self.assertEqual(r11, repr(Student(pk='10086020')))
         self.assertEqual(r12, repr(Student(id=1, pk='10086020')))
 
-    def test_bear_timer_via_object(self):
+    def testBearTimer(self):
         with self.assertLogs('zeraora.bear', 'DEBUG'):
             bear = BearTimer(printable=False)
             bear.start()
@@ -85,12 +85,10 @@ class UtilsTest(BaseTestCase):
                 bear.step('Hello, meow.')
             bear.stop()
 
-    def test_bear_timer_via_context(self):
         with self.assertLogs('zeraora.bear', 'DEBUG'):
             with BearTimer(printable=False):
-                return sum(range(100_0000))
+                _ = sum(range(100_0000))
 
-    def test_bear_timer_via_decorator(self):
         with self.assertLogs('zeraora.bear', 'DEBUG'):
             @BearTimer(printable=False)
             def calc_summary(length: int) -> int:
@@ -98,7 +96,7 @@ class UtilsTest(BaseTestCase):
 
             _ = calc_summary(100_0000)
 
-    def test_py_ver_checker(self):
+    def testDecorator_start(self):
         tip = '咩咩咩'
         ver = sys.version_info
 
@@ -116,7 +114,7 @@ class UtilsTest(BaseTestCase):
             limit()
         self.assertTrue(str(cm.exception.args[0]).endswith(tip))
 
-    def test_deprecator(self):
+    def test_deprecate(self):
         ver = sys.version_info
 
         with self.assertWarns(PendingDeprecationWarning):
@@ -133,7 +131,7 @@ class UtilsTest(BaseTestCase):
 
             _ = limit(1, 2)
 
-    def test_adc_dataset(self):
+    def test_load_ads4(self):
         from pathlib import Path
         from zeraora import gvs
         from zeraora.constants import Province, Region

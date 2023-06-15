@@ -5,6 +5,9 @@ from zeraora.converters import *
 
 
 class ConvertersTest(TestCase):
+    delta_t0 = timedelta()
+    delta_t1 = timedelta(seconds=3, milliseconds=140, microseconds=1590)
+    delta_t2 = timedelta(seconds=18030, milliseconds=140, microseconds=1590)
 
     def test_remove_exponent(self):
         from decimal import Decimal
@@ -16,19 +19,19 @@ class ConvertersTest(TestCase):
         self.assertEqual(Decimal('03.14'), remove_exponent(Decimal('03.140')))
 
     def test_delta2hms(self):
-        self.assertEqual((0, 0, 0), delta2hms(timedelta()))
-        self.assertEqual((0, 0, 3.14159), delta2hms(timedelta(seconds=3, milliseconds=140, microseconds=1590)))
-        self.assertEqual((5, 0, 30.14159), delta2hms(timedelta(seconds=18030, milliseconds=140, microseconds=1590)))
+        self.assertTupleEqual((0, 0, 0), delta2hms(self.delta_t0))
+        self.assertTupleEqual((0, 0, 3.14159), delta2hms(self.delta_t1))
+        self.assertTupleEqual((5, 0, 30.14159), delta2hms(self.delta_t2))
 
     def test_delta2ms(self):
-        self.assertEqual((0, 0), delta2ms(timedelta()))
-        self.assertEqual((0, 3.14159), delta2ms(timedelta(seconds=3, milliseconds=140, microseconds=1590)))
-        self.assertEqual((300, 30.14159), delta2ms(timedelta(seconds=18030, milliseconds=140, microseconds=1590)))
+        self.assertTupleEqual((0, 0), delta2ms(self.delta_t0))
+        self.assertTupleEqual((0, 3.14159), delta2ms(self.delta_t1))
+        self.assertTupleEqual((300, 30.14159), delta2ms(self.delta_t2))
 
     def test_delta2s(self):
-        self.assertEqual(0, delta2s(timedelta()))
-        self.assertEqual(3.14159, delta2s(timedelta(seconds=3, milliseconds=140, microseconds=1590)))
-        self.assertEqual(18030.14159, delta2s(timedelta(seconds=18030, milliseconds=140, microseconds=1590)))
+        self.assertEqual(0, delta2s(self.delta_t0))
+        self.assertEqual(3.14159, delta2s(self.delta_t1))
+        self.assertEqual(18030.14159, delta2s(self.delta_t2))
 
     def test_wdate(self):
         self.assertEqual(date(2023, 5, 28), wdate(2023, 22, 0, sunday_first=True))
@@ -40,7 +43,7 @@ class ConvertersTest(TestCase):
         self.assertEqual(date(2023, 6, 3), wdate(2023, 22, 6))
         self.assertEqual(date(2023, 6, 4), wdate(2023, 22, 0))
 
-    def test_get_week_range_and_side(self):
+    def test_get_week_range(self):
         # Monday First / Sunday First
         dateset_mf = tuple(date(2023, 5, 29) + timedelta(days=i) for i in range(7))
         dateset_sf = tuple(date(2023, 5, 28) + timedelta(days=i) for i in range(7))
@@ -88,7 +91,7 @@ class ConvertersTest(TestCase):
 
         self.assertEqual('"string"', represent('string'))
         self.assertEqual('[2012-01-23]', represent(date(2012, 1, 23)))
-        self.assertEqual('[0d+3.141590s]', represent(timedelta(seconds=3, milliseconds=140, microseconds=1590)))
+        self.assertEqual('[0d+3.141590s]', represent(self.delta_t1))
         self.assertEqual('[3d+3599.000000s]', represent(timedelta(days=3, hours=1, seconds=-1)))
         self.assertEqual('[2012-01-23 08:29:59,000000]', represent(datetime(2012, 1, 23, 8, 29, 59)))
         self.assertEqual('d6d0b9fac9fabbeed4daedc1d0a1d2ed', represent(UUID('d6d0b9fa-c9fa-bbee-d4da-edc1d0a1d2ed')))
@@ -117,19 +120,19 @@ class ConvertersTest(TestCase):
         self.assertEqual(0, datasize('47KiBytes'))
         self.assertRaises(TypeError, datasize, 1024)
 
-    def test_trulize(self):
-        self.assertEqual(True, true(True))
-        self.assertEqual(True, true('True'))
-        self.assertEqual(True, true('true'))
-        self.assertEqual(True, true('TRUE'))
-        self.assertEqual(True, true(1))
-        self.assertEqual(True, true('1'))
-        self.assertEqual(False, true(False))
-        self.assertEqual(False, true('False'))
-        self.assertEqual(False, true('false'))
-        self.assertEqual(False, true('FALSE'))
-        self.assertEqual(False, true(0))
-        self.assertEqual(False, true('0'))
+    def testMethod_true(self):
+        self.assertTrue(true(True))
+        self.assertTrue(true('True'))
+        self.assertTrue(true('true'))
+        self.assertTrue(true('TRUE'))
+        self.assertTrue(true(1))
+        self.assertTrue(true('1'))
+        self.assertFalse(true(False))
+        self.assertFalse(true('False'))
+        self.assertFalse(true('false'))
+        self.assertFalse(true('FALSE'))
+        self.assertFalse(true(0))
+        self.assertFalse(true('0'))
 
     def test_safecast(self):
         self.assertEqual(1234, safecast(int, '1234'))
