@@ -1,7 +1,5 @@
 import sys
 from datetime import date, datetime
-from random import random
-from time import sleep
 
 from tests.base_test_case import BaseTestCase
 from zeraora.utils import *
@@ -83,12 +81,9 @@ class UtilsTest(BaseTestCase):
         with self.assertLogs('zeraora.bear', 'DEBUG'):
             bear = BearTimer(printable=False)
             bear.start()
-            for _ in range(3):
-                st = random()
-                sleep(st)
-                bear.step(st)
+            with self.assertLogs('zeraora.bear', 'DEBUG'):
+                bear.step('Hello, meow.')
             bear.stop()
-            self.assertEqual(1, 1)
 
     def test_bear_timer_via_context(self):
         with self.assertLogs('zeraora.bear', 'DEBUG'):
