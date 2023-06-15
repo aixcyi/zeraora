@@ -137,13 +137,10 @@ class TypeclassesTest(BaseTestCase):
         self.assertEqual(len(Region.items), len(set(Province.regions)))
         self.assertEqual('34', str(Province.ANHUI))
         self.assertEqual('Province.ANHUI', repr(Province.ANHUI))
-        self.assertIs(Province.GUANGDONG, Province.value_of('44'))
         self.assertTrue(Province.GUANGDONG in Province)
         self.assertTrue('34' in Province)
         self.assertFalse(Region.EAST in Province)
         self.assertFalse(34 in Province)
-        with self.assertRaises(ValueError):
-            _ = Province.value_of('99')
 
         class SizeLevel(Items):
             NORMAL = 0, 'bag'

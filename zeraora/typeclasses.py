@@ -299,16 +299,9 @@ class ItemsMeta(enum.EnumMeta):
         return empty + [(member.value, member.label) for member in cls]
 
     def value_of(cls, value: str) -> enum.Enum:
-        """
-        将一个枚举值转换为一个枚举。
-
-        :raise ValueError: 在枚举类中没有找到相应的枚举.
-        """
-        if value not in cls._value2member_map_:
-            raise ValueError(
-                f'{cls.__name__} 不存在值为 {value!s} 的枚举。'
-            )
-        return cls._value2member_map_[value]
+        raise NotImplementedError(
+            f'该方法是多余的，请使用 {cls.__name__}(value) 代替。'
+        )  # pragma: no cover
 
 
 class Items(enum.Enum, metaclass=ItemsMeta):
