@@ -71,6 +71,8 @@
 - `TimeMixin`，附加一个创建时间和一个修改时间字段。
 - `IndexMixin`，附加一个自定义索引字段（ShortIntegerField）以及获取逆序和顺序查询集的两个类方法。
 - `ShortIndexMixin`，附加一个自定义索引字段（IntegerField）以及获取逆序和顺序查询集的两个类方法。
+- `UrgencyMixin`，附加一个紧急程度字段。
+- `ImportanceMixin`，附加一个重要程度字段。
 
 
 ## zeraora.drf
@@ -88,6 +90,7 @@
 - `Region`，枚举。包含用于划分省级行政区的大区。
 - `Province`，枚举。包含34个省级行政区名称、区划代码、字母码、大区、简称、缩写。
 - `DivisionLevel`，枚举。行政区划的层次级别。
+- `Degree`，枚举。表示程度的五个档位（最高、高、正常、低、最低）。
 - `BASE8`
 - `BASE16`
 - `BASE36`

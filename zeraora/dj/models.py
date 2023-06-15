@@ -6,9 +6,12 @@ __all__ = [
     'SnakeModel', 'CreateTimeMixin',
     'TimeMixin', 'ActiveStatusMixin', 'DeletionMixin',
     'IndexMixin', 'ShortIndexMixin',
+    'UrgencyMixin', 'ImportanceMixin',
 ]
 
 import re
+
+from ..constants import Degree
 
 try:
     from django.apps import apps
@@ -179,6 +182,38 @@ class ShortIndexMixin(IndexMixin):
     适用于：``django.db.models.Model`` 的子类
     """
     index = models.SmallIntegerField(default=0, blank=True)
+
+    class Meta:
+        abstract = True
+
+
+class UrgencyMixin(models.Model):
+    """
+    为模型附加以下字段：
+
+    - ``urgency`` ，可空。用于记录紧急程度。
+      取值范围限定在 ``zeraora.constants.Degree.choices`` ，
+      默认值为 ``zeraora.constants.Degree.NORMAL`` 。
+
+    适用于：``django.db.models.Model`` 的子类
+    """
+    urgency = models.SmallIntegerField(default=Degree.NORMAL, choices=Degree.choices, blank=True)
+
+    class Meta:
+        abstract = True
+
+
+class ImportanceMixin(models.Model):
+    """
+    为模型附加以下字段：
+
+    - ``importance`` ，可空。用于记录重要程度。
+      取值范围限定在 ``zeraora.constants.Degree.choices`` ，
+      默认值为 ``zeraora.constants.Degree.NORMAL`` 。
+
+    适用于：``django.db.models.Model`` 的子类
+    """
+    importance = models.SmallIntegerField(default=Degree.NORMAL, choices=Degree.choices, blank=True)
 
     class Meta:
         abstract = True
