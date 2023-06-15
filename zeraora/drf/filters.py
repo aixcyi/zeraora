@@ -16,9 +16,8 @@ __all__ = [
 try:
     from django.core.exceptions import FieldDoesNotExist
     from rest_framework.filters import BaseFilterBackend
-except ImportError:
-    print('需要安装Django以及DRF框架：pip install django djangorestframework')
-    raise
+except ImportError as e:
+    raise ImportError('需要安装Django以及DRF框架：\npip install django djangorestframework') from e
 
 
 class ExistingFilterBackend(BaseFilterBackend):

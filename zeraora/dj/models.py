@@ -22,9 +22,8 @@ from ..utils import warn_empty_ads
 try:
     from django.apps import apps
     from django.db import models
-except ImportError:
-    print('需要安装Django框架：pip install django')
-    raise
+except ImportError as e:
+    raise ImportError('需要安装Django框架：\npip install django') from e
 
 
 class SnakeModel(models.base.ModelBase):

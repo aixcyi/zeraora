@@ -14,9 +14,8 @@ try:
     from rest_framework import status
     from rest_framework.response import Response
     from rest_framework.viewsets import ViewSetMixin
-except ImportError:
-    print('需要安装Django以及DRF框架：pip install django djangorestframework')
-    raise
+except ImportError as e:
+    raise ImportError('需要安装Django以及DRF框架：\npip install django djangorestframework') from e
 
 
 class EasyViewSetMixin(ViewSetMixin):
