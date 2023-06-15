@@ -66,7 +66,7 @@ class CreateTimeMixin(models.Model):
     """
     为模型附加以下字段：
 
-    - ``created_at`` ，只读，记录模型创建时刻（日期+时间）。
+    - ``created_at`` ，只读。记录模型创建时刻（日期+时间）。
 
     适用于：``django.db.models.Model`` 的子类
     """
@@ -80,8 +80,8 @@ class TimeMixin(models.Model):
     """
     为模型附加以下字段：
 
-    - ``created_at`` ，只读，记录模型创建时刻（日期+时间）。
-    - ``updated_at`` ，记录模型修改时刻（日期+时间），仅当 ``Model.save()`` 被调用时被自动设置。
+    - ``created_at`` ，只读。记录模型创建时刻（日期+时间）。
+    - ``updated_at`` ，可空。记录模型修改时刻（日期+时间），仅当 ``Model.save()`` 被调用时被自动设置。
 
     适用于：``django.db.models.Model`` 的子类
     """
@@ -96,7 +96,7 @@ class ActiveStatusMixin(models.Model):
     """
     为模型附加以下字段和方法：
 
-    - ``activated`` ，用于标记禁用状态。默认为 ``True`` ，当被设置为 ``False`` 时表示被标记为已禁用。
+    - ``activated`` ，可空。用于标记禁用状态。默认为 ``True`` ，当被设置为 ``False`` 时表示被标记为已禁用。
     - ``get_active_set()`` ，获取已启用的行，返回一个查询集。
 
     适用于：``django.db.models.Model`` 的子类
@@ -115,7 +115,7 @@ class DeletionMixin(models.Model):
     """
     为模型附加以下字段和方法：
 
-    - ``deleted`` ，用于标记删除状态。默认为 ``False`` ，当被设置为 ``True`` 时表示被标记为已删除。
+    - ``deleted`` ，可空。用于标记删除状态。默认为 ``False`` ，当被设置为 ``True`` 时表示被标记为已删除。
     - ``get_existing_set()`` ，获取未被删除的行，返回一个查询集。
 
     适用于：``django.db.models.Model`` 的子类
@@ -134,7 +134,7 @@ class IndexMixin(models.Model):
     """
     为模型附加以下字段和方法：
 
-    - ``index`` ，用于存放自定义索引（32位有符号整数）。默认值 ``0`` 。
+    - ``index`` ，可空。用于存放自定义索引（32位有符号整数）。默认值 ``0`` 。
     - ``get_ordered_set()`` ，获取一个按 ``index`` 字段从大到小排序的查询集。
     - ``get_reversed_set()`` ，获取一个按 ``index`` 字段从小到大排序的查询集。
 
@@ -172,8 +172,8 @@ class ShortIndexMixin(IndexMixin):
     """
     为模型附加以下字段和方法：
 
-    - ``index`` ，用于存放自定义索引（16位有符号整数）。默认值 ``0`` 。
-    - ``get_ordered_set()`` ，获取一个按 index 字段从大到小排序的查询集。
+    - ``index`` ，可空。用于存放自定义索引（16位有符号整数）。默认值 ``0`` 。
+    - ``get_ordered_set()`` ，获取一个按 ``index`` 字段从大到小排序的查询集。
     - ``get_reversed_set()`` ，获取一个按 ``index`` 字段从小到大排序的查询集。
 
     适用于：``django.db.models.Model`` 的子类
