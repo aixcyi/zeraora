@@ -4,6 +4,7 @@
 
 - `__version__`，一个元组。表示Zeraora的版本。
 - `version`，一个字符串。表示Zeraora的版本。
+- `gvs`，全局变量包。
 
 ## zeraora.utils
 
@@ -13,6 +14,7 @@
 - [`ReprMixin()`](./zeraora/ReprMixin.md)，用最小改动来生成通用representation的工具类。
 - `@start()`，检查 Python 版本是否高于或等于指定值。
 - `@deprecate()`，为一个函数作废弃标记。指示被装饰的函数在当前版本下将于/已于某个版本废弃。
+- `load_ads4()`，载入行政区划映射表。
 
 ## zeraora.typeclasses
 
@@ -74,6 +76,8 @@
 - `UrgencyMixin`，附加一个紧急程度字段。
 - `ImportanceMixin`，附加一个重要程度字段。
 - `BizMixin`，附加一个自动生成业务ID（32位小写HEX字符串）的字段。
+- `AddressMixin`，附加了省、市、县、乡镇、街道五个字段，区划代码一个属性，以及两个方法。
+- `GlobalAddressMixin`，附加了国家、省、市、县、乡镇、街道、街道2、街道3等字段。
 
 
 ## zeraora.drf

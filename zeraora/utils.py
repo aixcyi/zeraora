@@ -4,16 +4,22 @@
 
 __all__ = [
     'bear_config', 'BearTimer', 'ReprMixin', 'start', 'deprecate',
+    'load_ads4', 'warn_empty_ads',
 ]
 
+import json
 import logging
 import sys
 import warnings
 from datetime import datetime
 from functools import wraps
-from typing import Tuple, Optional
+from itertools import groupby
+from pathlib import Path
+from typing import Tuple, Optional, NoReturn, Union
 
+from . import gvs
 from .converters import delta2s, represent
+from .structures import DivisionCode
 
 logger_bear = logging.getLogger('zeraora.bear')
 
@@ -417,3 +423,51 @@ def deprecate(*since,
         return wrapper
 
     return decorator
+
+
+def warn_empty_ads():
+    """
+    在未载入行政区划映射表时发出警告。（您不应该使用此方法，它只在包内使用）
+    """
+    if not gvs.ad_map or not gvs.ad_tree:
+        warnings.warn('未载入行政区划映射表，该方法可能会失效或返回非期望值。', category=UserWarning)
+
+
+def load_ads4(fp: Union[str, Path], encoding='UTF-8', **kwargs) -> NoReturn:
+    """
+    读取并过滤前四级行政区划，然后赋值给全局变量 ``zeraora.gvs.ad_map`` 和 ``zeraora.gvs.ad_tree`` 。
+
+    测试数据可以在 `GitHub <https://github.com/aixcyi/zeraora/tree/main/dataset>`_
+    或 `码云 <https://github.com/aixcyi/zeraora/tree/main/dataset>`_ 中找到。
+
+    ----
+
+    警告：这会耗费一定的时间并且占用一些内存，同时造成线程阻塞，请在合适的时候再执行调用。
+
+    :param fp: 数据文件地址。
+    :param encoding: 文件编码。
+    :param kwargs: 其它提供给 ``open()`` 的参数。
+    :return: 无
+    """
+    with open(fp, 'r', encoding=encoding, **kwargs) as f:
+        data = json.load(f)
+    if not isinstance(data, dict):
+        raise ValueError('提供的数据不是一对一映射。')  # pragma: no cover
+
+    steam = data.items()
+    steam = ((c, n) for c, n in steam if isinstance(c, str) and isinstance(n, str))
+    steam = ((DivisionCode.fromcode(c), n) for c, n in steam)
+    steam = ((c, n) for c, n in steam if c.village == '000')  # 只要前四个级别
+    steam = ((c, n) for c, n in steam if (c.county != '00' and c.township == '000') or c.county == '00')
+
+    gvs.ad_map = dict(steam)
+    gvs.ad_tree = fork(gvs.ad_map, depth=0, floor=4)
+
+
+def fork(__steam, depth: int, floor: int):
+    if depth >= floor:
+        return next(__steam)[-1]
+    return {
+        k: fork(v, depth + 1, floor)
+        for k, v in groupby(__steam, lambda item: item[depth])
+    }

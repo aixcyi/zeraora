@@ -7,13 +7,17 @@ __all__ = [
     'TimeMixin', 'ActiveStatusMixin', 'DeletionMixin',
     'IndexMixin', 'ShortIndexMixin',
     'UrgencyMixin', 'ImportanceMixin',
-    'BizMixin',
+    'AddressMixin', 'GlobalAddressMixin', 'BizMixin',
 ]
 
 import re
 import uuid
+from typing import Union
 
-from ..constants import Degree
+from .. import gvs
+from ..constants import Degree, Province
+from ..structures import DivisionCode
+from ..utils import warn_empty_ads
 
 try:
     from django.apps import apps
@@ -237,6 +241,106 @@ class BizMixin(models.Model):
     适用于：``django.db.models.Model`` 的子类
     """
     biz = models.CharField(max_length=32, default=biz_id, unique=True, db_index=True, blank=True)
+
+    class Meta:
+        abstract = True
+
+
+class AddressMixin(models.Model):
+    """
+    为模型附加以下字段、属性、方法：
+
+    - ``province`` 。省份代码，两位整数字符。
+    - ``prefecture`` 。市区代码，两位整数字符。
+    - ``county`` 。县区代码，两位整数字符。
+    - ``street`` 。街道地址。最多存放150个字符。
+    - ``ad_code`` 。行政区划代码，返回一个 ``DivisionCode`` 元组。
+    - ``check_area_exist()`` 。检查省市县代码是否正确。
+    - ``show_address()`` 。返回一个用于显示的地址。
+
+    使用此类的相关方法或属性前，请在合适的时候调用 ``zeraora.utils.load_ads4()`` 来加载必要数据。
+
+    ----
+
+    适用于：``django.db.models.Model`` 的子类
+    """
+    province = models.CharField('省份', max_length=2, choices=Province.choices, blank=True)
+    prefecture = models.CharField('市区', max_length=2, default='00', blank=True)
+    county = models.CharField('县区', max_length=2, default='00', blank=True)
+    township = models.CharField('乡镇', max_length=3, default='000', blank=True)
+    street = models.CharField('街道', max_length=150, default=None, null=True, blank=True)
+
+    @property
+    def ad_code(self) -> DivisionCode:
+        """
+        行政区划代码。
+
+        返回一个 ``DivisionCode`` 元组。
+        写入时提供一个 ``DivisionCode`` 元组，或者一个至少有六位数字的字符串。
+        """
+        return DivisionCode(self.province, self.prefecture, self.county, self.township)
+
+    @ad_code.setter
+    def ad_code(self, _code: Union[str, DivisionCode]):
+        adc = _code if isinstance(_code, DivisionCode) else DivisionCode.fromcode(_code)
+        self.province = adc.province
+        self.prefecture = adc.prefecture
+        self.county = adc.county
+        self.township = adc.township
+
+    def check_area_exist(self) -> bool:
+        """
+        检查省、市、县、乡镇四个层级的代码是否存在。
+        """
+        warn_empty_ads()
+        return self.ad_code in gvs.ad_map
+
+    def show_address(self, sep: str = ' ') -> str:
+        """
+        拼接一个用于显示的完整地址，包含省、市、县、街道。
+
+        :param sep: 省、市、县、街道之间的间隔符，默认为一个空格。
+        :return: 一个完整地址。
+        """
+        province = DivisionCode(self.province)
+        prefecture = DivisionCode(self.province, self.prefecture)
+        county = DivisionCode(self.province, self.prefecture, self.county)
+
+        warn_empty_ads()
+        try:
+            province = gvs.ad_map[province]
+            prefecture = gvs.ad_map[prefecture]
+            county = gvs.ad_map[county]
+        except IndexError:
+            pass
+
+        return sep.join([province, prefecture, county, self.street])
+
+    class Meta:
+        abstract = True
+
+
+class GlobalAddressMixin(models.Model):
+    """
+    为模型附加以下字段、属性、方法：
+
+    - ``nation`` 。国家。
+    - ``province`` ，可空，默认为空。省。
+    - ``prefecture`` ，可空，默认为空。市。
+    - ``county`` ，可空，默认为空。县。
+    - ``street`` ，可空，默认为空。街道。。最多存放200个字符。
+    - ``street2`` ，可空，默认为空。街道2。。最多存放200个字符。
+    - ``street3`` ，可空，默认为空。街道3。。最多存放200个字符。
+
+    适用于：``django.db.models.Model`` 的子类
+    """
+    nation = models.CharField('国家', max_length=50)
+    province = models.CharField('省', max_length=100, default=None, null=True, blank=True)
+    prefecture = models.CharField('市', max_length=100, default=None, null=True, blank=True)
+    county = models.CharField('县', max_length=100, default=None, null=True, blank=True)
+    street = models.CharField('街道', max_length=200, default=None, null=True, blank=True)
+    street2 = models.CharField('街道2', max_length=200, default=None, null=True, blank=True)
+    street3 = models.CharField('街道3', max_length=200, default=None, null=True, blank=True)
 
     class Meta:
         abstract = True

@@ -45,5 +45,5 @@ setup(
         "Tracker": "https://github.com/aixcyi/zeraora/issues",
     },
     python_requires='>=3.7',
-    packages=find_packages(where=".", exclude=['test*']),
+    packages=find_packages(where=".", exclude=['test*', 'dataset']),
 )

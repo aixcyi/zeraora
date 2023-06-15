@@ -137,3 +137,14 @@ class UtilsTest(BaseTestCase):
                 return (min if minimal else max)((a, b) + args)
 
             _ = limit(1, 2)
+
+    def test_adc_dataset(self):
+        from pathlib import Path
+        from zeraora import gvs
+        from zeraora.constants import Province, Region
+
+        self.assertWarns(UserWarning, warn_empty_ads)
+        root = Path(__file__).absolute().parent.parent  # root of project
+        path = root / 'dataset' / 'code2022.json'
+        load_ads4(path)
+        self.assertEqual(len(tuple(r for r in Province.regions if r != Region.HMT)), len(gvs.ad_tree))
