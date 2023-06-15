@@ -274,22 +274,34 @@ class ItemsMeta(enum.EnumMeta):
 
     @property
     def names(cls) -> t.List[str]:
+        """
+        所有枚举成员的名称（定义枚举成员时的全大写变量名）。
+        """
         empty = ["__empty__"] if hasattr(cls, "__empty__") else []
         return empty + [member.name for member in cls]
 
     @property
     def values(cls) -> list:
+        """
+        所有枚举成员的值（定义枚举成员时等号右边元组的第一个值）。
+        """
         empty = [None] if hasattr(cls, "__empty__") else []
         return empty + [member.value for member in cls]
 
     @property
     def items(cls) -> t.Dict[str, t.Any]:
+        """
+        所有枚举成员的名称和值。
+        """
         its = {"__empty__": None} if hasattr(cls, "__empty__") else {}
-        its.update({member.name: member.value for member in cls})
+        its.update((member.name, member.value) for member in cls)
         return its
 
     @property
-    def choices(cls) -> t.List[t.Tuple[t.Union[str, None], t.Any]]:
+    def choices(cls) -> t.List[t.Union[t.Tuple[str, t.Any], t.Tuple[None, t.Any]]]:
+        """
+        所有枚举成员的值，和所有枚举成员的属性中的标签（label）。
+        """
         if 'label' not in cls.__properties__:
             raise AttributeError(
                 '使用 .choices 属性前必须在 __properties__ 中'
@@ -297,6 +309,12 @@ class ItemsMeta(enum.EnumMeta):
             )
         empty = [(None, cls.__empty__)] if hasattr(cls, "__empty__") else []
         return empty + [(member.value, member.label) for member in cls]
+
+    def asdict(cls) -> t.Dict[enum.Enum, t.Any]:
+        """
+        返回枚举成员与枚举值之间的映射。
+        """
+        return {member: member.value for member in cls}
 
     def value_of(cls, value: str) -> enum.Enum:
         raise NotImplementedError(
