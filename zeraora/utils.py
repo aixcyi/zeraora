@@ -11,14 +11,15 @@ import json
 import logging
 import sys
 import warnings
-from datetime import datetime
+from decimal import Decimal
 from functools import wraps
 from itertools import groupby
 from pathlib import Path
-from typing import Tuple, Optional, NoReturn, Union
+from time import time_ns
+from typing import Tuple, NoReturn, Union
 
 from . import gvs
-from .converters import delta2s, represent
+from .converters import represent
 from .structures import DivisionCode
 
 logger_bear = logging.getLogger('zeraora.bear')
@@ -58,9 +59,42 @@ bear_config = {
 
 class BearTimer(object):
 
-    def __init__(self, label: str = None, printable=True):
+    def __init__(self, label: str = None, *_, **__):
         """
-        熊牌计时器。对代码运行进行计时，并打印时间和提示。
+        熊牌计时器。对代码运行进行计时，并向名为 "zeraora.bear" 的Logger发送DEBUG等级的日志。
+
+        ----
+
+        使用前，需要先启用日志输出：
+
+        >>> import logging.config
+        >>> from zeraora.utils import BearTimer, bear_config
+        >>>
+        >>> logging.config.dictConfig(bear_config)
+        >>> bear = BearTimer()
+
+        对于使用 Django 的项目可以改为在 settings.py 中进行如下设置：
+
+        >>> LOGGING = {
+        >>>     'version': 1,
+        >>>     'formatters': {...},
+        >>>     'filters': {...},
+        >>>     'handlers': {
+        >>>         'Console': {
+        >>>             'level': 'DEBUG',
+        >>>             'class': 'logging.StreamHandler',
+        >>>         },
+        >>>         # ...
+        >>>     },
+        >>>     'loggers': {
+        >>>         'zeraora.bear': {
+        >>>             'level': 'DEBUG',
+        >>>             'handlers': ['Console'],
+        >>>         },
+        >>>     },
+        >>> }
+
+        ----
 
         最简单是使用 ``with`` 语句包裹需要计时的部分：
 
@@ -99,22 +133,12 @@ class BearTimer(object):
         >>> # 业务逻辑
         >>> bear.stop()
 
-        若需要将计时消息输出到日志而非标准输出时，如果没有使用框架，可以通过以下方法启用日志记录：
-
-        >>> import logging.config
-        >>> from zeraora.utils import BearTimer, bear_config
-        >>>
-        >>> logging.config.dictConfig(bear_config)
-        >>> bear = BearTimer(printable=False)
-
         :param label: 计时器的标题，用以标明输出信息归属于哪个计时器。默认从打印消息时的上下文中获取。
-        :param printable: 若为True，消息会打印到系统标准输出；
-                          若为False，则向名为 "zeraora.bear" 的Logger发送DEBUG等级的日志。
         """
-        self._start = None  # 计时开始时间
-        self._point = None  # 中途标记时间（用于计算距离上次标记过去了多久）
-        self._print = printable
-        self._label = sys._getframe().f_back.f_code.co_name if not label and hasattr(sys, '_getframe') else str(label)
+        context = sys._getframe().f_back.f_code.co_name
+        self._start: int = 0  # 计时开始时间
+        self._point: int = 0  # 中途标记时间（用于计算距离上次标记过去了多久）
+        self._label = context if not label and hasattr(sys, '_getframe') else str(label)
 
     def __call__(self, func):
         @wraps(func)
@@ -134,22 +158,17 @@ class BearTimer(object):
     def __exit__(self, exc_type, exc_val, traceback):
         self.stop()
 
-    def _record(self, msg: str = '') -> datetime:
+    def _record(self, msg: str = '') -> int:
         """
         打印一行消息，标明此刻的时间、经历的时长、距上次打印的时长、计时器标题，以及附加的消息。
 
         :param msg: 要附加的消息。默认为空文本。
-        :return: 此时的时刻。
+        :return: 自纪元以来的当前时间（以纳秒为单位）。
         """
-        now = datetime.now()
-        total = delta2s(now - self._start) if self._start else 0
-        delta = delta2s(now - self._point) if self._point else 0
-        if self._print:
-            print(f'[{now:%H:%M:%S.%f}] '
-                  f'[{self._label}] [{total:.6f} +{delta:.6f}]: '
-                  f'{msg}')  # pragma: no cover
-        else:
-            logger_bear.debug(f'[{self._label}] [{total:.6f} +{delta:.6f}]: {msg}')
+        now = time_ns()
+        total = Decimal((now - self._start) if self._start else 0) / 1000000000
+        delta = Decimal((now - self._point) if self._point else 0) / 1000000000
+        logger_bear.debug(f'[{self._label}] [{total:.9f} +{delta:.9f}]: {msg}')
         self._point = now
         return now
 
@@ -162,12 +181,12 @@ class BearTimer(object):
         :param msg: 要附加的消息。
         :return: 计时器对象自身。
         """
-        self._point = None
-        self._start = datetime.now()
+        self._point = 0
+        self._start = time_ns()
         self._record(msg)
         return self
 
-    def step(self, msg='') -> Tuple[Optional[datetime], datetime]:
+    def step(self, msg='') -> Tuple[int, int]:
         """
         中途标记。
 
@@ -176,21 +195,21 @@ class BearTimer(object):
         如果计时器尚未开始计时，那么过去的时间始终是 0 秒。
 
         :param msg: 要附加的消息。
-        :return: 二元元组。包含上一次标记/开始计时的时刻，和此时的时刻。
+        :return: 二元元组。包含上一次标记/开始计时的时刻，和此时的时刻。时刻是自纪元以来的当前时间（以纳秒为单位）。
         """
         prev = self._point
         curr = self._record(msg)
         return prev, curr
 
-    def stop(self, msg='Stopped.') -> datetime:
+    def stop(self, msg='Stopped.') -> int:
         """
         结束计时。
 
         :param msg: 要附加的消息。
-        :return: 此时的时刻。
+        :return: 返回自纪元以来的当前时间（以纳秒为单位）。
         """
         curr = self._record(msg)
-        self._start = None
+        self._start = 0
         return curr
 
 
