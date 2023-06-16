@@ -1,8 +1,8 @@
 """
-一个长期维护的个人开源工具库。
+一个实际应用积累的长期维护的实用开源工具库。
 
-A utility Python package supports for my personal and company projects.
+A utility Python package for our personal and corporate projects, with long time support.
 """
 
-__version__ = (0, 3, 0)
-version = '0.3.0'
+__version__ = (0, 3, 1)
+version = '0.3.1'
