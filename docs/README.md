@@ -48,26 +48,35 @@
 > 用于将一种值转换为另一种值的转换器。
 
 - `remove_exponent()`，去除十进制小数（Decimal）的尾导零。摘录自[Python文档](https://docs.python.org/zh-cn/3/library/decimal.html#decimal-faq)。
-- 类型转换
-  - `casting()`，转换一个值或返回默认值，以确保不会发生异常。
-  - `true()`，将HTTP请求中 query 部分的参数值转换为 Python 的逻辑值。
-- 字面量
-  - `datasize()`，将一个字面量转换为字节数目。
-  - `represent()`，将任意值转换为一个易于阅读的字符串。
-- 时间
-  - `delta2hms()`，将时间增量转换为时分秒格式，其中秒钟以小数形式包含毫秒和微秒。
-  - `delta2ms()`，将时间增量转换为分秒格式，其中秒钟以小数形式包含毫秒和微秒。
-  - `delta2s()`，将时间增量转换为秒钟数，以小数形式包含毫秒和微秒。
-  - `wdate()`，将某一年的某一周的星期几转换为一个具体的日期。
-  - `get_week_range()`，计算一年中某一周对应的所有日期。
-  - `get_week_side()`，计算一年中某一周对应的第一天和最后一天。
-  - `get_week_in_year()`，计算一个具体日期自一年开始的周序号。
+
+#### 类型转换
+
+- `casting()`，转换一个值或返回默认值，以确保不会发生异常。
+- `true()`，将HTTP请求中 query 部分的参数值转换为 Python 的逻辑值。
+
+#### 字面量
+
+- `datasize()`，将一个字面量转换为字节数目。
+- `represent()`，将任意值转换为一个易于阅读的字符串。
+
+#### 时间相关
+
+- `delta2hms()`，将时间增量转换为时分秒格式，其中秒钟以小数形式包含毫秒和微秒。
+- `delta2ms()`，将时间增量转换为分秒格式，其中秒钟以小数形式包含毫秒和微秒。
+- `delta2s()`，将时间增量转换为秒钟数，以小数形式包含毫秒和微秒。
+- `wdate()`，将某一年的某一周的星期几转换为一个具体的日期。
+- `get_week_range()`，计算一年中某一周对应的所有日期。
+- `get_week_side()`，计算一年中某一周对应的第一天和最后一天。
+- `get_week_in_year()`，计算一个具体日期自一年开始的周序号。
 
 ## zeraora.dj
 
 > 包含对 Django 的增强。
 
 - `SnakeModel`，一个元类，为模型生成一个下划线小写的（蛇形）数据表名。
+
+#### 字段mixin
+
 - `CreateTimeMixin`，附加一个创建时间字段。
 - `DeletionMixin`，附加一个标记删除字段。
 - `TimeMixin`，附加一个创建时间和一个修改时间字段。
@@ -78,6 +87,17 @@
 - `BizMixin`，附加一个自动生成业务ID（32位小写HEX字符串）的字段。
 - `AddressMixin`，附加了省、市、县、乡镇、街道五个字段，区划代码一个属性，以及两个方法。
 - `GlobalAddressMixin`，附加了国家、省、市、县、乡镇、街道、街道2、街道3等字段。
+
+#### 字段
+
+- `BizField`，对外业务ID字段，默认最大长度32字符。
+- `MoneyField`，金额字段，默认存储12个数位，包含两位小数。
+- `OSSPathField`，对象存储（OSS）中的文件路径。
+
+#### [Lookup](https://docs.djangoproject.com/zh-hans/4.2/ref/models/lookups/#lookup-reference)
+
+- `BitsIn`，过滤一个或多个比特存在于目标字段中的记录。
+- `BitsAllIn`，过滤所有比特位都存在于目标字段中的记录。
 
 
 ## zeraora.drf
