@@ -16,3 +16,7 @@ class Degree(int, Items):
     LOWEST = -100, '最低'
 
     __properties__ = 'label',
+
+    @property
+    def label(self):
+        return self._label_
