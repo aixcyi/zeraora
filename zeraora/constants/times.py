@@ -1,8 +1,35 @@
 __all__ = [
+    'Months',
+    'Weeks',
     'TimeZones',
 ]
 
 from ..typeclasses import Items
+
+
+class Months(Items):
+    January = '1月'
+    February = '2月'
+    March = '3月'
+    April = '4月'
+    May = '5月'
+    June = '6月'
+    July = '7月'
+    August = '8月'
+    September = '9月'
+    October = '10月'
+    November = '11月'
+    December = '12月'
+
+
+class Weeks(Items):
+    Monday = '星期一'
+    Tuesday = '星期二'
+    Wednesday = '星期三'
+    Thursday = '星期四'
+    Friday = '星期五'
+    Saturday = '星期六'
+    Sunday = '星期天'
 
 
 class TimeZones(Items):
