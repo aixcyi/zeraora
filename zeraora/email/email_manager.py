@@ -19,6 +19,8 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.application import MIMEApplication
 from email.header import decode_header, Header
 
+from ..constants import Months, Weeks, TimeZones
+
 
 def check_path(folder_path: str, filename: str = None, exist_check: bool = True, error_info: str = None) -> str:
     """检查路径
@@ -204,7 +206,6 @@ class TencentMailReceiveService:
         """
         from tqdm import tqdm
         from bs4 import BeautifulSoup
-        from zeraora.constants.times import Months, Weeks, TimeZones
         email_amount = self.get_email_amount()
         mail_info = {
             x + 1: {"Subject": "", "From": "", "To": "", "Date": "", "Date_Detail": "", "Body": "", "Appendix": Any}
