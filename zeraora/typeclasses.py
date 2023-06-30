@@ -115,6 +115,9 @@ class OnionObject(object):
 
 # Little Endian
 class RadixInteger(t.Tuple[int, ...]):
+    __slots__ = '_radix', '_integer'
+
+    # ---- 构造器 ----
 
     def __new__(cls,
                 x: t.Union[int, t.Tuple[int, ...], t.List[int], bytes, bytearray],
@@ -124,39 +127,29 @@ class RadixInteger(t.Tuple[int, ...]):
         """
         一个以元组表述各个数位的 N 进制整数。
 
-        :param x: 一个int类型的整数，一个包含非负整数的元组，或者一个字节串。
-        :param n: 进位制（的基数）。必须是一个大于等于 2 的正整数。
-        :param be: 表示给定元组是否使用大端字节序。
-        :param negative: 表示给定元组是否应当表示一个负数，或给定字节串是否使用二进制补码表示整数。
+        - 若 x 是一个字节串，则将其解释为 256 进制整数，并按照 be 确定数位顺序、按照 negative 确定正负，参数 n 将被忽略。
+        - 若 x 是一个元组或列表，则将其解释为 n 进制整数，并按照 be 确定数位顺序、按照 negative 确定正负。
+        - 若 x 是一个int类型整数，则将其转换为 n 进制整数。不必提供 be 和 negative 参数。
+        - 若 x 是一个RadixInteger，则将其重新转换为 n 进制整数。不必提供 be 和 negative 参数。
+
+        :param x: 整数。
+        :param n: 进位制。必须是一个大于等于 2 的整数。
+        :param be: 是否表示低位数字在前、高位数字在后。
+        :param negative: 给定元组或列表是否应当表示一个负数，或给定字节串是否使用二进制补码表示整数。
         """
-
-        def dec2seq(i: int):
-            while i >= n:
-                yield i % n
-                i //= n
-            yield i
-
+        if int(n) != n:
+            raise ValueError('无法表述非整数进位制。')
         if n < 2:
             raise ValueError('无法表述基数比 2 更低的进位制。')
 
         if isinstance(x, int):
-            self = tuple.__new__(cls, dec2seq(abs(x)))
-            self._radix = n
-            self._integer = x
+            self = cls.fromint(x, n)
 
         elif isinstance(x, cls):
-            self = tuple.__new__(cls, dec2seq(abs(x.numeric)))
-            self._radix = n
-            self._integer = x.numeric
+            self = cls.fromint(x.numeric, n)
 
         elif isinstance(x, (bytes, bytearray)):
-            self = tuple.__new__(cls, x[::-1] if be else x)
-            self._radix = 256
-            self._integer = (
-                int.from_bytes(x, 'big', signed=negative)
-                if be else
-                int.from_bytes(x, 'little', signed=negative)
-            )
+            self = cls.frombytes(x, be, negative)
 
         elif isinstance(x, (tuple, list)):
             if min(x) < 0:
@@ -179,15 +172,68 @@ class RadixInteger(t.Tuple[int, ...]):
 
         return self
 
+    @classmethod
+    def fromint(cls, x: int, n: int = 10) -> 'RadixInteger':
+        """
+        将一个 ``int`` 类型的整数转换为 n 进制的 ``RadixInteger`` 。
+        """
+
+        def int2digits(i: int):
+            while i >= n:
+                yield i % n
+                i //= n
+            yield i
+
+        self = tuple.__new__(cls, int2digits(abs(x)))
+        self._radix = n
+        self._integer = x
+        return self
+
+    @classmethod
+    def frombytes(cls, x: t.Union[bytes, bytearray], be=False, negative=False) -> 'RadixInteger':
+        """
+        将一个字节串转换为 256 进制的 ``RadixInteger`` 。
+        """
+        self = tuple.__new__(cls, x[::-1] if be else x)
+        self._radix = 256
+        self._integer = (
+            int.from_bytes(x, 'big', signed=negative)
+            if be else
+            int.from_bytes(x, 'little', signed=negative)
+        )
+        return self
+
+    # ---- 属性 ----
+
     @property
     def radix(self):
-        """整数的进位制。"""
+        """整数的进位制。当进位制为 n 时，整数的每一位的取值范围是 [0,n) ∈ Z"""
         return self._radix
 
     @property
     def numeric(self):
         """对应的以阿拉伯数字表述的十进制整数。"""
         return self._integer
+
+    # ---- 转换器 ----
+
+    def __int__(self) -> int:
+        return self._integer
+
+    def __float__(self) -> float:
+        return float(self._integer)
+
+    def __complex__(self) -> complex:
+        return self._integer + 0j
+
+    def __neg__(self) -> 'RadixInteger':
+        return self.fromint(-self._integer)
+
+    def __pos__(self) -> 'RadixInteger':
+        return self.fromint(+self._integer)
+
+    def __abs__(self) -> 'RadixInteger':
+        return self.fromint(abs(self._integer))
 
     def map2str(self, mapping: t.Union[str, t.Dict[int, str]], be=True) -> str:
         """
@@ -200,6 +246,33 @@ class RadixInteger(t.Tuple[int, ...]):
         按照规则将每一位数映射到一个字节串中。
         """
         return bytes(map(lambda i: mapping[i], self[::-1] if be else self))
+
+    # ---- 比较器 ----
+
+    def __eq__(self, other):
+        if isinstance(other, RadixInteger):
+            return self._integer == other._integer
+        raise TypeError(f'Unsupported compare with {type(other).__name__}')
+
+    def __lt__(self, other):
+        if isinstance(other, RadixInteger):
+            return self._integer < other._integer
+        raise TypeError(f'Unsupported compare with {type(other).__name__}')
+
+    def __le__(self, other):
+        if isinstance(other, RadixInteger):
+            return self._integer <= other._integer
+        raise TypeError(f'Unsupported compare with {type(other).__name__}')
+
+    def __ge__(self, other):
+        if isinstance(other, RadixInteger):
+            return self._integer >= other._integer
+        raise TypeError(f'Unsupported compare with {type(other).__name__}')
+
+    def __gt__(self, other):
+        if isinstance(other, RadixInteger):
+            return self._integer > other._integer
+        raise TypeError(f'Unsupported compare with {type(other).__name__}')
 
 
 class ItemsMeta(enum.EnumMeta):
