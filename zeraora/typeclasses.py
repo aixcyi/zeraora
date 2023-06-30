@@ -280,26 +280,19 @@ class ItemsMeta(enum.EnumMeta):
 
     def __new__(metacls, classname, bases, classdict, **kwds):
         # 获取属性名（pks）
-        if '__properties__' not in classdict:
-            raise AttributeError(
-                f'{classname} 使用了 {metacls.__name__}，'
-                f'因此必须定义一个名为 __properties__ 的属性。'
-            )
-        pks = classdict['__properties__']
-        if not isinstance(pks, (tuple, list)):
-            raise TypeError(
-                f'{classname}.__properties__ 只允许是一个 tuple 或 list 。'
-            )
-        if not all(isinstance(pk, str) and not pk.startswith('_') for pk in pks):
-            raise ValueError(
-                f'{classname}.__properties__ 的值必须是字符串且不以下划线 “_” 开头。'
-            )
+        pks = classdict.get('__properties__', ())
+        if isinstance(pks, str):
+            pks = (pks,)
         for pk in pks:
+            if not isinstance(pk, str) or pk.startswith('_'):
+                raise ValueError(
+                    f'{classname}.__properties__ 包含的值必须是字符串且不以下划线 “_” 开头。'
+                )
             # https://docs.python.org/zh-cn/3/library/enum.html#supported-sunder-names
             if pk in ('name', 'value'):
-                raise KeyError(
-                    f'不能也不必在 {classname}.__properties__ 中定义 name 和 value，'
-                    f'它们是原生枚举就已经支持的。'
+                raise AttributeError(
+                    f'不必也不能在 {classname}.__properties__ 中定义 name 和 value，'
+                    f'它们是原生枚举就已经支持的属性。'
                 )
             if pk in ('generate_next_value',):
                 raise KeyError(

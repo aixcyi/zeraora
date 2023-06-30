@@ -170,18 +170,11 @@ class TypeclassesTest(BaseTestCase):
             _ = SizeLevel.choices
 
     def testItemsMeta(self):
-        with self.assertRaises(AttributeError):
-            class UrgencyLevel(Items):
-                HIGH = 10, 'WARNING'
-                NORMAL = 0, 'INFO'
-                LOW = -10, 'DEBUG'
-
-        with self.assertRaises(TypeError):
-            class UrgencyLevel2(Items):
-                HIGH = 10, 'WARNING'
-                NORMAL = 0, 'INFO'
-                LOW = -10, 'DEBUG'
-                __properties__ = 'loglevel'
+        class UrgencyLevel2(Items):
+            HIGH = 10, 'WARNING'
+            NORMAL = 0, 'INFO'
+            LOW = -10, 'DEBUG'
+            __properties__ = 'loglevel'
 
         with self.assertRaises(ValueError):
             class UrgencyLevel3(Items):
@@ -190,7 +183,7 @@ class TypeclassesTest(BaseTestCase):
                 LOW = -10, 'DEBUG'
                 __properties__ = '_loglevel',
 
-        with self.assertRaises(KeyError):
+        with self.assertRaises(AttributeError):
             class UrgencyLevel4(Items):
                 HIGH = 10, 'WARNING'
                 NORMAL = 0, 'INFO'
