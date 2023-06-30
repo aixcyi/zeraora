@@ -24,15 +24,12 @@ def check_path(folder_path: str, filename: str = None, exist_check: bool = True,
     """检查路径
     可指定是否检查存在性，可自定义错误信息
 
-    Args:
-        folder_path:    字符串类型 -> 文件夹路径，不包含文件名 -> 必需
-        filename:       字符串类型 -> 文件名，非绝对路径 -> 非必需
-        exist_check:    布尔值类型 -> 是否进行存在检查 -> 非必需，默认开启检查
-        error_info:     字符串类型 -> 自定义错误信息 -> 非必需
-    Returns:
-        path: str: 路径
+    :param folder_path: 字符串类型 -> 文件夹路径，不包含文件名 -> 必需
+    :param filename:    字符串类型 -> 文件名，非绝对路径 -> 非必需
+    :param exist_check: 布尔值类型 -> 是否进行存在检查 -> 非必需，默认开启检查
+    :param error_info:  字符串类型 -> 自定义错误信息 -> 非必需
+    :return: path: str: 路径
     """
-
     from pathlib import Path
     # 要求检查存在性，并存在文件名
     if exist_check and filename:
@@ -79,10 +76,8 @@ def get_table_data(table) -> (list, list):
     """获取表格数据
     将会获取到表格头部与表格内容
 
-    Args:
-        table: bs4表格标签迭代器类型 -> 包含表格所有信息
-
-    Returns:
+    :param table: bs4表格标签迭代器类型 -> 包含表格所有信息
+    :return:
         headers:    列表类型 -> 表格头部信息
         rows:       列表类型 -> 表格所有行内容
     """
@@ -107,10 +102,8 @@ def get_table_data(table) -> (list, list):
 def decode_match(match: re.Match) -> str:
     """16进制编码解码
 
-    Args:
-        match: 字节类型 -> 匹配信息 -> 必需
-    Returns:
-        decode_result: 字符串类型 -> 解码结果
+    :param match: 字节类型 -> 匹配信息 -> 必需
+    :return: decode_result: 字符串类型 -> 解码结果
     """
     encoded_s = match.group()
     byte_values = []
@@ -126,12 +119,10 @@ def decode_match(match: re.Match) -> str:
 def decode_field(infos: Union[Header, str], default: str = "null", charset: str = None) -> str:
     """检查字段
 
-    Args:
-        infos:      标头值字符串类型 -> 信息集合，集合中第一个参数为头部信息，即要解码的信息，第二个参数为编码，存在为空，或未知的可能性 -> 必需
-        default:    字符串类型 -> 默认返回信息，若无法进行解码，可选择自定义信息返回 -> 非必需
-        charset:    字符串类型 -> 编码格式，由于infos中并非一定能获得编码格式，可自行添加默认解码格式 -> 非必需
-    Returns
-        decode_result: 字符串类型 -> 解码信息
+    :param infos:   标头值字符串类型 -> 信息集合，集合中第一个参数为头部信息，即要解码的信息，第二个参数为编码，存在为空，或未知的可能性 -> 必需
+    :param default: 字符串类型 -> 默认返回信息，若无法进行解码，可选择自定义信息返回 -> 非必需
+    :param charset: 字符串类型 -> 编码格式，由于infos中并非一定能获得编码格式，可自行添加默认解码格式 -> 非必需
+    :return: decode_result: 字符串类型 -> 解码信息
     """
     info = ""
     if infos:
@@ -181,22 +172,16 @@ def decode_field(infos: Union[Header, str], default: str = "null", charset: str 
 
 class TencentMailReceiveService:
     """腾讯 IMAP 邮箱接收服务
-
-    Args:
-        imap: IMAP4类 -> 邮箱接收客户端 -> 必需
+    :param imap: IMAP4类 -> 邮箱接收客户端 -> 必需
     """
-
     def __init__(self, imap: imaplib.IMAP4):
         self.imap = imap
         self.all_mail = None
 
-    def get_email_amount(self):
+    def get_email_amount(self) -> int:
         """获取邮件数量
 
-        Args: None
-
-        Returns:
-            email_amount: 整数类型 -> 邮件总数
+        :return: email_amount: 整数类型 -> 邮件总数
         """
         self.imap.select()
         status, email_list = self.imap.search(None, 'ALL')
@@ -206,19 +191,16 @@ class TencentMailReceiveService:
 
     def get_all_mail(
             self,
-            email_file_down_path: str = None,
+            mail_file_down_path: str = None,
             down_appendix: bool = False,
             email_info_table_save: bool = False
     ) -> dict:
         """获取所有邮件
 
-        Args:
-            email_file_down_path:   字符串类型 -> 邮箱文件保存路径,不包含文件名 -> 非必需
-            down_appendix:          布尔值类型 -> 是否下载附件 -> 非必需
-            email_info_table_save:  布尔值类型 -> 是否下载信息中的表格 -> 非必需
-
-        Returns:
-            mail_info: 字典类型 -> 邮件信息字典
+        :param mail_file_down_path:    字符串类型 -> 邮箱文件保存路径,不包含文件名 -> 非必需
+        :param down_appendix:           布尔值类型 -> 是否下载附件 -> 非必需
+        :param email_info_table_save:   布尔值类型 -> 是否下载信息中的表格 -> 非必需
+        :return: mail_info: 字典类型 -> 邮件信息字典
         """
         from tqdm import tqdm
         from bs4 import BeautifulSoup
@@ -308,7 +290,7 @@ class TencentMailReceiveService:
                                     if down_appendix:
                                         attach_data = part.get_payload(decode=True)
                                         self.down_appendix(
-                                            email_file_down_path=email_file_down_path,
+                                            mail_file_down_path=mail_file_down_path,
                                             appendix_info=appendix_info,
                                             payload=attach_data)
                                 else:
@@ -317,7 +299,7 @@ class TencentMailReceiveService:
                                     if down_appendix:
                                         attach_data = part.get_payload(decode=True)
                                         self.down_appendix(
-                                            email_file_down_path=email_file_down_path,
+                                            mail_file_down_path=mail_file_down_path,
                                             appendix_info=appendix_info,
                                             payload=attach_data)
 
@@ -339,15 +321,15 @@ class TencentMailReceiveService:
                                         part.get_payload(decode=True)
                                     ).decode("utf-8", errors="ignore")
                                 soup = BeautifulSoup(decoded, 'html.parser')
-                                if not email_file_down_path:
-                                    raise ValueError("未指定 email_file_down_path 变量, 请指定文件保存路径")
-                                email_file_down_path = check_path(folder_path=email_file_down_path)
+                                if not mail_file_down_path:
+                                    raise ValueError("未指定 mail_file_down_path 变量, 请指定文件保存路径")
+                                mail_file_down_path = check_path(folder_path=mail_file_down_path)
                                 tables = soup.find_all('table')
                                 if tables:
                                     for table in tables:
                                         headers, rows = get_table_data(table)
                                         file = check_path(
-                                            folder_path=email_file_down_path,
+                                            folder_path=mail_file_down_path,
                                             filename=f"{from_email}_{subject_info}_{date_info}.csv",
                                             exist_check=False
                                         )
@@ -389,21 +371,21 @@ class TencentMailReceiveService:
             _keyword: str = None,
             is_exact_query: bool = False,
             is_case_sensitive: bool = False,
-    ):
+    ) -> dict:
         """筛选邮件
         可通过发件人,接收人,主题,起止时间,指定日期,附件名称,关键字进行查询,同时可以选择是否进行精确查询以及区分大小写
 
-        Args:
-            _from:              字符串类型 -> 发件人 -> 非必需
-            _to:                字符串类型 -> 收件人 -> 非必需
-            _subject:           字符串类型 -> 主题名 -> 非必需
-            _start_date:        字符串类型 -> 开始时间 -> 非必需
-            _end_date:          字符串类型 -> 结束时间 -> 非必需
-            _date:              字符串类型 -> 指定日期 -> 非必需
-            _appendix:          字符串类型 -> 附件名称 -> 非必需
-            _keyword:           字符串类型 -> 关键字 -> 非必需
-            is_exact_query:     布尔值类型 -> 是否精确查询,默认模糊查询 -> 非必需
-            is_case_sensitive:  布尔值类型 -> 是否区分大小写,默认不区分 -> 非必需
+        :param _from:               字符串类型 -> 发件人 -> 非必需
+        :param _to:                 字符串类型 -> 收件人 -> 非必需
+        :param _subject:            字符串类型 -> 主题名 -> 非必需
+        :param _start_date:         字符串类型 -> 开始时间 -> 非必需
+        :param _end_date:           字符串类型 -> 结束时间 -> 非必需
+        :param _date:               字符串类型 -> 指定日期 -> 非必需
+        :param _appendix:           字符串类型 -> 附件名称 -> 非必需
+        :param _keyword:            字符串类型 -> 关键字 -> 非必需
+        :param is_exact_query:      布尔值类型 -> 是否精确查询,默认模糊查询 -> 非必需
+        :param is_case_sensitive:   布尔值类型 -> 是否区分大小写,默认不区分 -> 非必需
+        :return: filtered_email:     字典类型 -> 筛出的邮件
         """
         if not is_case_sensitive:
             _from = _from.lower() if _from else None
@@ -539,25 +521,23 @@ class TencentMailReceiveService:
     def down_appendix(
             self,
             uid: str = None,
-            email_file_down_path: str = None,
+            mail_file_down_path: str = None,
             appendix_info: str = None,
             payload: Any = None
     ) -> None:
         """下载附件
 
-        Args:
-            uid: 字符串类型, 附件对应邮件的id
-            email_file_down_path: str = None,
-            appendix_info: str = None,
-            payload: Any = None
-        Returns:
-            None
+        :param uid:                 字符串类型 -> 附件对应邮件的id -> 非必需
+        :param mail_file_down_path: 字符串类型 -> 邮箱文件下载路径 -> 非必需
+        :param appendix_info:       字符串类型 -> 附件信息 -> 非必需
+        :param payload:             任意类型 -> 文件数据 -> 非必需
+        :return: None
         """
         if payload:
             if appendix_info:
                 for item in appendix_info:
-                    email_file_down_path = check_path(email_file_down_path, error_info="请指定附件保存路径")
-                    f = open(email_file_down_path + item, 'wb')  # 注意一定要用wb来打开文件，因为附件一般都是二进制文件
+                    mail_file_down_path = check_path(mail_file_down_path, error_info="请指定附件保存路径")
+                    f = open(mail_file_down_path + item, 'wb')  # 注意一定要用wb来打开文件，因为附件一般都是二进制文件
                     f.write(payload)
                     f.close()
             else:
@@ -577,15 +557,15 @@ class TencentMailReceiveService:
                                 appendix_info = decode_field(part.get_filename())
                             if part.get_content_charset():
                                 attach_data = part.get_payload(decode=True)  # 解码出附件数据，然后存储到文件中
-                                email_file_down_path = check_path(email_file_down_path, error_info="请指定附件保存路径")
-                                f = open(email_file_down_path + appendix_info, 'wb')  # 注意一定要用wb来打开文件，因为附件一般都是二进制文件
+                                mail_file_down_path = check_path(mail_file_down_path, error_info="请指定附件保存路径")
+                                f = open(mail_file_down_path + appendix_info, 'wb')  # 注意一定要用wb来打开文件，因为附件一般都是二进制文件
                                 f.write(attach_data)
                                 f.close()
                             else:
                                 appendix_info = part.get_filename()
                                 attach_data = part.get_payload(decode=True)  # 解码出附件数据，然后存储到文件中
-                                email_file_down_path = check_path(email_file_down_path, error_info="请指定附件保存路径")
-                                f = open(email_file_down_path + appendix_info, 'wb')  # 注意一定要用wb来打开文件，因为附件一般都是二进制文件
+                                mail_file_down_path = check_path(mail_file_down_path, error_info="请指定附件保存路径")
+                                f = open(mail_file_down_path + appendix_info, 'wb')  # 注意一定要用wb来打开文件，因为附件一般都是二进制文件
                                 f.write(attach_data)
                                 f.close()
 
