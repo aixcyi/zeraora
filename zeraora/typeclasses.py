@@ -115,7 +115,6 @@ class OnionObject(object):
 
 # Little Endian
 class RadixInteger(t.Tuple[int, ...]):
-    __slots__ = '_radix', '_integer'
 
     # ---- 构造器 ----
 
@@ -252,27 +251,27 @@ class RadixInteger(t.Tuple[int, ...]):
     def __eq__(self, other):
         if isinstance(other, RadixInteger):
             return self._integer == other._integer
-        raise TypeError(f'Unsupported compare with {type(other).__name__}')
+        return super().__eq__(other)  # pragma: no cover
 
     def __lt__(self, other):
         if isinstance(other, RadixInteger):
             return self._integer < other._integer
-        raise TypeError(f'Unsupported compare with {type(other).__name__}')
+        return super().__lt__(other)  # pragma: no cover
 
     def __le__(self, other):
         if isinstance(other, RadixInteger):
             return self._integer <= other._integer
-        raise TypeError(f'Unsupported compare with {type(other).__name__}')
+        return super().__le__(other)  # pragma: no cover
 
     def __ge__(self, other):
         if isinstance(other, RadixInteger):
             return self._integer >= other._integer
-        raise TypeError(f'Unsupported compare with {type(other).__name__}')
+        return super().__ge__(other)  # pragma: no cover
 
     def __gt__(self, other):
         if isinstance(other, RadixInteger):
             return self._integer > other._integer
-        raise TypeError(f'Unsupported compare with {type(other).__name__}')
+        return super().__gt__(other)  # pragma: no cover
 
 
 class ItemsMeta(enum.EnumMeta):

@@ -93,22 +93,39 @@ class TypeclassesTest(BaseTestCase):
         self.assertEqual(33882121, int.from_bytes(bytes(ri256), 'little'))
         self.assertEqual(256, ri256.radix)
 
+        self.assertEqual(ri256.numeric, int(ri256))
+        self.assertEqual(-ri256.numeric, (-ri256).numeric)
+        self.assertEqual(+ri256.numeric, (+ri256).numeric)
+        self.assertEqual(abs(ri256.numeric), abs(ri256).numeric)
+        self.assertEqual(float(ri256.numeric), float(ri256))
+        self.assertEqual(complex(ri256.numeric), complex(ri256))
+
         ri16 = RadixInteger(33882121, 16)
         self.assertEqual('2050009', ri16.map2str('0123456789ABCDEF'))
         self.assertEqual(b'2050009', ri16.map2bytes(b'0123456789ABCDEF'))
 
-        self.assertTupleEqual(ri16, RadixInteger(ri256, 16))
-        self.assertTupleEqual(ri16, RadixInteger([9, 0, 0, 0, 5, 0, 2], 16))
-        self.assertTupleEqual(ri256, RadixInteger(b'\x09\x00\x05\x02', 256))
+        self.assertTupleEqual(tuple(ri16), RadixInteger(ri256, 16))
+        self.assertTupleEqual(tuple(ri16), RadixInteger([9, 0, 0, 0, 5, 0, 2], 16))
+        self.assertTupleEqual(tuple(ri256), RadixInteger(b'\x09\x00\x05\x02', 256))
 
         with self.assertRaises(ValueError):
             _ = RadixInteger(33882121, 1)
+        with self.assertRaises(ValueError):
+            _ = RadixInteger(33882121, 1.5)
         with self.assertRaises(ValueError):
             _ = RadixInteger([1, 2, -3], 10)
         with self.assertRaises(ValueError):
             _ = RadixInteger([1, 2, 16], 16)
         with self.assertRaises(TypeError):
             _ = RadixInteger('meow', 16)
+
+        self.assertEqual(RadixInteger(33882121, 16), RadixInteger(33882121, 16))
+        self.assertEqual(RadixInteger(33882121, 16), RadixInteger(33882121, 256))
+        self.assertEqual(RadixInteger(33882121, 16), RadixInteger(33882121, 3))
+        self.assertLess(RadixInteger(33882120, 16), RadixInteger(33882121, 16))
+        self.assertLessEqual(RadixInteger(33882120, 16), RadixInteger(33882121, 16))
+        self.assertGreaterEqual(RadixInteger(33882122, 16), RadixInteger(33882121, 16))
+        self.assertGreater(RadixInteger(33882122, 16), RadixInteger(33882121, 16))
 
     def testItems(self):
         from zeraora.constants.division import Province, Region
