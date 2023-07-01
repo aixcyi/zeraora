@@ -8,10 +8,10 @@ import os
 import csv
 import imaplib
 import smtplib
-import email.parser
 import warnings
 import platform
 import inspect
+import email.parser
 from typing import Any, Union
 from datetime import datetime
 from email.mime.text import MIMEText
@@ -22,6 +22,8 @@ from email.header import decode_header, Header
 
 from ..constants import Months, Weeks, TimeZones
 
+
+# TODO: 待将所有外部方法融合进类中
 
 def check_path(folder_path: str, filename: str = None, exist_check: bool = True, error_info: str = None) -> str:
     """检查路径
@@ -180,6 +182,7 @@ class TencentMailReceiveService:
 
     :param imap: IMAP4类 -> 邮箱接收客户端 -> 必需
     """
+
     def __init__(self, imap: imaplib.IMAP4):
         self.imap = imap
         self.all_mail = None
@@ -191,7 +194,8 @@ class TencentMailReceiveService:
         """
         self.imap.select()
         status, email_list = self.imap.search(None, 'ALL')
-        assert status == "OK", "获取邮件数量失败"
+        if status != "OK":
+            raise Exception("获取邮件数量失败")
         email_list = email_list[0].split()
         return len(email_list)
 
@@ -209,15 +213,20 @@ class TencentMailReceiveService:
 
         :return: 字典类型 -> 邮件信息字典
         """
-        from tqdm import tqdm
-        from bs4 import BeautifulSoup
+        try:
+            from tqdm import tqdm
+            from bs4 import BeautifulSoup
+        except ImportError as e:
+            raise ImportError('需要tqdm与bs4\npip install tqdm bs4') from e
+
         email_amount = self.get_email_amount()
         mail_info = {
             x + 1: {"Subject": "", "From": "", "To": "", "Date": "", "Date_Detail": "", "Body": "", "attachment": Any}
             for x in range(email_amount)}
         for i in tqdm(range(1, email_amount + 1)):
             status, email_content = self.imap.fetch(str(i), '(RFC822)')
-            assert status == "OK", f"获取第{i}封邮件失败"
+            if status != "OK":
+                raise Exception(f"获取第{i}封邮件失败")
             for response_part in email_content:
                 if isinstance(response_part, tuple):
                     # 解析邮件内容
@@ -582,6 +591,7 @@ class TencentMailSendService:
     :param smtp:           SMTP类 -> 邮箱发送客户端 -> 必需
     :param mail_account:   字符串类型 -> 邮箱用户 -> 必需
     """
+
     # TODO: 合并所有邮件发送方法
     def __init__(self, smtp: smtplib.SMTP, mail_account: str):
         self.smtp = smtp
