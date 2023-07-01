@@ -883,24 +883,20 @@ class EmailManager:
         if not re.match(".*.qq.com", self.email_host):
             raise Exception("目前仅支持QQ(腾讯)邮箱与QQ(腾讯)企业邮箱，其余邮箱开发中...")
         if self.email_type and self.email_type.upper() == "IMAP":
-            import imaplib
             imap = imaplib.IMAP4_SSL(self.email_host, port=self.email_port)
             imap.login(self.username, self.password)
             imap.select()
             return TencentMailReceiveService(imap)
         elif self.email_type and self.email_type.upper() == "SMTP":
-            import smtplib
             smtp = smtplib.SMTP_SSL(self.email_host, port=self.email_port)
             smtp.login(self.username, self.password)
             return TencentMailSendService(smtp, self.username)
         elif not self.email_type and "imap" in self.email_host:
-            import imaplib
             imap = imaplib.IMAP4_SSL(self.email_host, port=self.email_port)
             imap.login(self.username, self.password)
             imap.select()
             return TencentMailReceiveService(imap)
         elif not self.email_type and "smtp" in self.email_host:
-            import smtplib
             smtp = smtplib.SMTP_SSL(self.email_host, port=self.email_port)
             smtp.login(self.username, self.password)
             return TencentMailSendService(smtp, self.username)
