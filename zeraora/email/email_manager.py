@@ -7,7 +7,6 @@ import csv
 import email.parser
 import imaplib
 import inspect
-import os
 import platform
 import re
 import smtplib
@@ -21,6 +20,7 @@ from email.mime.text import MIMEText
 from typing import Any, Union
 
 from ..constants import Months, TimeZones, Weeks
+from ..typeclasses import RawPath
 
 
 # TODO: 待将所有外部方法融合进类中
@@ -36,32 +36,23 @@ def check_path(folder_path: str, filename: str = None, exist_check: bool = True,
 
     :return: str: 路径
     """
-    from pathlib import Path
-    # 要求检查存在性，并存在文件名
-    if exist_check and filename:
-        if not os.path.exists(Path(folder_path).joinpath(filename)):
-            base_error_info = "{} 文件不存在，请检查，或仅需拼凑路径，可设置 exist_check 为False。{}"
-            if error_info:
-                error_info = base_error_info.format(filename, f"自定义错误信息:{error_info}")
-                raise FileNotFoundError(error_info)
-            else:
-                raise FileNotFoundError(base_error_info.format(filename))
-        else:
-            return str(Path(folder_path).joinpath(filename))
+    path = RawPath(folder_path) / (filename or '')
+    if filename:
+        base_error_info = "{} 文件不存在，请检查，或仅需拼凑路径，可设置 exist_check 为False。{}"
+    else:
+        base_error_info = "{} 文件夹不存在，请检查路径，或者仅需要拼凑路径的情况下，可指定 exist_check 为False。{}"
+    if exist_check:
+        try:
+            path_ = path.cast_by_raw()
+            if path_.exists():
+                return str(path_)
+        except NotImplementedError:
+            pass
+        msg = base_error_info.format(filename or folder_path) + (f"自定义错误信息:{error_info}" if error_info else '')
+        raise FileNotFoundError(msg)
 
-    # 要求检查存在性，不存在文件名
-    elif exist_check and not filename:
-        if not os.path.exists(Path(folder_path)):
-            base_error_info = "{} 文件夹不存在，请检查路径，或者仅需要拼凑路径的情况下，可指定 exist_check 为False。{}"
-            if error_info:
-                error_info = base_error_info.format(folder_path, f"自定义错误信息:{error_info}")
-                raise FileNotFoundError(error_info)
-            else:
-                raise FileNotFoundError(base_error_info.format(folder_path))
-        else:
-            return str(Path(folder_path))
     # 不要求检查存在性，并存在文件名
-    elif not exist_check and filename:
+    if filename:
         if folder_path[-1] != "\\" or folder_path[-1] != "/":
             if platform.system().lower() == 'windows':
                 folder_path += "\\"
