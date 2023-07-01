@@ -3,24 +3,24 @@ __all__ = [
     'TencentMailReceiveService', 'TencentMailSendService', 'EmailManager'
 ]
 
-import re
-import os
 import csv
+import email.parser
 import imaplib
+import inspect
+import os
+import platform
+import re
 import smtplib
 import warnings
-import platform
-import inspect
-import email.parser
-from typing import Any, Union
 from datetime import datetime
-from email.mime.text import MIMEText
+from email.header import Header, decode_header
+from email.mime.application import MIMEApplication
 from email.mime.image import MIMEImage
 from email.mime.multipart import MIMEMultipart
-from email.mime.application import MIMEApplication
-from email.header import decode_header, Header
+from email.mime.text import MIMEText
+from typing import Any, Union
 
-from ..constants import Months, Weeks, TimeZones
+from ..constants import Months, TimeZones, Weeks
 
 
 # TODO: 待将所有外部方法融合进类中
