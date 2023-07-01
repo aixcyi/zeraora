@@ -24,6 +24,9 @@
 - `RadixInteger()`，一个以元组表述各个数位的 N 进制整数。
 - `ItemsMeta()`，创建带有任意属性的枚举的类。
 - `Items()`，每个值都带有任意属性的枚举。
+- `RawPath()`，继承 PurePath 但原生风格的地址。它通过检测字符串而不是操作系统来分化不同风格的 PurePath 类。
+- `RawPosixPath()`，`RawPath()` 的子类，目前仅作占位符。
+- `RawWindowsPath()`，`RawPath()` 的子类，目前仅作占位符。
 
 ## zeraora.structures
 
