@@ -19,42 +19,13 @@ from time import time_ns
 from typing import Tuple, NoReturn, Union
 
 from . import gvs
+from .constants import LOG_CONF_BEAR
 from .converters import represent
 from .structures import DivisionCode
 
 logger_bear = logging.getLogger('zeraora.bear')
 
-bear_config = {
-    'version': 1,
-    'formatters': {
-        'bear': {
-            'format': '[%(asctime)s] [%(levelname)s] %(message)s',
-        },
-        'bear_plus': {
-            'format': (
-                '[%(asctime)s] [%(levelname)s] '
-                '[%(module)s.%(funcName)s:%(lineno)d] '
-                '%(message)s'
-            )
-        },
-    },
-    'filters': {},
-    'handlers': {
-        'Console': {
-            'level': 'DEBUG',
-            'class': 'logging.StreamHandler',
-            'filters': [],
-            'formatter': 'bear',
-        },
-    },
-    'loggers': {
-        'zeraora.bear': {
-            'level': 'DEBUG',
-            'handlers': ['Console'],
-            'propagate': False,
-        },
-    },
-}
+bear_config = LOG_CONF_BEAR
 
 
 class BearTimer(object):
@@ -68,9 +39,10 @@ class BearTimer(object):
         使用前，需要先启用日志输出：
 
         >>> import logging.config
-        >>> from zeraora.utils import BearTimer, bear_config
+        >>> from zeraora.constants import LOG_CONF_BEAR
+        >>> from zeraora.utils import BearTimer
         >>>
-        >>> logging.config.dictConfig(bear_config)
+        >>> logging.config.dictConfig(LOG_CONF_BEAR)
         >>> bear = BearTimer()
 
         对于使用 Django 的项目可以改为在 settings.py 中进行如下设置：

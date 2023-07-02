@@ -8,3 +8,6 @@ from .enumerations import (
     DivisionLevel,
     Degree,
 )
+from configs import (
+    LOG_CONF_BEAR,
+)

@@ -110,28 +110,32 @@
 
 ## zeraora.constants
 
-> 一些常量和枚举。
+> 不变量。
 
-- `Region`，枚举。包含用于划分省级行政区的大区。
-- `Province`，枚举。包含34个省级行政区名称、区划代码、字母码、大区、简称、缩写。
-- `DivisionLevel`，枚举。行政区划的层次级别。
-- `Degree`，枚举。表示程度的五个档位（最高、高、正常、低、最低）。
-- `BASE8`
-- `BASE16`
-- `BASE36`
-- `BASE62`
-- `BASE64`
-- `BASE64SAFE`
-- `DIGITS`
-- `DIGITS_SAFE`
-- `HEXDIGITS`
-- `LETTERS`
-- `LETTERS_SAFE`
-- `LOWERS`
-- `LOWERS_SAFE`
-- `OCTDIGITS`
-- `SYMBOL`
-- `SYMBOL_NORMAL`
-- `SYMBOL_SHIFT`
-- `UPPERS`
-- `UPPERS_SAFE`
+- 枚举
+  - `Region`，包含用于划分省级行政区的大区。
+  - `Province`，包含34个省级行政区名称、区划代码、字母码、大区、简称、缩写。
+  - `DivisionLevel`，行政区划的层次级别。
+  - `Degree`，表示程度的五个档位（最高、高、正常、低、最低）。
+- 默认配置
+  - `LOG_CONF_BEAR`，工具类 `BearTimer` 的默认日志配置。
+- 常量
+  - `BASE8`
+  - `BASE16`
+  - `BASE36`
+  - `BASE62`
+  - `BASE64`
+  - `BASE64SAFE`
+  - `DIGITS`
+  - `DIGITS_SAFE`
+  - `HEXDIGITS`
+  - `LETTERS`
+  - `LETTERS_SAFE`
+  - `LOWERS`
+  - `LOWERS_SAFE`
+  - `OCTDIGITS`
+  - `SYMBOL`
+  - `SYMBOL_NORMAL`
+  - `SYMBOL_SHIFT`
+  - `UPPERS`
+  - `UPPERS_SAFE`
