@@ -23,7 +23,7 @@ from .constants import LOG_CONF_BEAR
 from .converters import represent
 from .structures import DivisionCode
 
-logger_bear = logging.getLogger('zeraora.bear')
+bear_logger = logging.getLogger('zeraora.bear')
 
 bear_config = LOG_CONF_BEAR
 
@@ -140,7 +140,7 @@ class BearTimer(object):
         now = time_ns()
         total = Decimal((now - self._start) if self._start else 0) / 1000000000
         delta = Decimal((now - self._point) if self._point else 0) / 1000000000
-        logger_bear.debug(f'[{self._label}] [{total:.9f} +{delta:.9f}]: {msg}')
+        bear_logger.debug(f'[{self._label}] [{total:.9f} +{delta:.9f}]: {msg}')
         self._point = now
         return now
 

@@ -8,11 +8,14 @@ __all__ = [
     'randb64', 'SnowflakeSingleWorker',
 ]
 
+import logging
 import os
 from random import getrandbits
 from time import time
 
 from .constants.charsets import BASE62, BASE64
+
+snow_logger = logging.getLogger('zeraora.snowflake')
 
 
 def randbytes(n: int) -> bytes:
@@ -86,11 +89,15 @@ class SnowflakeWorker(object):
         self._sequence = sequence
         return (self._stamp << 22) | (self._worker << 12) | sequence
 
-    def redirect(self) -> int:
-        raise self.TimeRedirected(self)
+    def redirect(self):
+        exc = self.TimeRedirected(self)
+        snow_logger.exception(type(self).__name__, exc_info=exc)
+        raise exc
 
     def overflow(self):
-        raise self.SequenceOverflow(self)
+        exc = self.SequenceOverflow(self)
+        snow_logger.exception(type(self).__name__, exc_info=exc)
+        raise exc
 
     def dump(self) -> dict:
         return {
@@ -138,9 +145,9 @@ class SnowflakeMultiWorker(SnowflakeWorker):
         :raise RuntimeError: 试图创建相同worker的类实例。
         """
         if worker in cls._objects_:
-            raise RuntimeError(
-                f'存在相同的 SnowflakeMultiWorker(worker={worker})'
-            )
+            exc = RuntimeError(f'存在相同的 SnowflakeMultiWorker(worker={worker})')
+            snow_logger.exception(cls.__name__, exc_info=exc)
+            raise exc
         cls._objects_.append(worker)
         return SnowflakeWorker.__new__(cls)
 
@@ -159,7 +166,9 @@ class SnowflakeSingleWorker(SnowflakeWorker):
         :raise RuntimeError: 试图创建第二个类实例。
         """
         if cls._instanced_ is True:
-            raise RuntimeError('已实例化过 SnowflakeSingleWorker 。')
+            exc = RuntimeError('已实例化过 SnowflakeSingleWorker 。')
+            snow_logger.exception(cls.__name__, exc_info=exc)
+            raise exc
         cls._instanced_ = True
         return SnowflakeWorker.__new__(cls)
 
@@ -169,6 +178,6 @@ class SnowflakeSingleWorker(SnowflakeWorker):
     def redirect(self) -> int:
         worker = self._worker + 1
         if worker & self.WORKER != worker:
-            raise self.TimeRedirected(self)
+            super().redirect()
         self._worker = worker
         return self._sequence
