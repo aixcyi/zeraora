@@ -9,7 +9,7 @@ __all__ = [
 
 from typing import NamedTuple, Tuple
 
-from .constants.division import DivisionLevel
+from .constants import DivisionLevel
 
 
 class DivisionCode(NamedTuple):

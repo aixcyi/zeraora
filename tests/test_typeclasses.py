@@ -128,7 +128,7 @@ class TypeclassesTest(BaseTestCase):
         self.assertGreater(RadixInteger(33882122, 16), RadixInteger(33882121, 16))
 
     def testItems(self):
-        from zeraora.constants.division import Province, Region
+        from zeraora.constants import Province, Region
 
         qty_provinces = len(Province)
         self.assertEqual(34, qty_provinces)

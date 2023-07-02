@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from zeraora.constants.division import DivisionLevel
+from zeraora.constants import DivisionLevel
 from zeraora.structures import *
 
 
