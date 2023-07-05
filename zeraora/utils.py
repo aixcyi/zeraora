@@ -1,6 +1,7 @@
 """
 偏工具属性的类与函数。
 """
+from __future__ import annotations
 
 __all__ = [
     'bear_config', 'BearTimer', 'ReprMixin', 'start', 'deprecate',
@@ -16,7 +17,7 @@ from functools import wraps
 from itertools import groupby
 from pathlib import Path
 from time import time_ns
-from typing import Tuple, NoReturn, Union
+from typing import NoReturn
 
 from . import gvs
 from .constants import LOG_CONF_BEAR
@@ -158,7 +159,7 @@ class BearTimer(object):
         self._record(msg)
         return self
 
-    def step(self, msg='') -> Tuple[int, int]:
+    def step(self, msg='') -> tuple[int, int]:
         """
         中途标记。
 
@@ -294,16 +295,16 @@ class ReprMixin(object):
 
     def _obtain_attrs(self) -> str:
         def obtain():
-            for attr, name in attributes.items():
+            for attr, name in attrs.items():
                 if attr.startswith('_'):
                     continue
-                mapper = annotations.get(attr, represent)
+                mapper = annots.get(attr, represent)
                 value = getattr(self, attr)
                 value = mapper(value) if callable(mapper) else value
                 yield f'{name}={value}'
 
-        attributes = self.AttributeMeta.__dict__
-        annotations = attributes.get('__annotations__', {})
+        attrs = self.AttributeMeta.__dict__
+        annots = attrs.get('__annotations__', {})
         return ' '.join(filter(None, obtain()))
 
     class TagMeta:
@@ -326,10 +327,10 @@ class ReprMixin(object):
 
     def _obtain_tags(self) -> str:
         def obtain():
-            for attr, option in attributes.items():
+            for attr, option in attrs.items():
                 if attr.startswith('_'):
                     continue
-                mapper = annotations.get(attr, None)
+                mapper = annots.get(attr, None)
                 value = getattr(self, attr)
                 value = mapper(value) if callable(mapper) else value
                 if isinstance(option, str) and value:
@@ -341,8 +342,8 @@ class ReprMixin(object):
                 else:
                     pass  # pragma: no cover
 
-        attributes = self.TagMeta.__dict__
-        annotations = attributes.get('__annotations__', {})
+        attrs = self.TagMeta.__dict__
+        annots = attrs.get('__annotations__', {})
         return ' '.join(filter(None, obtain()))
 
     def _obtain_pk(self) -> str:
@@ -424,7 +425,7 @@ def warn_empty_ads():
         warnings.warn('未载入行政区划映射表，该方法可能会失效或返回非期望值。', category=UserWarning)
 
 
-def load_ads4(fp: Union[str, Path], encoding='UTF-8', **kwargs) -> NoReturn:
+def load_ads4(fp: str | Path, encoding='UTF-8', **kwargs) -> NoReturn:
     """
     读取并过滤前四级行政区划，然后赋值给全局变量 ``zeraora.gvs.ad_map`` 和 ``zeraora.gvs.ad_tree`` 。
 

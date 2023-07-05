@@ -1,6 +1,7 @@
 """
 数据结构包。
 """
+from __future__ import annotations
 
 __all__ = [
     'DivisionCode',
@@ -26,7 +27,7 @@ class DivisionCode(NamedTuple):
         return ''.join(self)
 
     @classmethod
-    def fromcode(cls, code: str) -> "DivisionCode":
+    def fromcode(cls, code: str) -> DivisionCode:
         adc = code.ljust(12, '0')
         return cls(adc[:2], adc[2:4], adc[4:6], adc[6:9], adc[9:12])
 

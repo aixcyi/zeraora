@@ -1,6 +1,7 @@
 """
 类型包。包含数据类型类、枚举类、枚举元类、类型别名等。
 """
+from __future__ import annotations
 
 __all__ = [
     'Throwable', 'UNSET', 'OnionObject', 'RadixInteger',
@@ -8,9 +9,13 @@ __all__ = [
 ]
 
 import enum
-import typing as t
+import sys
+from typing import Any, Type, TypeVar
 
-Throwable = t.Union[BaseException, t.Type[BaseException]]
+if sys.version_info < (3, 9):
+    Throwable = TypeVar('Throwable', BaseException, Type[BaseException], covariant=True)
+else:
+    Throwable = TypeVar('Throwable', BaseException, type[BaseException], covariant=True)
 
 
 class UNSET:
@@ -62,7 +67,7 @@ class OnionObject(object):
         return self
 
     # OnionObject() | dict()
-    def __or__(self, dictionary: dict) -> 'OnionObject':
+    def __or__(self, dictionary: dict) -> OnionObject:
         for k, v in dictionary.items():
             k = str(k)
             if not k.isidentifier() or k.startswith('__'):
@@ -114,15 +119,15 @@ class OnionObject(object):
 
 
 # Little Endian
-class RadixInteger(t.Tuple[int, ...]):
+class RadixInteger(tuple):
 
     # ---- 构造器 ----
 
     def __new__(cls,
-                x: t.Union[int, t.Tuple[int, ...], t.List[int], bytes, bytearray],
+                x: int | tuple[int, ...] | list[int] | bytes | bytearray,
                 n: int,
                 be=False,
-                negative=False) -> 'RadixInteger':
+                negative=False) -> RadixInteger:
         """
         一个以元组表述各个数位的 N 进制整数。
 
@@ -172,7 +177,7 @@ class RadixInteger(t.Tuple[int, ...]):
         return self
 
     @classmethod
-    def fromint(cls, x: int, n: int = 10) -> 'RadixInteger':
+    def fromint(cls, x: int, n: int = 10) -> RadixInteger:
         """
         将一个 ``int`` 类型的整数转换为 n 进制的 ``RadixInteger`` 。
         """
@@ -189,7 +194,7 @@ class RadixInteger(t.Tuple[int, ...]):
         return self
 
     @classmethod
-    def frombytes(cls, x: t.Union[bytes, bytearray], be=False, negative=False) -> 'RadixInteger':
+    def frombytes(cls, x: bytes | bytearray, be=False, negative=False) -> RadixInteger:
         """
         将一个字节串转换为 256 进制的 ``RadixInteger`` 。
         """
@@ -225,22 +230,22 @@ class RadixInteger(t.Tuple[int, ...]):
     def __complex__(self) -> complex:
         return self._integer + 0j
 
-    def __neg__(self) -> 'RadixInteger':
+    def __neg__(self) -> RadixInteger:
         return self.fromint(-self._integer)
 
-    def __pos__(self) -> 'RadixInteger':
+    def __pos__(self) -> RadixInteger:
         return self.fromint(+self._integer)
 
-    def __abs__(self) -> 'RadixInteger':
+    def __abs__(self) -> RadixInteger:
         return self.fromint(abs(self._integer))
 
-    def map2str(self, mapping: t.Union[str, t.Dict[int, str]], be=True) -> str:
+    def map2str(self, mapping: str | dict[int, str], be=True) -> str:
         """
         按照规则将每一位数映射到一个字符串中。
         """
         return ''.join(map(lambda i: mapping[i], self[::-1] if be else self))
 
-    def map2bytes(self, mapping: t.Union[bytes, t.Dict[int, bytes]], be=True) -> bytes:
+    def map2bytes(self, mapping: bytes | dict[int, bytes], be=True) -> bytes:
         """
         按照规则将每一位数映射到一个字节串中。
         """
@@ -338,7 +343,7 @@ class ItemsMeta(enum.EnumMeta):
     # https://docs.djangoproject.com/zh-hans/4.2/ref/models/fields/#enumeration-types
 
     @property
-    def names(cls) -> t.List[str]:
+    def names(cls) -> list[str]:
         """
         所有枚举成员的名称（定义枚举成员时的全大写变量名）。
         """
@@ -354,7 +359,7 @@ class ItemsMeta(enum.EnumMeta):
         return empty + [member.value for member in cls]
 
     @property
-    def items(cls) -> t.Dict[str, t.Any]:
+    def items(cls) -> dict[str, Any]:
         """
         所有枚举成员的名称和值。
         """
@@ -363,7 +368,7 @@ class ItemsMeta(enum.EnumMeta):
         return its
 
     @property
-    def choices(cls) -> t.List[t.Union[t.Tuple[str, t.Any], t.Tuple[None, t.Any]]]:
+    def choices(cls) -> list[tuple[str, Any] | tuple[None, Any]]:
         """
         所有枚举成员的值，和所有枚举成员的属性中的标签（label）。
         """
@@ -375,7 +380,7 @@ class ItemsMeta(enum.EnumMeta):
         empty = [(None, cls.__empty__)] if hasattr(cls, "__empty__") else []
         return empty + [(member.value, member.label) for member in cls]
 
-    def asdict(cls) -> t.Dict[enum.Enum, t.Any]:
+    def asdict(cls) -> dict[enum.Enum, Any]:
         """
         返回枚举成员与枚举值之间的映射。
         """
