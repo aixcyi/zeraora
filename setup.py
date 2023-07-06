@@ -20,7 +20,7 @@ setup(
     license='MIT',
     author='aixcyi',
     author_email='75880483+aixcyi@users.noreply.github.com',
-    description="实际应用积累的长期维护的实用开源工具库。"
+    description="为了跨平台跨项目复用代码而开发的工具库。"
                 "A utility Python package for our personal and corporate projects, with long time support.",
     long_description=long_description,
     long_description_content_type='text/markdown',
