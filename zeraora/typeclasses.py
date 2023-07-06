@@ -5,16 +5,19 @@ from __future__ import annotations
 
 __all__ = [
     'Throwable', 'UNSET', 'OnionObject', 'RadixInteger',
-    'ItemsMeta', 'Items',
+    'ItemsMeta', 'Items', 'BaseInteger',
 ]
 
 import enum
 import sys
-from typing import Any, Type, TypeVar
+from math import ceil
+from typing import Any, Type, TypeVar, Sequence
+
+from .throwables import WrongRadix, WrongDigits
 
 if sys.version_info < (3, 9):
     Throwable = TypeVar('Throwable', BaseException, Type[BaseException], covariant=True)
-else:
+else:  # pragma: no cover
     Throwable = TypeVar('Throwable', BaseException, type[BaseException], covariant=True)
 
 
@@ -118,6 +121,295 @@ class OnionObject(object):
         return f'OnionObject({attrs})'
 
 
+def get_digits(base: int, number: int):
+    while number >= base:
+        yield number % base
+        number //= base
+    yield number
+
+
+class BaseInteger(tuple):  # Little Endian
+
+    def __new__(cls, digits: Sequence[int], base: int = UNSET, be=False, negative=False) -> BaseInteger:
+        """
+        一个承载 BASE 进制整数各个数位的元组。
+
+        :param digits: 各位数。只能包含非负整数。
+        :param base: 进位制。省略则以最低进位制为整数的进位制。
+        :param be: 是否表明高位在前、低位在后。
+        :param negative: 表示该整数应当是一个负数（但永远不会按照补码解析）。
+        :raise WrongRadix: 提供了不正确的进位制。
+        :raise WrongDigits: 提供了不正确的数位。
+        """
+        if min(digits) < 0:
+            raise WrongDigits(f'{cls.__name__}() 只能包含非负整数的数位。')
+        radix = max(digits) + 1
+
+        if base is UNSET:
+            base = radix
+        else:
+            if not isinstance(base, int):
+                raise WrongRadix('无法表述非整数进位制。')
+            if base < 0:
+                raise WrongRadix('暂不支持表述负数进位制。')
+            if 0 <= base < 2:
+                raise WrongRadix('不存在基数为 0 或 1 的进位制。')
+            if not radix <= base:
+                raise WrongDigits(
+                    f'提供的数位表明，进位制至少是 {radix}，这高于给定的 {base} 。'
+                )
+        integer = sum(map(
+            lambda pair: pair[0] * base ** pair[1],
+            zip(
+                digits if be else digits[::-1],
+                reversed(range(len(digits)))
+            ),
+        ))
+        self = tuple.__new__(cls, digits[::-1] if be else digits)
+        self._radix = base
+        self._integer = -integer if negative else integer
+        return self
+
+    # # noinspection PyUnusedLocal
+    # def __init__(self, digits: Sequence[int], base: int = UNSET, be=False, negative=False):
+    #
+    #     def decorator(func_name):
+    #         def wrapper(*args, **kwargs):
+    #             function = getattr(self._integer, func_name)
+    #             result = function(*args, **kwargs)
+    #             return self.fromint(result, self._radix)
+    #
+    #         return wrapper
+    #
+    #     def proxy(func_name):
+    #         def wrapper(*args, **kwargs):
+    #             function = getattr(self._integer, func_name)
+    #             return function(*args, **kwargs)
+    #
+    #         return wrapper
+    #
+    #     needs_decorate = (
+    #         # 转换器
+    #         '__neg__', '__pos__', '__abs__',
+    #
+    #         # 算术运算（十进制）
+    #         '__add__', '__sub__', '__mul__', '__pow__', '__floordiv__', '__mod__',
+    #         '__radd__', '__rsub__', '__rmul__', '__rpow__', '__rfloordiv__' '__rmod__',
+    #         '__iadd__', '__isub__', '__imul__', '__ipow__', '__ifloordiv__', '__imod__',
+    #
+    #         # 算术运算（二进制）
+    #         '__and__', '__or__', '__xor__', '__lshift__', '__rshift__', '__invert__',
+    #         '__rand__', '__ror__', '__rxor__', '__rlshift__', '__rrshift__',
+    #         '__iand__', '__ior__', '__ixor__', '__ilshift__', '__irshift__',
+    #     )
+    #     needs_proxy = (
+    #         # 比较器
+    #         '__eq__', '__ne__', '__lt__', '__le__', '__gt__', '__ge__',
+    #
+    #         # 算术运算（十进制）
+    #         '__truediv__', '__divmod__',
+    #         '__rtruediv__', '__rdivmod__',
+    #         '__itruediv__',
+    #
+    #         # 普通方法
+    #         'bit_length',
+    #     )
+    #     if sys.version_info >= (3, 10):
+    #         needs_proxy += ('bit_count',)
+    #
+    #     for name in needs_proxy:
+    #         setattr(self, name, proxy(name))
+    #
+    #     for name in needs_decorate:
+    #         setattr(self, name, decorator(name))
+
+    @classmethod
+    def fromint(cls, x: int, base: int = 10) -> BaseInteger:
+        """
+        将 ``int`` 整数转换为 ``BaseInteger`` 对象。
+
+        :param x: 被转换的整数。
+        :param base: 新的进位制，默认是 10 。
+        :return: 一个新的 BaseInteger 对象。
+        :raise WrongRadix: 提供了不正确的进位制。
+        """
+        if not isinstance(x, int):  # 这里的异常是给代理方法和包装方法抛出的
+            raise TypeError  # pragma: no cover
+        if not isinstance(base, int):
+            raise WrongRadix('无法表述非整数进位制。')
+        if base < 2:
+            raise WrongRadix('无法表述基数比 2 更低的进位制。')
+
+        self = tuple.__new__(cls, get_digits(base, abs(x)))
+        self._radix = base
+        self._integer = x
+        self.__init__()
+        return self
+
+    @classmethod
+    def frombytes(cls, x: bytes | bytearray, base: int = 256, be=False, negative=False) -> BaseInteger:
+        """
+        从 ``bytes`` 或 ``bytearray`` 构造一个 ``BaseInteger`` 对象。
+
+        :param x: 被转换的整数。
+        :param base: 新的进位制，默认是 256 。
+        :param be: 是否表明 x 的高位在前、低位在后（大端字节序）。
+        :param negative: 是否使用补码来解析参数 x 。
+        :return: 一个新的 BaseInteger 对象。
+        :raise WrongRadix: 提供了不正确的进位制。
+        """
+        integer = (
+            int.from_bytes(x, 'big', signed=negative)
+            if be else
+            int.from_bytes(x, 'little', signed=negative)
+        )
+        if base == 256:
+            self = tuple.__new__(cls, x[::-1] if be else x)
+            self._radix = 256
+            self._integer = integer
+            self.__init__()
+        else:
+            self = cls.fromint(integer, base)  # WrongRadix
+        return self
+
+    @classmethod
+    def fromhex(cls, x: str, base: int = 256, be=False, negative=False) -> BaseInteger:
+        """
+        从 HEX 字符串构造一个 ``BaseInteger`` 对象。
+
+        :param x: 被转换的整数。
+        :param base: 新的进位制，默认是 256 。
+        :param be: 是否表明 x 的高位在前、低位在后（大端字节序）。
+        :param negative: 是否使用补码来解析参数 x 。
+        :return: 一个新的 BaseInteger 对象。
+        :raise ValueError: 提供了不正确的 HEX 字符串。
+        :raise WrongRadix: 提供了不正确的进位制。
+        """
+        v = bytes.fromhex(x)  # ValueError
+        return cls.frombytes(v, base, be, negative)  # WrongRadix
+
+    @property
+    def radix(self) -> int:
+        """整数的进位制。当进位制为 n 时，整数的每一位的取值范围是 [0,n) ∈ Z"""
+        return self._radix
+
+    def toradix(self, n: int) -> BaseInteger:
+        """
+        转换为另一个进位制的 ``BaseInteger`` 对象。
+
+        :param n: 新的进位制。
+        :return: 一个以 n 进制表述的新的 BaseInteger 对象。
+        :raise WrongRadix: 提供了不正确的进位制。
+        """
+        return self.fromint(self._integer, n)
+
+    def tobytes(self, be=False, negative=False) -> bytes:
+        """
+        将 ``BaseInteger`` 对象转换为 256 进制的 ``bytes`` 。
+
+        :param be: 是否转换为大端字节序。
+        :param negative: 是否转换成二进制补码来表示负数。
+        :return: 一个字节串。
+        """
+        qty_bytes = ceil(self._integer.bit_length() / 8)
+        if be:
+            return self._integer.to_bytes(qty_bytes, 'big', signed=negative)
+        return self._integer.to_bytes(qty_bytes, 'little', signed=negative)
+
+    def translate(self,
+                  charset: Sequence[str | bytes] | bytes | bytearray,
+                  be=True,
+                  sep: str | bytes | bytearray = ''
+                  ) -> str | bytes | bytearray:
+        """
+        将 ``BaseInteger`` 按照字符集翻译为另一种形式。
+
+        :param charset: 字符集。可以是字符串或字节串，或者可通过顺序下标获取字节串或字符串的任何对象。
+        :param be: 是否按照高位在前、低位在后的顺序进行映射。默认为是。
+        :param sep: 每个数位的间隔符。
+        :return: 与字符集类型相同。
+        :raise WrongRadix: 字符集的字符数量不足以表述当前进位制。
+        :raise TypeError: 字符集的字符的数据类型不受支持。
+        """
+        qty_digits = len(charset)
+        if qty_digits < self._radix:
+            raise WrongRadix(
+                f'提供的字符集只有 {qty_digits} 种数位，'
+                f'不足以容纳当前 {self._radix} 进制的整数。'
+            )
+        if not sep:
+            if isinstance(charset, (bytes, bytearray)):
+                sep = type(charset)()
+            else:
+                for c in charset:
+                    sep = type(c)()
+                    break
+
+        if isinstance(sep, str):
+            return sep.join(map(lambda i: charset[i], reversed(self) if be else self))
+        return type(sep)(map(lambda i: charset[i], reversed(self) if be else self))
+
+    # ---- 转换器 ----
+
+    def __int__(self) -> int:
+        return self._integer
+
+    def __float__(self) -> float:
+        return float(self._integer)
+
+    def __complex__(self) -> complex:
+        return self._integer + 0j
+
+    def __neg__(self) -> BaseInteger:
+        return self.fromint(-self._integer, self._radix)
+
+    def __pos__(self) -> BaseInteger:
+        return self.fromint(+self._integer, self._radix)
+
+    def __abs__(self) -> BaseInteger:
+        return self.fromint(abs(self._integer), self._radix)
+
+    # ---- 比较器 ----
+
+    def _equal(self, o) -> int:
+        if isinstance(o, BaseInteger):
+            return self._integer - o._integer
+        if isinstance(o, (int, float)):
+            return self._integer - o
+        if isinstance(o, complex):
+            raise TypeError('实数不能与复数比较大小。')
+
+        s = super()
+        return -1 if s.__lt__(o) else 0 if s.__eq__(o) else 1
+
+    def __eq__(self, o):
+        return self._equal(o) == 0
+
+    def __ne__(self, o):
+        return self._equal(o) != 0
+
+    def __lt__(self, o):
+        return self._equal(o) < 0
+
+    def __le__(self, o):
+        return self._equal(o) <= 0
+
+    def __ge__(self, o):
+        return self._equal(o) >= 0
+
+    def __gt__(self, o):
+        return self._equal(o) > 0
+
+    # ---- 其它方法 ----
+
+    def bit_length(self) -> int:
+        return self._integer.bit_length()
+
+    if sys.version_info >= (3, 10):  # pragma: no cover
+        def bit_count(self) -> int:
+            return self._integer.bit_count()
+
+
 # Little Endian
 class RadixInteger(tuple):
 
@@ -181,14 +473,7 @@ class RadixInteger(tuple):
         """
         将一个 ``int`` 类型的整数转换为 n 进制的 ``RadixInteger`` 。
         """
-
-        def int2digits(i: int):
-            while i >= n:
-                yield i % n
-                i //= n
-            yield i
-
-        self = tuple.__new__(cls, int2digits(abs(x)))
+        self = tuple.__new__(cls, get_digits(n, abs(x)))
         self._radix = n
         self._integer = x
         return self

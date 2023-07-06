@@ -1,4 +1,5 @@
 from tests.base_test_case import BaseTestCase
+from zeraora.throwables import WrongRadix, WrongDigits
 from zeraora.typeclasses import *
 
 
@@ -88,6 +89,93 @@ class TypeclassesTest(BaseTestCase):
 
         self.assertRaises(TypeError, OnionObject, [1, 2, 3])
 
+    def testBaseInteger(self):
+        integer = 33882121
+        t10_be = (3, 3, 8, 8, 2, 1, 2, 1)
+        t10_le = t10_be[::-1]
+        t8_be = tuple(map(int, oct(integer)[2:]))
+        t256_be = tuple(b for b in integer.to_bytes(4, 'big'))
+        t256_le = tuple(b for b in integer.to_bytes(4, 'little'))
+        bytes_be = integer.to_bytes(4, 'big')
+        bytes_le = integer.to_bytes(4, 'little')
+        hex_le = bytes_le.hex()
+        hex_be = bytes_be.hex()
+
+        # BaseInteger.__new__()
+        self.assertRaises(WrongRadix, BaseInteger, [7, 6], base=10.5)
+        self.assertRaises(WrongRadix, BaseInteger, [7, 6], base=-10)
+        self.assertRaises(WrongRadix, BaseInteger, [1], base=1)
+        self.assertRaises(WrongDigits, BaseInteger, [-7, -6], base=10)
+        self.assertRaises(WrongDigits, BaseInteger, [3, 4, 16], base=16)
+        self.assertTupleEqual(t10_le, BaseInteger(t10_le, base=10))
+        self.assertTupleEqual(t10_le, BaseInteger(t10_be, base=10, be=True))
+        self.assertTupleEqual(t256_le, BaseInteger(t256_le, base=10))
+        self.assertTupleEqual(t256_le, BaseInteger(t256_be, base=10, be=True))
+        self.assertEqual(9, BaseInteger(t10_le).radix)
+
+        # BaseInteger.fromint()
+        self.assertRaises(WrongRadix, BaseInteger.fromint, integer, base=10.5)
+        self.assertRaises(WrongRadix, BaseInteger.fromint, integer, base=-10)
+        self.assertTupleEqual(t10_le, BaseInteger.fromint(integer, base=10))
+        self.assertTupleEqual(t256_le, BaseInteger.fromint(integer, base=256))
+        self.assertEqual(5, BaseInteger.fromint(integer, base=5).radix)
+        self.assertEqual(10, BaseInteger.fromint(integer, base=10).radix)
+        self.assertEqual(256, BaseInteger.fromint(integer, base=256).radix)
+
+        # BaseInteger.frombytes()
+        self.assertTupleEqual(t256_le, BaseInteger.frombytes(bytes_le))
+        self.assertTupleEqual(t256_le, BaseInteger.frombytes(bytes_be, be=True))
+        self.assertTupleEqual(t10_le, BaseInteger.frombytes(bytes_le, base=10))
+
+        # BaseInteger.fromhex()
+        self.assertTupleEqual(t256_le, BaseInteger.fromhex(hex_le))
+        self.assertTupleEqual(t256_le, BaseInteger.fromhex(hex_be, be=True))
+
+        # BaseInteger().toradix()
+        self.assertTupleEqual(t8_be[::-1], BaseInteger(t10_le, base=10).toradix(8))
+
+        # BaseInteger().tobytes()
+        self.assertEqual(bytes_le, BaseInteger(t10_le, base=10).tobytes())
+        self.assertEqual(bytes_be, BaseInteger(t10_le, base=10).tobytes(be=True))
+
+        # BaseInteger().translate()
+        cs_str = '0123456789'
+        cs_bytes = b'0123456789'
+        cs_bytea = bytearray(b'0123456789')
+        cs_list = [c for c in cs_str]
+        s_10 = '33882121'
+        bs_10 = b'33882121'
+        ba_10 = bytearray(b'33882121')
+        self.assertEqual(s_10, BaseInteger(t10_le, base=10).translate(cs_str, be=True))
+        self.assertEqual(s_10, BaseInteger(t10_le, base=10).translate(cs_list, be=True))
+        self.assertEqual(bs_10, BaseInteger(t10_le, base=10).translate(cs_bytes, be=True))
+        self.assertEqual(ba_10, BaseInteger(t10_le, base=10).translate(cs_bytea, be=True))
+        self.assertEqual(ba_10, BaseInteger(t10_le, base=10).translate(cs_bytea, be=True))
+        self.assertRaises(WrongRadix, BaseInteger(t10_le, base=10).translate, cs_str[:1], be=True)
+
+        # 转换器
+        self.assertEqual(-integer, int(BaseInteger.fromint(-integer)))
+        self.assertEqual(integer, int(BaseInteger(t10_le, base=10)))
+        self.assertEqual(integer, int(BaseInteger(t256_le, base=256)))
+        self.assertEqual(integer + 0.0, float(BaseInteger(t10_le, base=10)))
+        self.assertEqual(integer + 0j, complex(BaseInteger(t10_le, base=10)))
+        self.assertEqual(-BaseInteger(t10_le, base=10), BaseInteger.fromint(-integer))
+        self.assertEqual(+BaseInteger(t10_le, base=10, negative=True), BaseInteger.fromint(-integer))
+        self.assertEqual(abs(BaseInteger(t10_le, base=10, negative=True)),
+                         abs(BaseInteger.fromint(-integer)))
+
+        # 杂项
+        self.assertTrue(BaseInteger.fromint(integer).bit_length() == integer.bit_length())
+
+        # 比较器
+        self.assertTrue(BaseInteger.fromint(integer) == integer)
+        self.assertTrue(BaseInteger.fromint(integer) >= integer)
+        self.assertTrue(BaseInteger.fromint(integer) <= integer)
+        self.assertFalse(BaseInteger.fromint(integer) > integer)
+        self.assertFalse(BaseInteger.fromint(integer) < integer)
+        self.assertFalse(BaseInteger.fromint(integer) != integer)
+        self.assertRaises(TypeError, BaseInteger.fromint(integer).__eq__, 0j)
+
     def testRadixInteger(self):
         ri256 = RadixInteger(33882121, 256)
         self.assertEqual(33882121, int.from_bytes(bytes(ri256), 'little'))
@@ -108,16 +196,11 @@ class TypeclassesTest(BaseTestCase):
         self.assertTupleEqual(tuple(ri16), RadixInteger([9, 0, 0, 0, 5, 0, 2], 16))
         self.assertTupleEqual(tuple(ri256), RadixInteger(b'\x09\x00\x05\x02', 256))
 
-        with self.assertRaises(ValueError):
-            _ = RadixInteger(33882121, 1)
-        with self.assertRaises(ValueError):
-            _ = RadixInteger(33882121, 1.5)
-        with self.assertRaises(ValueError):
-            _ = RadixInteger([1, 2, -3], 10)
-        with self.assertRaises(ValueError):
-            _ = RadixInteger([1, 2, 16], 16)
-        with self.assertRaises(TypeError):
-            _ = RadixInteger('meow', 16)
+        self.assertRaises(ValueError, RadixInteger, 33882121, 1)
+        self.assertRaises(ValueError, RadixInteger, 33882121, 1.5)
+        self.assertRaises(ValueError, RadixInteger, [1, 2, -3], 10)
+        self.assertRaises(ValueError, RadixInteger, [1, 2, 16], 16)
+        self.assertRaises(TypeError, RadixInteger, 'meow', 16)
 
         self.assertEqual(RadixInteger(33882121, 16), RadixInteger(33882121, 16))
         self.assertEqual(RadixInteger(33882121, 16), RadixInteger(33882121, 256))

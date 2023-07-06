@@ -21,7 +21,7 @@
 > 数据类型类、枚举类、枚举元类、类型别名等。
 
 - [`OnionObject()`](./zeraora/OnionObject.md)，将字典构造为对象，使得可以用点分法代替下标访问内容。
-- `RadixInteger()`，一个以元组表述各个数位的 N 进制整数。
+- `BaseInteger()`，一个以元组表述各个数位的 N 进制整数。
 - `ItemsMeta()`，创建带有任意属性的枚举的类。
 - `Items()`，每个值都带有任意属性的枚举。
 
@@ -139,3 +139,10 @@
   - `SYMBOL_SHIFT`
   - `UPPERS`
   - `UPPERS_SAFE`
+
+## zeraora.throwables
+
+> 异常、错误、警告。
+
+- `WrongRadix`，错误的进位制。
+- `WrongDigits`，错误的数位。
