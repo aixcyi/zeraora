@@ -21,7 +21,7 @@
 > 数据类型类、枚举类、枚举元类、类型别名等。
 
 - [`OnionObject()`](./zeraora/OnionObject.md)，将字典构造为对象，使得可以用点分法代替下标访问内容。
-- `RadixInteger()`，一个以元组表述各个数位的 N 进制整数。
+- `BaseInteger()`，一个以元组表述各个数位的 N 进制整数。
 - `ItemsMeta()`，创建带有任意属性的枚举的类。
 - `Items()`，每个值都带有任意属性的枚举。
 - `RawPath()`，继承 PurePath 但原生风格的地址。它通过检测字符串而不是操作系统来分化不同风格的 PurePath 类。
@@ -113,28 +113,39 @@
 
 ## zeraora.constants
 
-> 一些常量和枚举。
+> 不变量。
 
-- `Region`，枚举。包含用于划分省级行政区的大区。
-- `Province`，枚举。包含34个省级行政区名称、区划代码、字母码、大区、简称、缩写。
-- `DivisionLevel`，枚举。行政区划的层次级别。
-- `Degree`，枚举。表示程度的五个档位（最高、高、正常、低、最低）。
-- `BASE8`
-- `BASE16`
-- `BASE36`
-- `BASE62`
-- `BASE64`
-- `BASE64SAFE`
-- `DIGITS`
-- `DIGITS_SAFE`
-- `HEXDIGITS`
-- `LETTERS`
-- `LETTERS_SAFE`
-- `LOWERS`
-- `LOWERS_SAFE`
-- `OCTDIGITS`
-- `SYMBOL`
-- `SYMBOL_NORMAL`
-- `SYMBOL_SHIFT`
-- `UPPERS`
-- `UPPERS_SAFE`
+- 枚举
+  - `Region`，包含用于划分省级行政区的大区。
+  - `Province`，包含34个省级行政区名称、区划代码、字母码、大区、简称、缩写。
+  - `DivisionLevel`，行政区划的层次级别。
+  - `Degree`，表示程度的五个档位（最高、高、正常、低、最低）。
+- 默认配置
+  - `LOG_CONF_BEAR`，工具类 `BearTimer` 的默认日志配置。
+- 常量
+  - `BASE8`
+  - `BASE16`
+  - `BASE36`
+  - `BASE62`
+  - `BASE64`
+  - `BASE64SAFE`
+  - `DIGITS`
+  - `DIGITS_SAFE`
+  - `HEXDIGITS`
+  - `LETTERS`
+  - `LETTERS_SAFE`
+  - `LOWERS`
+  - `LOWERS_SAFE`
+  - `OCTDIGITS`
+  - `SYMBOL`
+  - `SYMBOL_NORMAL`
+  - `SYMBOL_SHIFT`
+  - `UPPERS`
+  - `UPPERS_SAFE`
+
+## zeraora.throwables
+
+> 异常、错误、警告。
+
+- `WrongRadix`，错误的进位制。
+- `WrongDigits`，错误的数位。

@@ -87,7 +87,7 @@ class ConvertersTest(TestCase):
 
     def test_represent(self):
         from uuid import UUID
-        from zeraora.constants.division import Province
+        from zeraora.constants import Province
 
         self.assertEqual('"string"', represent('string'))
         self.assertEqual('[2012-01-23]', represent(date(2012, 1, 23)))

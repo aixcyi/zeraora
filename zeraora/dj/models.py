@@ -1,6 +1,7 @@
 """
 对 Django ORM模型 的增强。
 """
+from __future__ import annotations
 
 __all__ = [
     'SnakeModel', 'CreateTimeMixin',
@@ -12,7 +13,6 @@ __all__ = [
 
 import re
 import uuid
-from typing import Union
 
 from .. import gvs
 from ..constants import Degree, Province
@@ -280,7 +280,7 @@ class AddressMixin(models.Model):
         return DivisionCode(self.province, self.prefecture, self.county, self.township)
 
     @ad_code.setter
-    def ad_code(self, _code: Union[str, DivisionCode]):
+    def ad_code(self, _code: str | DivisionCode):
         adc = _code if isinstance(_code, DivisionCode) else DivisionCode.fromcode(_code)
         self.province = adc.province
         self.prefecture = adc.prefecture

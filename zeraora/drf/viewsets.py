@@ -1,13 +1,14 @@
 """
 对 Django REST Framework 视图集（viewset）的增强。
 """
+from __future__ import annotations
 
 __all__ = [
     'EasyViewSetMixin',
     'SoftDeleteModelMixin',
 ]
 
-from typing import Any, Dict
+from typing import Any
 
 try:
     from django.utils.decorators import classonlymethod
@@ -29,7 +30,7 @@ class EasyViewSetMixin(ViewSetMixin):
     """
 
     @classonlymethod
-    def to_view(cls, initkwargs: Dict[str, Any] = None, **actions: str):
+    def to_view(cls, initkwargs: dict[str, Any] = None, **actions: str):
         """
         将视图类存储在一个视图函数上，方便URL反向查找。
 

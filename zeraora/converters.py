@@ -1,6 +1,7 @@
 """
 用于将一种值转换为另一种值的转换器。
 """
+from __future__ import annotations
 
 __all__ = [
     'delta2hms', 'delta2ms', 'delta2s',
@@ -14,7 +15,7 @@ __all__ = [
 import re
 from datetime import timedelta, datetime, date
 from decimal import Decimal
-from typing import Callable, Any, Tuple, Union
+from typing import Callable, Any
 from uuid import UUID
 
 from .typeclasses import Throwable, UNSET
@@ -30,7 +31,7 @@ def remove_exponent(d: Decimal):
     return d.quantize(Decimal(1)) if d == d.to_integral() else d.normalize()
 
 
-def delta2hms(delta: timedelta) -> Tuple[int, int, float]:
+def delta2hms(delta: timedelta) -> tuple[int, int, float]:
     """
     将时间增量转换为时分秒格式，其中秒钟以小数形式包含毫秒和微秒。
 
@@ -43,7 +44,7 @@ def delta2hms(delta: timedelta) -> Tuple[int, int, float]:
     return h, m, s
 
 
-def delta2ms(delta: timedelta) -> Tuple[int, float]:
+def delta2ms(delta: timedelta) -> tuple[int, float]:
     """
     将时间增量转换为分秒格式，其中秒钟以小数形式包含毫秒和微秒。
 
@@ -85,7 +86,7 @@ def wdate(year: int, week_in_year: int, day_in_week: int, sunday_first=False) ->
 def get_week_range(year: int,
                    week_in_year: int,
                    month: int = UNSET,
-                   sunday_first=False) -> Tuple[date, ...]:
+                   sunday_first=False) -> tuple[date, ...]:
     """
     计算一年中某一周对应的所有日期。
 
@@ -111,7 +112,7 @@ def get_week_range(year: int,
 def get_week_side(year: int,
                   week_in_year: int,
                   month: int = UNSET,
-                  sunday_first=False) -> Tuple[date, date]:
+                  sunday_first=False) -> tuple[date, date]:
     """
     计算一年中某一周对应的第一天和最后一天。
 
@@ -178,7 +179,7 @@ def represent(value: Any) -> str:
         return repr(value)
 
 
-def datasize(literal: str) -> Union[int, float]:
+def datasize(literal: str) -> int | float:
     """
     将一个字面量转换为字节数目。
 
@@ -267,11 +268,11 @@ class SafeCaster:
         self._default = None
         self._converters = tuple()
 
-    def __call__(self, raw: Any = UNSET) -> 'SafeCaster':
+    def __call__(self, raw: Any = UNSET) -> SafeCaster:
         self._value = raw
         return self
 
-    def catch(self, *exceptions: Throwable) -> 'SafeCaster':
+    def catch(self, *exceptions: Throwable) -> SafeCaster:
         """
         置入需要捕获的异常。应当提供可被 except 语句接受的值。
         """
@@ -283,7 +284,7 @@ class SafeCaster:
         )
         return self
 
-    def by(self, *mappers: Callable) -> 'SafeCaster':
+    def by(self, *mappers: Callable) -> SafeCaster:
         """
         置入转换器。若未提供初值，则第一个转换器也必须允许无参调用。
         """

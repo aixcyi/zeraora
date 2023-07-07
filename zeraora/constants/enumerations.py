@@ -1,11 +1,6 @@
 """
-省级行政区划相关。
+常用枚举。
 """
-
-__all__ = [
-    'Region', 'Province', 'DivisionLevel',
-]
-
 from enum import Enum
 
 from ..typeclasses import Items
@@ -139,3 +134,20 @@ class DivisionLevel(Enum):
     """乡级。自顶向下的第四个层级，包括县辖区、乡、镇、街道等。"""
     VILLAGE = 5
     """村级。自顶向下的第五个层级。"""
+
+
+class Degree(int, Items):
+    """
+    描述程度的五个档位。
+    """
+    HIGHEST = 100, '最高'
+    HIGH = 50, '高'
+    NORMAL = 0, '正常'
+    LOW = -50, '低'
+    LOWEST = -100, '最低'
+
+    __properties__ = 'label',
+
+    @property
+    def label(self):
+        return self._label_

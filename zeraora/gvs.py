@@ -1,12 +1,14 @@
 """
 包内全局变量。
 """
+from __future__ import annotations
 
-__all__ = []
+__all__ = [
+    'ad_map',
+    'ad_tree',
+]
 
-from typing import Dict
+from .structures import DivisionCode
 
-from zeraora.structures import DivisionCode
-
-ad_map: Dict[DivisionCode, str] = dict()
-ad_tree: Dict[str, dict] = dict()
+ad_map: dict[DivisionCode, str] = dict()
+ad_tree: dict[str, dict] = dict()
