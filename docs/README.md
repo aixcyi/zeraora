@@ -71,7 +71,7 @@
 
 ## zeraora.dj
 
-> 包含对 Django 的增强。
+> 包含对 [Django](https://docs.djangoproject.com/zh-hans/4.2/) 的增强。
 
 - `SnakeModel`，一个元类，为模型生成一个下划线小写的（蛇形）数据表名。
 
@@ -102,15 +102,21 @@
 
 ## zeraora.drf
 
-> 包含对 Django REST Framework 的增强。
+> 包含对 [Django REST Framework](https://www.django-rest-framework.org/) 的增强。
 
 - `EasyViewSetMixin`，提供两个方法来简化 `ViewSetMixin.as_view()` 的传参。
 - `SoftDeleteModelMixin`，将一个模型实例标记为已删除（软删除）。
 - `ExistingFilterBackend`，一个筛选中间件，用于筛选掉查询集中标记为已删除的结果。
 
+## zeraora.click
+
+> 包含对 [Click](https://click.palletsprojects.com/) 的增强。
+
+- `@pass_context_without_exit`，将上下文作为被装饰的方法的第一个参数，并取消自动退出。
+
 ## zeraora.constants
 
-> 不变量。
+> 不变的量。
 
 - 枚举
   - `Region`，包含用于划分省级行政区的大区。
