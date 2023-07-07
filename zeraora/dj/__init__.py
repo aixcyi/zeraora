@@ -7,14 +7,20 @@ from .fields import (
     OSSPathField,
 )
 from .lookups import (
-    BitsIn,
     BitsAllIn,
+    BitsIn,
 )
 from .models import (
-    SnakeModel,
+    ActiveStatusMixin,
+    AddressMixin,
+    BizMixin,
     CreateTimeMixin,
-    TimeMixin,
     DeletionMixin,
+    GlobalAddressMixin,
+    ImportanceMixin,
     IndexMixin,
     ShortIndexMixin,
+    SnakeModel,
+    TimeMixin,
+    UrgencyMixin,
 )

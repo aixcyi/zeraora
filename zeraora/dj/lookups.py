@@ -7,12 +7,6 @@ https://docs.djangoproject.com/zh-hans/4.2/ref/models/lookups/#lookup-reference
 如何自定义？
 https://docs.djangoproject.com/zh-hans/4.2/howto/custom-lookups/
 """
-
-__all__ = [
-    'BitsIn',
-    'BitsAllIn',
-]
-
 try:
     from django.db.models import Lookup
 except ImportError as e:
