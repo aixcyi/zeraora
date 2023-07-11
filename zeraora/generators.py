@@ -31,6 +31,8 @@ def randbytes(n: int) -> bytes:
 def randb62(n: int) -> str:
     """
     生成 n 个 base62 随机字符。
+
+    返回结果不受 random 库的 seed() 影响。
     """
     return ''.join(BASE62[i % 62] for i in os.urandom(n))
 
@@ -38,6 +40,8 @@ def randb62(n: int) -> str:
 def randb64(n: int) -> str:
     """
     生成 n 个 base64 随机字符。
+
+    返回结果不受 random 库的 seed() 影响。
     """
     return ''.join(BASE64[i >> 2] for i in os.urandom(n))
 
