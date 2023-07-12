@@ -10,12 +10,10 @@ STANDARD_LOG_FMT = (
 )
 
 
-class FixedDict(dict):
-
-    def __new__(cls, **kwargs: Any):
-        return super().__new__(
-            cls, ((k.rstrip('_'), v) for k, v in kwargs.items())
-        )
+def fix(**kwargs: Any):
+    return dict(
+        (k.rstrip('_'), v) for k, v in kwargs.items()
+    )
 
 
 LOG_CONF_BEAR = dict(
@@ -30,7 +28,7 @@ LOG_CONF_BEAR = dict(
     },
     filters={},
     handlers={
-        'Console': FixedDict(
+        'Console': fix(
             level='DEBUG',
             class_='logging.StreamHandler',
             filters=[],
