@@ -4,16 +4,27 @@
 from __future__ import annotations
 
 __all__ = [
-    'Throwable', 'UNSET', 'OnionObject', 'RadixInteger',
-    'ItemsMeta', 'Items', 'BaseInteger',
+    "Throwable",
+    "UNSET",
+    "OnionObject",
+    "get_digits",
+    "BaseInteger",
+    "RadixInteger",
+    "ItemsMeta",
+    "Items",
+    "RawPath",
+    "RawPosixPath",
+    "RawWindowsPath"
 ]
 
 import enum
+import os
 import sys
 from math import ceil
-from typing import Any, Type, TypeVar, Sequence
+from pathlib import PosixPath, PurePath, PurePosixPath, PureWindowsPath, WindowsPath
+from typing import Any, Sequence, Type, TypeVar, Union
 
-from .throwables import WrongRadix, WrongDigits
+from .throwables import WrongDigits, WrongRadix
 
 if sys.version_info < (3, 9):
     Throwable = TypeVar('Throwable', BaseException, Type[BaseException], covariant=True)
@@ -736,18 +747,19 @@ class RawPath(PurePath):
             cls = RawWindowsPath if ws else RawPosixPath
         return cls._from_parts(args)
 
-    def cast_by_os(self) -> t.Union[PosixPath, WindowsPath]:
+    def cast_by_os(self) -> Union[PosixPath, WindowsPath]:
         """
         根据操作系统转化成 PosixPath 或 WindowsPath 以获得基于文件系统实现的方法。
         """
         return WindowsPath(self) if os.name == 'nt' else PosixPath(self)
 
-    def cast_by_raw(self) -> t.Union[PosixPath, WindowsPath]:
+    def cast_by_raw(self) -> Union[PosixPath, WindowsPath]:
         """
         根据原生风格转化成 PosixPath 或 WindowsPath 以获得基于文件系统实现的方法。
 
         :raise NotImplementedError: 转化结果与当前操作系统不匹配。
         """
+        raise NotImplementedError
 
 
 class RawPosixPath(PurePosixPath):
