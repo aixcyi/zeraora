@@ -7,7 +7,6 @@ __all__ = [
     "Throwable",
     "UNSET",
     "OnionObject",
-    "get_digits",
     "BaseInteger",
     "RadixInteger",
     "ItemsMeta",
