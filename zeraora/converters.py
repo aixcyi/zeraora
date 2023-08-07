@@ -4,12 +4,22 @@
 from __future__ import annotations
 
 __all__ = [
-    'delta2hms', 'delta2ms', 'delta2s',
-    'wdate', 'get_week_range', 'get_week_side',
-    'get_week_in_year',
-    'represent', 'datasize', 'dsz', 'true',
-    'SafeCaster', 'safecast', 'safecasts',
+    'dict_',
     'remove_exponent',
+    'delta2hms',
+    'delta2ms',
+    'delta2s',
+    'wdate',
+    'get_week_range',
+    'get_week_side',
+    'get_week_in_year',
+    'represent',
+    'datasize',
+    'dsz',
+    'true',
+    'safecast',
+    'SafeCaster',
+    'safecasts',
 ]
 
 import re
@@ -19,6 +29,36 @@ from typing import Callable, Any
 from uuid import UUID
 
 from .typeclasses import Throwable, UNSET
+
+
+def dict_(**kwargs: Any) -> dict:
+    """
+    去除dict参数名尾随的 "_" 。
+
+    比如
+
+    >>> dict_(
+    >>>     level='DEBUG',
+    >>>     class_='logging.StreamHandler',
+    >>>     filters=[],
+    >>>     formatter='bear',
+    >>> )
+
+    将会返回
+
+    >>> {
+    >>>     "level": "DEBUG",
+    >>>     "class": "logging.StreamHandler",
+    >>>     "filters": [],
+    >>>     "formatter": "bear",
+    >>> }
+
+    :param kwargs: 仅限关键字传参。
+    :return: 一个字典。
+    """
+    return dict(
+        (k.rstrip('_'), v) for k, v in kwargs.items()
+    )
 
 
 def remove_exponent(d: Decimal):

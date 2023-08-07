@@ -19,7 +19,7 @@
 
 ## 特性
 
-- 支持with、注解和实例化三种方式调用的计时器 `BearStopwatch` ；
+- 支持with、注解和实例化三种方式调用的计时器 `BearTimer` ；
 - 生成通用representation方便调试时查看对象内部信息的 `ReprMixin` ；
 - 自动为Django模型生成下划线小写（即蛇形）数据表名的 `SnakeModel` ；
 - 将字典的任意层级递归转化为对象，以便支持点分法访问数据的 `OnionObject` ；

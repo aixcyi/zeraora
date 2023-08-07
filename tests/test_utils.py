@@ -78,7 +78,7 @@ class UtilsTest(BaseTestCase):
         self.assertEqual(r12, repr(Student(id=1, pk='10086020')))
 
     def testBearTimer(self):
-        bear = BearStopwatch()
+        bear = BearTimer()
         with self.assertLogs('zeraora.bear', 'DEBUG'):
             bear.start()
         with self.assertLogs('zeraora.bear', 'DEBUG'):
@@ -86,10 +86,10 @@ class UtilsTest(BaseTestCase):
         with self.assertLogs('zeraora.bear', 'DEBUG'):
             bear.stop()
         with self.assertLogs('zeraora.bear', 'DEBUG'):
-            with BearStopwatch():
+            with BearTimer():
                 _ = sum(range(100_0000))
         with self.assertLogs('zeraora.bear', 'DEBUG'):
-            @BearStopwatch()
+            @BearTimer()
             def calc_summary(length: int) -> int:
                 return sum(range(length))
 

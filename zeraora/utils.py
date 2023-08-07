@@ -4,8 +4,14 @@
 from __future__ import annotations
 
 __all__ = [
-    'bear_config', 'BearStopwatch', 'BearTimer', 'ReprMixin', 'start', 'deprecate',
-    'load_ads4', 'warn_empty_ads',
+    'LOG_CONF_BEAR',
+    'BearTimer',
+    'BearTimer',
+    'ReprMixin',
+    'start',
+    'deprecate',
+    'warn_empty_ads',
+    'load_ads4',
 ]
 
 import json
@@ -13,25 +19,50 @@ import logging
 import sys
 import warnings
 from datetime import datetime, timedelta
-from decimal import Decimal
 from functools import wraps
 from itertools import groupby
 from pathlib import Path
 from threading import Lock
-from time import time_ns
 from typing import NoReturn
 
 from . import gvs
-from .constants import LOG_CONF_BEAR
-from .converters import delta2s, represent
+from .converters import delta2s, dict_, represent
 from .structures import DivisionCode
 
 bear_logger = logging.getLogger('zeraora.bear')
 
-bear_config = LOG_CONF_BEAR
+LOG_CONF_BEAR = dict(
+    version=1,
+    formatters={
+        'bear': dict(
+            format='[%(asctime)s] [%(levelname)s] %(message)s',
+        ),
+        'bear_plus': dict(
+            format='[%(asctime)s] [%(levelname)s] '
+                   '[%(module)s.%(funcName)s:%(lineno)d] '
+                   '%(message)s',
+        ),
+    },
+    filters={},
+    handlers={
+        'Console': dict_(
+            level='DEBUG',
+            class_='logging.StreamHandler',
+            filters=[],
+            formatter='bear',
+        ),
+    },
+    loggers={
+        'zeraora.bear': dict(
+            level='DEBUG',
+            handlers=['Console'],
+            propagate=False,
+        ),
+    },
+)
 
 
-class BearStopwatch(object):
+class BearTimer(object):
     __slots__ = '_label', '_marks', '_point'
 
     def __init__(self, label: str = None, *_, **__):
@@ -43,11 +74,10 @@ class BearStopwatch(object):
         使用前，需要先启用日志输出：
 
         >>> import logging.config
-        >>> from zeraora.constants import LOG_CONF_BEAR
-        >>> from zeraora.utils import BearStopwatch
+        >>> from zeraora.utils import BearTimer, LOG_CONF_BEAR
         >>>
         >>> logging.config.dictConfig(LOG_CONF_BEAR)
-        >>> bear = BearStopwatch()
+        >>> bear = BearTimer()
 
         对于使用 Django 的项目可以改为在 settings.py 中进行如下设置：
 
@@ -63,7 +93,7 @@ class BearStopwatch(object):
         >>>         ...
         >>>     },
         >>>     'loggers': {
-        >>>         'zeraora.bear': {  # 添加熊牌记录器
+        >>>         'zeraora.bear': {  # 添加相应的日志记录器
         >>>             'level': 'DEBUG',
         >>>             'handlers': ['Console'],
         >>>         },
@@ -74,13 +104,13 @@ class BearStopwatch(object):
 
         最简单是使用 ``with`` 语句包裹需要计时的部分：
 
-        >>> with BearStopwatch() as bear:
+        >>> with BearTimer() as bear:
         >>>     # 业务逻辑
         >>>     pass
 
         如需对一整个函数进行计时，可以作为装饰器使用：
 
-        >>> @BearStopwatch()
+        >>> @BearTimer()
         >>> def do_somthing(*args, **kwargs):
         >>>     # 业务逻辑
         >>>     pass
@@ -88,23 +118,23 @@ class BearStopwatch(object):
         带有多个装饰器时，计时器放哪里取决于你的计时范围：
 
         >>> from rest_framework.decorators import api_view
-        >>> from zeraora.utils import BearStopwatch
+        >>> from zeraora.utils import BearTimer
         >>>
-        >>> @BearStopwatch()  # 从请求转发过来那一刻开始计时
+        >>> @BearTimer()  # 从请求转发过来那一刻开始计时
         >>> @api_view(['GET'])
         >>> def query_status(request, *args, **kwargs):
         >>>     # 业务逻辑
         >>>     pass
         >>>
         >>> @api_view(['POST'])
-        >>> @BearStopwatch()  # 从login()执行那一刻开始计时
+        >>> @BearTimer()  # 从login()执行那一刻开始计时
         >>> def login(request, *args, **kwargs):
         >>>     # 业务逻辑
         >>>     pass
 
         此外还可以实例化一个对象。每个对象都是独立的计时器，互不影响。
 
-        >>> bear = BearStopwatch()
+        >>> bear = BearTimer()
         >>> bear.start()
         >>> # 业务逻辑
         >>> bear.stop()
@@ -187,163 +217,6 @@ class BearStopwatch(object):
         :return: 当前时刻。
         """
         _, _, curr, _, _ = self.lap(msg)
-        return curr
-
-
-class BearTimer(object):
-
-    def __init__(self, label: str = None, *_, **__):
-        """
-        熊牌计时器。对代码运行进行计时，并向名为 "zeraora.bear" 的Logger发送DEBUG等级的日志。
-
-        ----
-
-        使用前，需要先启用日志输出：
-
-        >>> import logging.config
-        >>> from zeraora.constants import LOG_CONF_BEAR
-        >>> from zeraora.utils import BearTimer
-        >>>
-        >>> logging.config.dictConfig(LOG_CONF_BEAR)
-        >>> bear = BearTimer()
-
-        对于使用 Django 的项目可以改为在 settings.py 中进行如下设置：
-
-        >>> LOGGING = {
-        >>>     'version': 1,
-        >>>     'formatters': {...},
-        >>>     'filters': {...},
-        >>>     'handlers': {
-        >>>         'Console': {
-        >>>             'level': 'DEBUG',
-        >>>             'class': 'logging.StreamHandler',
-        >>>         },
-        >>>         # ...
-        >>>     },
-        >>>     'loggers': {
-        >>>         'zeraora.bear': {
-        >>>             'level': 'DEBUG',
-        >>>             'handlers': ['Console'],
-        >>>         },
-        >>>     },
-        >>> }
-
-        ----
-
-        最简单是使用 ``with`` 语句包裹需要计时的部分：
-
-        >>> with BearTimer() as bear:
-        >>>     # 业务逻辑
-        >>>     pass
-
-        如需对一整个函数进行计时，可以作为装饰器使用：
-
-        >>> @BearTimer()
-        >>> def do_somthing(*args, **kwargs):
-        >>>     # 业务逻辑
-        >>>     pass
-
-        带有多个装饰器时，计时器放哪里取决于你的计时范围：
-
-        >>> from rest_framework.decorators import api_view
-        >>> from zeraora.utils import BearTimer
-        >>>
-        >>> @BearTimer()  # 从请求转发过来那一刻开始计时
-        >>> @api_view(['GET'])
-        >>> def query_status(request, *args, **kwargs):
-        >>>     # 业务逻辑
-        >>>     pass
-        >>>
-        >>> @api_view(['POST'])
-        >>> @BearTimer()  # 从login()执行那一刻开始计时
-        >>> def login(request, *args, **kwargs):
-        >>>     # 业务逻辑
-        >>>     pass
-
-        此外还可以实例化一个对象。每个对象都是独立的计时器，互不影响。
-
-        >>> bear = BearTimer()
-        >>> bear.start()
-        >>> # 业务逻辑
-        >>> bear.stop()
-
-        :param label: 计时器的标题，用以标明输出信息归属于哪个计时器。默认从打印消息时的上下文中获取。
-        """
-        context = sys._getframe().f_back.f_code.co_name
-        self._start: int = 0  # 计时开始时间
-        self._point: int = 0  # 中途标记时间（用于计算距离上次标记过去了多久）
-        self._label = context if not label and hasattr(sys, '_getframe') else str(label)
-
-    def __call__(self, func):
-        @wraps(func)
-        def wrapper(*args, **kwargs):
-            self._label = func.__name__
-            self.start()
-            returns = func(*args, **kwargs)
-            self.stop()
-            return returns
-
-        return wrapper
-
-    def __enter__(self):
-        self.start()
-        return self
-
-    def __exit__(self, exc_type, exc_val, traceback):
-        self.stop()
-
-    def _record(self, msg: str = '') -> int:
-        """
-        打印一行消息，标明此刻的时间、经历的时长、距上次打印的时长、计时器标题，以及附加的消息。
-
-        :param msg: 要附加的消息。默认为空文本。
-        :return: 自纪元以来的当前时间（以纳秒为单位）。
-        """
-        now = time_ns()
-        total = Decimal((now - self._start) if self._start else 0) / 1000000000
-        delta = Decimal((now - self._point) if self._point else 0) / 1000000000
-        bear_logger.debug(f'[{self._label}] [{total:.9f} +{delta:.9f}]: {msg}')
-        self._point = now
-        return now
-
-    def start(self, msg='Starting...'):
-        """
-        开始计时。
-
-        如果计时尚未结束，会重新开始计时，中途记录的标记也会被清除。
-
-        :param msg: 要附加的消息。
-        :return: 计时器对象自身。
-        """
-        self._point = 0
-        self._start = time_ns()
-        self._record(msg)
-        return self
-
-    def step(self, msg='') -> tuple[int, int]:
-        """
-        中途标记。
-
-        用此方法可以计算出距离上一次标记/开始计时过去了多久。
-
-        如果计时器尚未开始计时，那么过去的时间始终是 0 秒。
-
-        :param msg: 要附加的消息。
-        :return: 二元元组。包含上一次标记/开始计时的时刻，和此时的时刻。时刻是自纪元以来的当前时间（以纳秒为单位）。
-        """
-        prev = self._point
-        curr = self._record(msg)
-        return prev, curr
-
-    def stop(self, msg='Stopped.') -> int:
-        """
-        结束计时。
-
-        :param msg: 要附加的消息。
-        :return: 返回自纪元以来的当前时间（以纳秒为单位）。
-        """
-        curr = self._record(msg)
-        self._start = 0
         return curr
 
 
