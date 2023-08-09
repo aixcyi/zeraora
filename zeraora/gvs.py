@@ -8,7 +8,7 @@ __all__ = [
     'ad_tree',
 ]
 
-from .structures import DivisionCode
+from zeraora.structures import DivisionCode
 
 ad_map: dict[DivisionCode, str] = dict()
 ad_tree: dict[str, dict] = dict()

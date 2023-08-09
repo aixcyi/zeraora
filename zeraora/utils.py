@@ -25,9 +25,9 @@ from pathlib import Path
 from threading import Lock
 from typing import NoReturn
 
-from . import gvs
-from .converters import delta2s, dict_, represent
-from .structures import DivisionCode
+from zeraora import gvs
+from zeraora.converters import delta2s, dict_, represent
+from zeraora.structures import DivisionCode
 
 bear_logger = logging.getLogger('zeraora.bear')
 

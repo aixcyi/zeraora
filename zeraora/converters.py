@@ -28,7 +28,7 @@ from decimal import Decimal
 from typing import Callable, Any
 from uuid import UUID
 
-from .typeclasses import Throwable, UNSET
+from zeraora.typeclasses import Throwable, UNSET
 
 
 def dict_(**kwargs: Any) -> dict:

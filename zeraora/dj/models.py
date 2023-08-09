@@ -6,10 +6,10 @@ from __future__ import annotations
 import re
 import uuid
 
-from .. import gvs
-from ..constants import Degree, Province
-from ..structures import DivisionCode
-from ..utils import warn_empty_ads
+from zeraora import gvs
+from zeraora.constants import Degree, Province
+from zeraora.structures import DivisionCode
+from zeraora.utils import warn_empty_ads
 
 try:
     from django.apps import apps

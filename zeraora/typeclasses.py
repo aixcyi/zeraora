@@ -23,7 +23,7 @@ from math import ceil
 from pathlib import PosixPath, PurePath, PurePosixPath, PureWindowsPath, WindowsPath
 from typing import Any, Sequence, Type, TypeVar, Union
 
-from .throwables import WrongDigits, WrongRadix
+from zeraora.throwables import WrongDigits, WrongRadix
 
 if sys.version_info < (3, 9):
     Throwable = TypeVar('Throwable', BaseException, Type[BaseException], covariant=True)

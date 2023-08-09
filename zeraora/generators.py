@@ -16,7 +16,7 @@ import os
 from random import getrandbits
 from time import time
 
-from .constants import BASE62, BASE64
+from zeraora.constants import BASE62, BASE64
 
 snow_logger = logging.getLogger('zeraora.snowflake')
 

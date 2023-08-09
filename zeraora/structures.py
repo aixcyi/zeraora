@@ -10,7 +10,7 @@ __all__ = [
 
 from typing import NamedTuple, Tuple
 
-from .constants import DivisionLevel
+from zeraora.constants import DivisionLevel
 
 
 class DivisionCode(NamedTuple):
