@@ -3,6 +3,22 @@
 """
 from __future__ import annotations
 
+__all__ = [
+    'SnakeModel',
+    'CreateTimeMixin',
+    'TimeMixin',
+    'ActiveStatusMixin',
+    'DeletionMixin',
+    'IndexMixin',
+    'ShortIndexMixin',
+    'UrgencyMixin',
+    'ImportanceMixin',
+    'biz_id',
+    'BizMixin',
+    'AddressMixin',
+    'GlobalAddressMixin',
+]
+
 import re
 import uuid
 
@@ -16,6 +32,16 @@ try:
     from django.db import models
 except ImportError as e:
     raise ImportError('需要安装Django框架：\npip install django') from e
+
+
+def convert_camel_name(name):
+    # "CombineOrderSKUModel"
+    # -> "Combine OrderSKU Model"
+    # -> "Combine Order SKU Model"
+    # -> "combine_order_sku_model"
+    mid = re.sub('(.)([A-Z][a-z]+)', r'\1 \2', name)
+    words = re.sub('([a-z0-9])([A-Z])', r'\1 \2', mid)
+    return '_'.join(word.lower() for word in words.split())
 
 
 class SnakeModel(models.base.ModelBase):
@@ -46,10 +72,7 @@ class SnakeModel(models.base.ModelBase):
             return super().__new__(cls, name, bases, attrs, **kwargs)
 
         app_name = app_config.label
-
-        model_name = re.sub(r'[A-Z]', (lambda s: f'_{s.group(0).lower()}'), name)
-        model_name = model_name[1:] if model_name.startswith('_') else model_name
-
+        model_name = convert_camel_name(app_name)
         table_name = f'{app_name}_{model_name}'
 
         if 'Meta' not in attrs:
