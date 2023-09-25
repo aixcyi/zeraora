@@ -7,11 +7,8 @@ https://www.django-rest-framework.org/api-guide/filtering/
 如何自定义？
 https://www.django-rest-framework.org/api-guide/filtering/#custom-generic-filtering
 """
-try:
-    from django.core.exceptions import FieldDoesNotExist
-    from rest_framework.filters import BaseFilterBackend
-except ImportError as e:
-    raise ImportError('需要安装Django以及DRF框架：\npip install django djangorestframework') from e
+from django.core.exceptions import FieldDoesNotExist
+from rest_framework.filters import BaseFilterBackend
 
 
 class ExistingFilterBackend(BaseFilterBackend):
