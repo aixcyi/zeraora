@@ -4,14 +4,14 @@
 from __future__ import annotations
 
 __all__ = [
-    "Throwable",
-    "UNSET",
-    "OnionObject",
-    "ItemsMeta",
-    "Items",
-    "RawPath",
-    "RawPosixPath",
-    "RawWindowsPath"
+    'Throwable',
+    'UNSET',
+    'OnionObject',
+    'ItemsMeta',
+    'Items',
+    'RawPath',
+    'RawPosixPath',
+    'RawWindowsPath',
 ]
 
 import enum
