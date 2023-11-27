@@ -1,17 +1,15 @@
 """
 对 Django REST Framework 视图集（viewset）的增强。
 """
+
 from __future__ import annotations
 
 from typing import Any
 
-try:
-    from django.utils.decorators import classonlymethod
-    from rest_framework import status
-    from rest_framework.response import Response
-    from rest_framework.viewsets import ViewSetMixin
-except ImportError as e:
-    raise ImportError('需要安装Django以及DRF框架：\npip install django djangorestframework') from e
+from django.utils.decorators import classonlymethod
+from rest_framework import status
+from rest_framework.response import Response
+from rest_framework.viewsets import ViewSetMixin
 
 
 class EasyViewSetMixin(ViewSetMixin):

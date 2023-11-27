@@ -7,10 +7,8 @@ https://docs.djangoproject.com/zh-hans/4.2/ref/models/lookups/#lookup-reference
 如何自定义？
 https://docs.djangoproject.com/zh-hans/4.2/howto/custom-lookups/
 """
-try:
-    from django.db.models import Lookup
-except ImportError as e:
-    raise ImportError('需要安装Django框架：\npip install django') from e
+
+from django.db.models import Lookup
 
 
 class BitsIn(Lookup):

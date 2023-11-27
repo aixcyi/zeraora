@@ -8,10 +8,7 @@ https://docs.djangoproject.com/zh-hans/4.2/topics/db/managers/
 https://docs.djangoproject.com/zh-hans/4.2/topics/db/managers/#custom-managers
 """
 
-try:
-    from django.db.models import Manager
-except ImportError as e:
-    raise ImportError('需要安装Django框架：\npip install django') from e
+from django.db.models import Manager
 
 
 class ExistingManager(Manager):

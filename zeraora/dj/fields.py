@@ -1,13 +1,11 @@
 """
 定制的 Django ORM模型字段。
 """
+
 from decimal import Decimal
 
-try:
-    from django.db import models
-    from django.utils.translation import gettext_lazy
-except ImportError as e:
-    raise ImportError('需要安装Django框架：\npip install django') from e
+from django.db import models
+from django.utils.translation import gettext_lazy
 
 ZERO = Decimal('0.00')
 
