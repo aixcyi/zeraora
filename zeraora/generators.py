@@ -51,10 +51,30 @@ def randb64(n: int) -> str:
 
 class SnowflakeWorker(object):
     STAMP = (1 << 41) - 1
+    """
+    时间戳最大值。
+    """
+
     WORKER = (1 << 10) - 1
+    """
+    设备编号最大值。
+    """
+
     SEQUENCE = (1 << 12) - 1
+    """
+    序号最大值。
+    """
+
     EPOCH1970 = 0
+    """
+    时间戳起点。
+    """
+
     EPOCH2000 = 946656000
+    """
+    2000年1月1日零点时间戳。
+    """
+
     EPOCH2020 = 1577808000
 
     def __init__(self, worker: int, *, epoch: int = EPOCH1970):
@@ -97,16 +117,25 @@ class SnowflakeWorker(object):
         return (self._stamp << 22) | (self._worker << 12) | sequence
 
     def redirect(self):
+        """
+        时间回拨的处理方法。仅限继承重写。
+        """
         exc = self.TimeRedirected(self)
         snow_logger.exception(type(self).__name__, exc_info=exc)
         raise exc
 
     def overflow(self):
+        """
+        序号上溢的处理方法。仅限继承重写。
+        """
         exc = self.SequenceOverflow(self)
         snow_logger.exception(type(self).__name__, exc_info=exc)
         raise exc
 
     def dump(self) -> dict:
+        """
+        将属性以字典形式导出。
+        """
         return {
             "stamp": self._stamp,
             "worker": self._worker,
@@ -114,6 +143,12 @@ class SnowflakeWorker(object):
         }
 
     def load(self, data: dict, **kwargs):
+        """
+        载入相关属性。
+
+        :param data: 字典。
+        :param kwargs: 解包传参。
+        """
         values = data | kwargs
         self._stamp = values.get('stamp', self._stamp)
         self._worker = values.get('worker', self._worker)
@@ -128,11 +163,19 @@ class SnowflakeWorker(object):
             )
 
     class TimeRedirected(_Error):
+        """
+        时钟回拨。
+        """
+
         def __str__(self):
             return 'Time redirected. ' \
                    '(stamp=%s, worker=%s, sequence=%s)' % self.args
 
     class SequenceOverflow(_Error):
+        """
+        序号上溢。
+        """
+
         def __str__(self):
             return 'Snowflake ID sequence overflow. ' \
                    '(stamp=%s, worker=%s, sequence=%s)' % self.args
