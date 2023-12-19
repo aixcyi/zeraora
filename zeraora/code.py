@@ -5,9 +5,14 @@ __all__ = [
     'Symbols',
     'SafeSymbols',
     'Notations',
+    'randbytes',
+    'randb62',
+    'randb64',
 ]
 
+import os
 from itertools import chain
+from random import getrandbits
 
 
 class Symbols:
@@ -49,3 +54,31 @@ class Notations:
     ))
     BASE64 = BASE62 + '+/'
     BASE64SAFE = BASE62 + '-_'
+
+
+def randbytes(n: int) -> bytes:
+    """
+    生成 n 个随机字节。
+
+    此函数用于在 Python 3.9 以前代替 random.randbytes(n) 方法。
+    """
+    assert n >= 0
+    return getrandbits(n * 8).to_bytes(n, 'little')
+
+
+def randb62(n: int) -> str:
+    """
+    生成 n 个 base62 随机字符。
+
+    返回结果不受 random 库的 seed() 影响。
+    """
+    return ''.join(Notations.BASE62[i % 62] for i in os.urandom(n))
+
+
+def randb64(n: int) -> str:
+    """
+    生成 n 个 base64 随机字符。
+
+    返回结果不受 random 库的 seed() 影响。
+    """
+    return ''.join(Notations.BASE64[i >> 2] for i in os.urandom(n))

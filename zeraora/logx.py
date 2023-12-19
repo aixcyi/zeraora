@@ -17,7 +17,7 @@ from logging.handlers import TimedRotatingFileHandler
 from threading import Lock
 
 from zeraora.daytime import delta2s
-from zeraora.utils import dict_
+from zeraora.defence import dict_
 
 logger = logging.getLogger('zeraora.bear')
 
