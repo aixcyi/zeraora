@@ -6,6 +6,7 @@ from __future__ import annotations
 __all__ = [
     'dict_',
     'remove_exponent',
+    'get_digits',
     'delta2hms',
     'delta2ms',
     'delta2s',
@@ -17,18 +18,13 @@ __all__ = [
     'datasize',
     'dsz',
     'true',
-    'safecast',
-    'SafeCaster',
-    'safecasts',
 ]
 
 import re
-from datetime import timedelta, datetime, date
+from datetime import date, datetime, timedelta
 from decimal import Decimal
-from typing import Callable, Any
+from typing import Any, Iterator
 from uuid import UUID
-
-from zeraora.typeclasses import Throwable, UNSET
 
 
 def dict_(**kwargs: Any) -> dict:
@@ -69,6 +65,34 @@ def remove_exponent(d: Decimal):
     https://docs.python.org/zh-cn/3/library/decimal.html#decimal-faq
     """
     return d.quantize(Decimal(1)) if d == d.to_integral() else d.normalize()
+
+
+def get_digits(number: int, base: int) -> Iterator[int]:
+    """
+    将整数转换为其它进位制。
+
+    返回一个迭代器，对其迭代将得到目标进制整数从右到左的每一位的十进制表示：
+
+    >>> digits = get_digits(1008611, 16)
+    >>> mapper = lambda d: '0123456789abcdef'[d]
+    >>> ''.join(map(mapper, digits))
+    '3e36f'
+
+    >>> hex(1008611)
+    '0xf63e3'
+
+    :param number: 十进制整数。
+    :param base: 需要转换为什么进位制。参数不能小于 2 。
+    :return: 一个迭代器，每次迭代会 “从右到左” 输出结果的一位的十进制表示。
+    :raise AssertionError: 参数不符合要求。
+    """
+    assert isinstance(number, int), '只能转换整数的进位制。'
+    assert isinstance(base, int), '无法处理非整数进位制。'
+    assert 2 <= base, '无法处理低于二进制的进位制。'
+    while number >= base:
+        yield number % base
+        number //= base
+    yield number
 
 
 def delta2hms(delta: timedelta) -> tuple[int, int, float]:
@@ -125,7 +149,7 @@ def wdate(year: int, week_in_year: int, day_in_week: int, sunday_first=False) ->
 
 def get_week_range(year: int,
                    week_in_year: int,
-                   month: int = UNSET,
+                   month: int = None,
                    sunday_first=False) -> tuple[date, ...]:
     """
     计算一年中某一周对应的所有日期。
@@ -141,7 +165,7 @@ def get_week_range(year: int,
     start = f'{year:04d}-{week_in_year:02d}-{0 if sunday_first else 1}'
     start = datetime.strptime(start, fmt).date()
     days = tuple(start + timedelta(days=i) for i in range(7))
-    days = days if month is UNSET else tuple(day for day in days if day.month == month)
+    days = days if month is None else tuple(day for day in days if day.month == month)
     if not days:
         raise ValueError(
             f'{year} 年的 {week_in_year} 周不在当年的 {month} 月里。'
@@ -151,7 +175,7 @@ def get_week_range(year: int,
 
 def get_week_side(year: int,
                   week_in_year: int,
-                  month: int = UNSET,
+                  month: int = None,
                   sunday_first=False) -> tuple[date, date]:
     """
     计算一年中某一周对应的第一天和最后一天。
@@ -266,99 +290,3 @@ def true(value) -> bool:
     :return: True 或 False。
     """
     return value in ('true', 'True', 'TRUE', 1, True, '1')
-
-
-def safecast(mapper: Callable, raw, *errs: Throwable, default=None) -> Any:
-    """
-    转换一个值，转换失败时返回default，确保不会发生指定异常。
-
-    默认捕获以下异常，可以通过errs参数追加更多异常：
-        - TypeError
-        - ValueError
-        - KeyboardInterrupt
-
-    :param mapper: 用来转换raw的转换器。如果转换器不可调用，将直接返回默认值。
-    :param raw: 被转换的值。
-    :param errs: 需要捕获的其它异常类或异常对象。应当提供可被 except 语句接受的值。
-    :param default: 默认值。即使不提供也会默认返回 None 而不会抛出异常。
-    :return: 转换后的值。如若捕获到特定异常将返回默认值。
-    """
-    exceptions = tuple(
-        exc for exc in errs
-        if exc.__class__ is type
-        and issubclass(exc, BaseException)
-        or isinstance(exc, BaseException)
-    )
-    if not callable(mapper):
-        return default
-    try:
-        return mapper(raw)
-    except (TypeError, ValueError, KeyboardInterrupt) + exceptions:
-        return default
-
-
-class SafeCaster:
-    _exceptions = ()
-
-    def __init__(self, raw: Any = UNSET):
-        """
-        创建一个安全转换器，用于转换某个值而不发生特定异常。若不提供初值，则第一个转换器也必须允许无参调用。
-        """
-        self._value = raw
-        self._default = None
-        self._converters = tuple()
-
-    def __call__(self, raw: Any = UNSET) -> SafeCaster:
-        self._value = raw
-        return self
-
-    def catch(self, *exceptions: Throwable) -> SafeCaster:
-        """
-        置入需要捕获的异常。应当提供可被 except 语句接受的值。
-        """
-        self._exceptions = tuple(
-            exc for exc in exceptions
-            if exc.__class__ is type
-            and issubclass(exc, BaseException)
-            or isinstance(exc, BaseException)
-        )
-        return self
-
-    def by(self, *mappers: Callable) -> SafeCaster:
-        """
-        置入转换器。若未提供初值，则第一个转换器也必须允许无参调用。
-        """
-        self._converters = tuple(
-            mapper for mapper in mappers
-            if callable(mapper)
-        )
-        return self
-
-    def get(self, default=None) -> Any:
-        """
-        执行转换并返回转换结果。若触发置入的异常或没有置入转换器则返回默认值；若触发未被置入的异常将原样抛出。
-        """
-        result = self.__invoke(default)
-        self.__init__()
-        return result
-
-    def __invoke(self, default) -> Any:
-        if self._value is UNSET:
-            result = self._converters[0]()
-            converters = self._converters[1:]
-        else:
-            result = self._value
-            converters = self._converters
-
-        if len(self._converters) <= 0:
-            return default
-
-        try:
-            for converter in converters:
-                result = converter(result) if callable(converter) else result
-            return result
-        except self._exceptions:
-            return default
-
-
-safecasts = SafeCaster().catch(TypeError, ValueError, KeyboardInterrupt)

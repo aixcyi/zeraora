@@ -4,7 +4,7 @@
 
 from enum import Enum
 
-from zeraora.typeclasses import Items
+from zeraora.enums import Items
 
 # print(''.join(map(chr, range(32, 127))))
 

@@ -25,7 +25,7 @@ from email.mime.text import MIMEText
 from typing import Any, Union
 
 from zeraora.constants import Months, TimeZones, Weeks
-from zeraora.typeclasses import RawPath
+from zeraora.filepath import RawPath
 
 
 # TODO: 待将所有外部方法融合进类中

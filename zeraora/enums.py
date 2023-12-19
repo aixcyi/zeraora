@@ -1,137 +1,12 @@
-"""
-类型包。包含数据类型类、枚举类、枚举元类、类型别名等。
-"""
 from __future__ import annotations
 
 __all__ = [
-    'Throwable',
-    'UNSET',
-    'OnionObject',
     'ItemsMeta',
     'Items',
-    'RawPath',
-    'RawPosixPath',
-    'RawWindowsPath',
 ]
 
 import enum
-import os
-import sys
-from math import ceil
-from pathlib import PosixPath, PurePath, PurePosixPath, PureWindowsPath, WindowsPath
-from typing import Any, Sequence, Type, TypeVar, Union
-
-if sys.version_info < (3, 9):
-    Throwable = TypeVar('Throwable', BaseException, Type[BaseException], covariant=True)
-else:  # pragma: no cover
-    Throwable = TypeVar('Throwable', BaseException, type[BaseException], covariant=True)
-
-
-class UNSET:
-    pass
-
-
-class OnionObject(object):
-
-    def __translate_list(self, items: list) -> list:
-        return list(
-            self.__translate_list(list(item)) if isinstance(item, tuple)
-            else self.__translate_list(item) if isinstance(item, list)
-            else type(self)(item, self.__depth - 1) if isinstance(item, dict)
-            else item
-            for item in items
-        )
-
-    # OnionObject()
-    def __new__(cls, dictionary: dict = None, depth: int = -1, **kvs):
-        """
-        将字典转化为对象，使得可以用点分法代替下标访问内容。
-
-        支持还原为字典：
-
-        >>> data: dict = ~OnionObject()
-
-        支持直接更新字典：
-
-        >>> obj: OnionObject = OnionObject()
-        >>> obj: OnionObject = obj | dict()  # 等价于 obj |= dict()
-
-        :param dictionary: 包含数据的字典。不符合标识符命名要求，
-                           或者以双下划线 “__” 开头的键不会被收录。
-        :param depth: 递归转化的层数。负数表示无限递归转化，正数表示递归层数，0无意义。
-        :return: OnionObject 的对象。
-        :raise TypeError: 属性名称必须是字符串。
-        """
-        if dictionary is None:
-            dictionary = {}
-        if not isinstance(dictionary, dict):
-            raise TypeError
-        if depth == 0:
-            return dictionary
-        dictionary.update(kvs)
-
-        self = object.__new__(cls)
-        self.__depth = depth
-        self.__ior__(dictionary)
-        return self
-
-    # OnionObject() | dict()
-    def __or__(self, dictionary: dict) -> OnionObject:
-        for k, v in dictionary.items():
-            k = str(k)
-            if not k.isidentifier() or k.startswith('__'):
-                continue
-            if isinstance(v, tuple):
-                self.__setattr__(k, self.__translate_list(list(v[:])))
-            elif isinstance(v, list):
-                self.__setattr__(k, self.__translate_list(v[:]))
-            elif isinstance(v, dict) and self.__depth:
-                self.__setattr__(k, self.__class__(v, self.__depth - 1))
-            else:
-                self.__setattr__(k, v)
-        return self
-
-    # obj = OnionObject()
-    # obj |= dict()
-    __ior__ = __or__
-
-    # ~OnionObject()
-    def __invert__(self) -> dict:
-        def obtain():
-            prefix = f'_{type(self).__name__}__'
-            for k, v in self.__dict__.items():
-                if k.startswith('__') or k.startswith(prefix):
-                    continue
-                if isinstance(v, (list, tuple)):
-                    yield k, [
-                        ~i if isinstance(i, OnionObject) else i
-                        for i in v
-                    ]
-                elif isinstance(v, OnionObject):
-                    yield k, ~v
-                else:
-                    yield k, v
-
-        return dict(obtain())
-
-    # repr(OnionObject())
-    def __repr__(self) -> str:
-        prefix = f'_{type(self).__name__}__'
-        attrs = ', '.join(
-            f'{attr}={type(value).__name__}(...)'
-            if isinstance(value, OnionObject) else
-            f'{attr}={value!r}'
-            for attr, value in self.__dict__.items()
-            if not attr.startswith('__') or attr.startswith(prefix)
-        )
-        return f'OnionObject({attrs})'
-
-
-def get_digits(base: int, number: int):
-    while number >= base:
-        yield number % base
-        number //= base
-    yield number
+from typing import Any
 
 
 class ItemsMeta(enum.EnumMeta):
@@ -241,11 +116,6 @@ class ItemsMeta(enum.EnumMeta):
         """
         return {member: member.value for member in cls}
 
-    def value_of(cls, value: str) -> enum.Enum:
-        raise NotImplementedError(
-            f'该方法是多余的，请使用 {cls.__name__}(value) 代替。'
-        )  # pragma: no cover
-
 
 class Items(enum.Enum, metaclass=ItemsMeta):
     """
@@ -294,50 +164,3 @@ class Items(enum.Enum, metaclass=ItemsMeta):
 
     def __repr__(self):
         return f"{self.__class__.__qualname__}.{self._name_}"
-
-
-class RawPath(PurePath):
-    def __new__(cls, *args: str):
-        """
-        继承 PurePath 但原生风格的地址。它通过检测字符串而不是操作系统来分化不同风格的 PurePath 类。
-        """
-        if cls is RawPath:
-            ws = any('\\' in arg for arg in args)
-            cls = RawWindowsPath if ws else RawPosixPath
-        return cls._from_parts(args)
-
-    def cast_by_os(self) -> Union[PosixPath, WindowsPath]:
-        """
-        根据操作系统转化成 PosixPath 或 WindowsPath 以获得基于文件系统实现的方法。
-        """
-        return WindowsPath(self) if os.name == 'nt' else PosixPath(self)
-
-    def cast_by_raw(self) -> Union[PosixPath, WindowsPath]:
-        """
-        根据原生风格转化成 PosixPath 或 WindowsPath 以获得基于文件系统实现的方法。
-
-        :raise NotImplementedError: 转化结果与当前操作系统不匹配。
-        """
-        raise NotImplementedError
-
-
-class RawPosixPath(PurePosixPath):
-
-    def cast_by_raw(self) -> PosixPath:
-        """
-        根据原生风格转化成 PosixPath 或 WindowsPath 以获得基于文件系统实现的方法。
-
-        :raise NotImplementedError: 转化结果与当前操作系统不匹配。
-        """
-        return PosixPath(self)
-
-
-class RawWindowsPath(PureWindowsPath):
-
-    def cast_by_raw(self) -> WindowsPath:
-        """
-        根据原生风格转化成 PosixPath 或 WindowsPath 以获得基于文件系统实现的方法。
-
-        :raise NotImplementedError: 转化结果与当前操作系统不匹配。
-        """
-        return WindowsPath(self)
