@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 __all__ = [
     'check_path',
     'get_table_data',
@@ -22,7 +24,7 @@ from email.mime.application import MIMEApplication
 from email.mime.image import MIMEImage
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
-from typing import Any, Union
+from typing import Any
 
 from zeraora.constants import Months, TimeZones, Weeks
 from zeraora.filepath import RawPath
@@ -118,7 +120,7 @@ def decode_match(match: re.Match) -> str:
     return bytes(byte_values).decode('gb18030')
 
 
-def decode_field(infos: Union[Header, str], default: str = "null", charset: str = None) -> str:
+def decode_field(infos: Header | str, default: str = "null", charset: str = None) -> str:
     """检查字段
 
     :param infos:   标头值字符串类型 -> 信息集合，集合中第一个参数为头部信息，即要解码的信息，第二个参数为编码，存在为空，或未知的可能性 -> 必需

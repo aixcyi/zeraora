@@ -8,7 +8,7 @@ __all__ = [
     'Division',
 ]
 
-from typing import NamedTuple, Tuple
+from typing import NamedTuple
 
 from zeraora.constants import DivisionLevel
 
@@ -134,7 +134,7 @@ class Division(NamedTuple):
     name: str
     code: DivisionCode
     level: DivisionLevel
-    years: Tuple[int] = ()
+    years: tuple[int] = ()
 
     def __repr__(self):
         return '<Division%i %s %s years=[%s]>' % (
