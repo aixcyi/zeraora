@@ -8,6 +8,11 @@ https://docs.djangoproject.com/zh-hans/4.2/ref/models/lookups/#lookup-reference
 https://docs.djangoproject.com/zh-hans/4.2/howto/custom-lookups/
 """
 
+__all__ = [
+    'BitsIn',
+    'BitsAllIn',
+]
+
 from django.db.models import Lookup
 
 

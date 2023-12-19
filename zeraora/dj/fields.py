@@ -2,12 +2,16 @@
 定制的 Django ORM模型字段。
 """
 
+__all__ = [
+    'BizField',
+    'MoneyField',
+    'OSSPathField',
+]
+
 from decimal import Decimal
 
 from django.db import models
 from django.utils.translation import gettext_lazy
-
-ZERO = Decimal('0.00')
 
 
 class BizField(models.CharField):
@@ -26,6 +30,8 @@ class MoneyField(models.DecimalField):
     金额。默认 12 位数，小数部分占用 2 位。
     """
     description = gettext_lazy("金额。")
+
+    ZERO = Decimal('0.00')
 
     def __init__(self, verbose_name=None, default: Decimal = ZERO, **kwargs):
         kwargs.setdefault('max_digits', 12)

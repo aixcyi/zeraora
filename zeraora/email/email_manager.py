@@ -1,6 +1,11 @@
 __all__ = [
-    'check_path', 'get_table_data', 'decode_match', 'decode_field',
-    'TencentMailReceiveService', 'TencentMailSendService', 'EmailManager'
+    'check_path',
+    'get_table_data',
+    'decode_match',
+    'decode_field',
+    'TencentMailReceiveService',
+    'TencentMailSendService',
+    'EmailManager',
 ]
 
 import csv

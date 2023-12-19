@@ -8,6 +8,10 @@ https://docs.djangoproject.com/zh-hans/4.2/topics/db/managers/
 https://docs.djangoproject.com/zh-hans/4.2/topics/db/managers/#custom-managers
 """
 
+__all__ = [
+    'ExistingManager',
+]
+
 from django.db.models import Manager
 
 
