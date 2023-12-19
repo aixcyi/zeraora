@@ -1,3 +1,8 @@
+"""
+HTTP 网络相关。
+
+依赖 `requests 包 <https://pypi.org/project/requests/>`_ 。
+"""
 __all__ = [
     'HTTPBearerAuth',
 ]

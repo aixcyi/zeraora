@@ -1,19 +1,156 @@
 """
-偏工具属性的类与函数。
+不易归档的工具函数、工具类、类型、结构、枚举、常量等。
 """
 from __future__ import annotations
 
 __all__ = [
+    'randbytes',
+    'randb62',
+    'randb64',
+    'Gender',
+    'Degree',
+    'dict_',
+    'true',
+    'represent',
     'ReprMixin',
+    'datasize',
+    'dsz',
     'start',
     'deprecate',
 ]
 
+import os
+import re
 import sys
 import warnings
+from datetime import date, datetime, timedelta
+from enum import Enum
 from functools import wraps
+from random import getrandbits
+from typing import Any
+from uuid import UUID
 
-from zeraora.converters import represent
+from zeraora.code import Notations
+from zeraora.enums import Items
+
+
+def randbytes(n: int) -> bytes:
+    """
+    生成 n 个随机字节。
+
+    此函数用于在 Python 3.9 以前代替 random.randbytes(n) 方法。
+    """
+    assert n >= 0
+    return getrandbits(n * 8).to_bytes(n, 'little')
+
+
+def randb62(n: int) -> str:
+    """
+    生成 n 个 base62 随机字符。
+
+    返回结果不受 random 库的 seed() 影响。
+    """
+    return ''.join(Notations.BASE62[i % 62] for i in os.urandom(n))
+
+
+def randb64(n: int) -> str:
+    """
+    生成 n 个 base64 随机字符。
+
+    返回结果不受 random 库的 seed() 影响。
+    """
+    return ''.join(Notations.BASE64[i >> 2] for i in os.urandom(n))
+
+
+class Gender(Enum):
+    Male = True
+    Female = False
+
+
+class Degree(int, Items):
+    """
+    描述程度的七个档位。
+    """
+    HIGHEST = 100, '最高'
+    HIGHER = 75, '偏高'
+    HIGH = 50, '高'
+    NORMAL = 0, '正常'
+    LOW = -50, '低'
+    LOWER = -75, '偏低'
+    LOWEST = -100, '最低'
+
+    __properties__ = 'label',
+
+    @property
+    def label(self):
+        return self._label_
+
+
+def dict_(**kwargs: Any) -> dict:
+    """
+    去除dict参数名尾随的 "_" 。
+
+    比如
+
+    >>> dict_(
+    >>>     level='DEBUG',
+    >>>     class_='logging.StreamHandler',
+    >>>     filters=[],
+    >>>     formatter='bear',
+    >>> )
+
+    将会返回
+
+    >>> {
+    >>>     "level": "DEBUG",
+    >>>     "class": "logging.StreamHandler",
+    >>>     "filters": [],
+    >>>     "formatter": "bear",
+    >>> }
+
+    :param kwargs: 仅限关键字传参。
+    :return: 一个字典。
+    """
+    return dict(
+        (k.rstrip('_'), v) for k, v in kwargs.items()
+    )
+
+
+def true(value) -> bool:
+    """
+    将HTTP请求中 query 部分的参数值转换为 Python 的逻辑值。
+
+    :param value: query 中的参数值。
+    :return: True 或 False。
+    """
+    return value in ('true', 'True', 'TRUE', 1, True, '1')
+
+
+def represent(value: Any) -> str:
+    """
+    将任意值转换为一个易于阅读的字符串。
+
+    也是 ReprMixin 的默认格式化函数。
+
+    默认使用 repr() 函数进行转换。如果自定义的类需要实现被此函数转换，请重写 .__repr__() 方法。
+
+    :param value: 任意值。
+    :return: 字符串。
+    """
+    if hasattr(value, 'label'):  # 兼容像 Django 的 Choices 那样的枚举
+        return value.label
+    elif isinstance(value, str):
+        return f'"{value}"'
+    elif isinstance(value, timedelta):
+        return f'[{value.days}d+{value.seconds}.{value.microseconds:06d}s]'
+    elif isinstance(value, datetime):
+        return f'[{value:%Y-%m-%d %H:%M:%S,%f}]'
+    elif isinstance(value, date):
+        return f'[{value:%Y-%m-%d}]'
+    elif isinstance(value, UUID):
+        return value.hex
+    else:
+        return repr(value)
 
 
 class ReprMixin(object):
@@ -187,6 +324,45 @@ class ReprMixin(object):
 
     def _obtain_kls(self) -> str:
         return self.__class__.__name__
+
+
+def datasize(literal: str) -> int | float:
+    """
+    将一个字面量转换为字节数目。
+
+    支持的单位包括：
+      - B、b
+      - KB、KiB、Kb、Kib
+      - MB、MiB、Mb、Mib
+      - GB、GiB、Gb、Gib
+      - TB、TiB、Tb、Tib
+      - 以此类推……
+
+    - 1 B == 8 b
+    - 1 MB == 1000 KB
+    - 1 MiB == 1024 KiB
+
+    :param literal: 一个整数后缀数据大小的单位。
+    :return:
+    """
+    if not isinstance(literal, str):
+        raise TypeError('不支持解析一个非字符串类型的值。')
+
+    pattern = re.compile(r'^([0-9]+)\s*([KMGTPEZY]?)(i?[Bb])$')
+    result = re.fullmatch(pattern, literal)
+
+    if result is None:
+        return 0
+
+    base = int(result.group(1))
+    shift = 'BKMGTPEZY'.index(result.group(2))
+    power = (1024 if 'i' in result.group(3) else 1000) ** shift
+    power = (power / 8) if 'b' in result.group(3) else power
+
+    return base * power
+
+
+dsz = datasize
 
 
 def start(*version, note: str = None):

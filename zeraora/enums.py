@@ -1,3 +1,6 @@
+"""
+增强型枚举类型。
+"""
 from __future__ import annotations
 
 __all__ = [

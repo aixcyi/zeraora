@@ -1,3 +1,6 @@
+"""
+系统文件路径相关。
+"""
 from __future__ import annotations
 
 __all__ = [

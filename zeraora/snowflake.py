@@ -1,52 +1,16 @@
 """
-用于随机生成和特定顺序生成的生成器。
+`Snowflake ID <https://en.wikipedia.org/wiki/Snowflake_ID>`_ 生成算法相关应用。
 """
-
 __all__ = [
-    'randbytes',
-    'randb62',
-    'randb64',
     'SnowflakeWorker',
     'SnowflakeMultiWorker',
     'SnowflakeSingleWorker',
 ]
 
 import logging
-import os
-from random import getrandbits
 from time import time
 
-from zeraora.constants import BASE62, BASE64
-
-snow_logger = logging.getLogger('zeraora.snowflake')
-
-
-def randbytes(n: int) -> bytes:
-    """
-    生成 n 个随机字节。
-
-    此函数用于在 Python 3.9 以前代替 random.randbytes(n) 方法。
-    """
-    assert n >= 0
-    return getrandbits(n * 8).to_bytes(n, 'little')
-
-
-def randb62(n: int) -> str:
-    """
-    生成 n 个 base62 随机字符。
-
-    返回结果不受 random 库的 seed() 影响。
-    """
-    return ''.join(BASE62[i % 62] for i in os.urandom(n))
-
-
-def randb64(n: int) -> str:
-    """
-    生成 n 个 base64 随机字符。
-
-    返回结果不受 random 库的 seed() 影响。
-    """
-    return ''.join(BASE64[i >> 2] for i in os.urandom(n))
+logger = logging.getLogger('zeraora.snowflake')
 
 
 class SnowflakeWorker(object):
@@ -121,7 +85,7 @@ class SnowflakeWorker(object):
         时间回拨的处理方法。仅限继承重写。
         """
         exc = self.TimeRedirected(self)
-        snow_logger.exception(type(self).__name__, exc_info=exc)
+        logger.exception(type(self).__name__, exc_info=exc)
         raise exc
 
     def overflow(self):
@@ -129,7 +93,7 @@ class SnowflakeWorker(object):
         序号上溢的处理方法。仅限继承重写。
         """
         exc = self.SequenceOverflow(self)
-        snow_logger.exception(type(self).__name__, exc_info=exc)
+        logger.exception(type(self).__name__, exc_info=exc)
         raise exc
 
     def dump(self) -> dict:
@@ -196,7 +160,7 @@ class SnowflakeMultiWorker(SnowflakeWorker):
         """
         if worker in cls._objects_:
             exc = RuntimeError(f'存在相同的 SnowflakeMultiWorker(worker={worker})')
-            snow_logger.exception(cls.__name__, exc_info=exc)
+            logger.exception(cls.__name__, exc_info=exc)
             raise exc
         cls._objects_.append(worker)
         return SnowflakeWorker.__new__(cls)
@@ -217,7 +181,7 @@ class SnowflakeSingleWorker(SnowflakeWorker):
         """
         if cls._instanced_ is True:
             exc = RuntimeError('已实例化过 SnowflakeSingleWorker 。')
-            snow_logger.exception(cls.__name__, exc_info=exc)
+            logger.exception(cls.__name__, exc_info=exc)
             raise exc
         cls._instanced_ = True
         return SnowflakeWorker.__new__(cls)

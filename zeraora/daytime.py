@@ -1,12 +1,12 @@
 """
-用于将一种值转换为另一种值的转换器。
+日期、时间、时刻相关。
 """
 from __future__ import annotations
 
 __all__ = [
-    'dict_',
-    'remove_exponent',
-    'get_digits',
+    'Months',
+    'Weeks',
+    'TimeZones',
     'delta2hms',
     'delta2ms',
     'delta2s',
@@ -14,85 +14,82 @@ __all__ = [
     'get_week_range',
     'get_week_side',
     'get_week_in_year',
-    'represent',
-    'datasize',
-    'dsz',
-    'true',
 ]
 
-import re
 from datetime import date, datetime, timedelta
-from decimal import Decimal
-from typing import Any, Iterator
-from uuid import UUID
+
+from zeraora.enums import Items
 
 
-def dict_(**kwargs: Any) -> dict:
-    """
-    去除dict参数名尾随的 "_" 。
-
-    比如
-
-    >>> dict_(
-    >>>     level='DEBUG',
-    >>>     class_='logging.StreamHandler',
-    >>>     filters=[],
-    >>>     formatter='bear',
-    >>> )
-
-    将会返回
-
-    >>> {
-    >>>     "level": "DEBUG",
-    >>>     "class": "logging.StreamHandler",
-    >>>     "filters": [],
-    >>>     "formatter": "bear",
-    >>> }
-
-    :param kwargs: 仅限关键字传参。
-    :return: 一个字典。
-    """
-    return dict(
-        (k.rstrip('_'), v) for k, v in kwargs.items()
-    )
+class Months(Items):
+    January = '1月'
+    February = '2月'
+    March = '3月'
+    April = '4月'
+    May = '5月'
+    June = '6月'
+    July = '7月'
+    August = '8月'
+    September = '9月'
+    October = '10月'
+    November = '11月'
+    December = '12月'
 
 
-def remove_exponent(d: Decimal):
-    """
-    去除十进制小数（Decimal）的尾导零。
+class Weeks(Items):
+    Monday = '星期一'
+    Tuesday = '星期二'
+    Wednesday = '星期三'
+    Thursday = '星期四'
+    Friday = '星期五'
+    Saturday = '星期六'
+    Sunday = '星期天'
 
-    非原创代码，出自：
-    https://docs.python.org/zh-cn/3/library/decimal.html#decimal-faq
-    """
-    return d.quantize(Decimal(1)) if d == d.to_integral() else d.normalize()
 
+class TimeZones(Items):
+    KLT = '+1400', '基里巴斯线岛时间'
+    NZDT = '+1300', '新西兰夏时制'
+    NZT = '+1200', '新西兰时间'
+    AESST = '+1100', '澳大利亚东部标准夏时制,（俄罗斯马加丹时区）,东边（俄罗斯彼得罗巴甫洛夫斯克时区）'
+    CST = '+1030', '澳大利亚中部标准时间'
+    EAST = '+1000', '东澳大利亚标准时间'
+    SAT = '+0930', '南澳大利亚标准时间'
+    KST = '+0900', '朝鲜标准时间'
+    WST = '+0800', '西澳大利亚标准时间'
+    JT = '+0730', '爪哇时间'
+    CXT = '+0700', '澳大利亚圣诞岛时间'
+    MMT = '+0630', '缅甸时间'
+    ALMT = '+0600', '哈萨克斯坦阿拉木图,时间（俄罗斯鄂木斯克时区）'
+    TFT = '+0500', '法属凯尔盖朗岛时间'
+    AFT = '+0430', '阿富汗时间'
+    SCT = '+0400', '塞舌尔马埃岛时间'
+    IRT = '+0330', '伊朗时间'
+    HMT = '+0300', '希腊地中海时间'
+    SST = '+0200', '瑞典夏时制'
+    WETDST = '+0100', '西欧光照利用时间（夏时制）'
+    GMT = '000', '格林尼治标准时间'
+    WET = '+0000', '西欧'
+    FNST = '-0100', '巴西费尔南多·迪诺罗尼亚岛,夏令时'
+    BRST = '-0200', '巴西利亚夏令时'
+    NDT = '-0230', '纽芬兰夏时制'
+    BRT = '-0300', '巴西利亚时间'
+    NST = '-0330', '纽芬兰（Newfoundland）标准时间'
+    EDT = '-0400', '东部夏时制'
+    EST = '-0500', '东部标准时间'
+    MDT = '-0600', '山地夏时制'
+    PDT = '-0700', '太平洋夏时制'
+    YST = '-0800', '育空地区标准时'
+    HDT = '-0900', '夏威夷/阿拉斯加夏时制'
+    MART = '-0930', '马克萨斯群岛时间'
+    CAT = '-1000', '中阿拉斯加时间'
+    NT = '-1100', '阿拉斯加诺姆时间（Nome,Time）'
+    IDLE = '-1200', '国际日期变更线，西边'
 
-def get_digits(number: int, base: int) -> Iterator[int]:
-    """
-    将整数转换为其它进位制。
+    __properties__ = 'description',
 
-    返回一个迭代器，对其迭代将得到目标进制整数从右到左的每一位的十进制表示：
-
-    >>> digits = get_digits(1008611, 16)
-    >>> mapper = lambda d: '0123456789abcdef'[d]
-    >>> ''.join(map(mapper, digits))
-    '3e36f'
-
-    >>> hex(1008611)
-    '0xf63e3'
-
-    :param number: 十进制整数。
-    :param base: 需要转换为什么进位制。参数不能小于 2 。
-    :return: 一个迭代器，每次迭代会 “从右到左” 输出结果的一位的十进制表示。
-    :raise AssertionError: 参数不符合要求。
-    """
-    assert isinstance(number, int), '只能转换整数的进位制。'
-    assert isinstance(base, int), '无法处理非整数进位制。'
-    assert 2 <= base, '无法处理低于二进制的进位制。'
-    while number >= base:
-        yield number % base
-        number //= base
-    yield number
+    @property
+    def description(self) -> str:
+        return self._description_
 
 
 def delta2hms(delta: timedelta) -> tuple[int, int, float]:
@@ -214,79 +211,3 @@ def get_week_in_year(*args, sunday_first=False) -> int:
         raise ValueError
     week = day.strftime('%U') if sunday_first else day.strftime('%W')
     return int(week)
-
-
-def represent(value: Any) -> str:
-    """
-    将任意值转换为一个易于阅读的字符串。
-
-    也是 ReprMixin 的默认格式化函数。
-
-    默认使用 repr() 函数进行转换。如果自定义的类需要实现被此函数转换，请重写 .__repr__() 方法。
-
-    :param value: 任意值。
-    :return: 字符串。
-    """
-    if hasattr(value, 'label'):  # 兼容像 Django 的 Choices 那样的枚举
-        return value.label
-    elif isinstance(value, str):
-        return f'"{value}"'
-    elif isinstance(value, timedelta):
-        return f'[{value.days}d+{value.seconds}.{value.microseconds:06d}s]'
-    elif isinstance(value, datetime):
-        return f'[{value:%Y-%m-%d %H:%M:%S,%f}]'
-    elif isinstance(value, date):
-        return f'[{value:%Y-%m-%d}]'
-    elif isinstance(value, UUID):
-        return value.hex
-    else:
-        return repr(value)
-
-
-def datasize(literal: str) -> int | float:
-    """
-    将一个字面量转换为字节数目。
-
-    支持的单位包括：
-      - B、b
-      - KB、KiB、Kb、Kib
-      - MB、MiB、Mb、Mib
-      - GB、GiB、Gb、Gib
-      - TB、TiB、Tb、Tib
-      - 以此类推……
-
-    - 1 B == 8 b
-    - 1 MB == 1000 KB
-    - 1 MiB == 1024 KiB
-
-    :param literal: 一个整数后缀数据大小的单位。
-    :return:
-    """
-    if not isinstance(literal, str):
-        raise TypeError('不支持解析一个非字符串类型的值。')
-
-    pattern = re.compile(r'^([0-9]+)\s*([KMGTPEZY]?)(i?[Bb])$')
-    result = re.fullmatch(pattern, literal)
-
-    if result is None:
-        return 0
-
-    base = int(result.group(1))
-    shift = 'BKMGTPEZY'.index(result.group(2))
-    power = (1024 if 'i' in result.group(3) else 1000) ** shift
-    power = (power / 8) if 'b' in result.group(3) else power
-
-    return base * power
-
-
-dsz = datasize
-
-
-def true(value) -> bool:
-    """
-    将HTTP请求中 query 部分的参数值转换为 Python 的逻辑值。
-
-    :param value: query 中的参数值。
-    :return: True 或 False。
-    """
-    return value in ('true', 'True', 'TRUE', 1, True, '1')

@@ -1,3 +1,6 @@
+"""
+JavaScript Object Node 相关。
+"""
 from __future__ import annotations
 
 __all__ = [

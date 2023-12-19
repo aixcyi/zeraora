@@ -1,38 +1,20 @@
 """
-常量包。包含常用字符集和常用枚举。
+中国行政区划相关。
 """
+from __future__ import annotations
+
+__all__ = [
+    'Region',
+    'Province',
+    'DivisionLevel',
+    'DivisionCode',
+    'Division',
+]
 
 from enum import Enum
+from typing import NamedTuple
 
 from zeraora.enums import Items
-
-# print(''.join(map(chr, range(32, 127))))
-
-# 按分类定义的字符集
-DIGITS = '0123456789'
-UPPERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
-LOWERS = 'abcdefghijklmnopqrstuvwxyz'
-SYMBOL = r'''!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~'''
-SYMBOL_NORMAL = r"`-=[]\;',./"
-SYMBOL_SHIFT = r'~!@#$%^&*()_+{}|:"<>?'
-LETTERS = UPPERS + LOWERS
-assert sorted(SYMBOL) == sorted(SYMBOL_NORMAL + SYMBOL_SHIFT)
-
-# 去除易混淆字符后的字符集
-DIGITS_SAFE = '23456789'
-UPPERS_SAFE = 'ABCDEFGHJKLMNPQRSTUVWXYZ'
-LOWERS_SAFE = 'abcdefghijklmnpqrstuvwxyz'
-LETTERS_SAFE = UPPERS_SAFE + LOWERS_SAFE
-
-# 按编码定义的字符集
-BASE8 = '01234567'
-BASE16 = '0123456789ABCDEF'
-BASE36 = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'
-BASE62 = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'
-BASE64 = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz+/'
-BASE64SAFE = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-_'
-OCTDIGITS = BASE8
-HEXDIGITS = '0123456789ABCDEFabcdef'
 
 
 class Region(int, Items):
@@ -165,96 +147,132 @@ class DivisionLevel(Enum):
     """村级。自顶向下的第五个层级。"""
 
 
-class Gender(Enum):
-    Male = True
-    Female = False
-
-
-class Degree(int, Items):
+class DivisionCode(NamedTuple):
     """
-    描述程度的七个档位。
+    统计用行政区划代码。
     """
-    HIGHEST = 100, '最高'
-    HIGHER = 75, '偏高'
-    HIGH = 50, '高'
-    NORMAL = 0, '正常'
-    LOW = -50, '低'
-    LOWER = -75, '偏低'
-    LOWEST = -100, '最低'
+    province: str
+    prefecture: str = '00'
+    county: str = '00'
+    township: str = '000'
+    village: str = '000'
 
-    __properties__ = 'label',
+    def __str__(self):
+        return ''.join(self)
+
+    @classmethod
+    def fromcode(cls, code: str) -> DivisionCode:
+        """
+        从一个代码字符串生成 ``DivisionCode`` 。
+
+        会对 ``code`` 参数用 "0" 补齐到 12 位字符串，比如
+
+        >>> dc = DivisionCode.fromcode('520502000000')
+
+        与
+
+        >>> dc = DivisionCode.fromcode('520502')
+
+        是等价的。
+
+        ----
+
+        :param code: 字符串形式的行政区划代码。
+        :return: 一个具名元组。
+        """
+        adc = code.ljust(12, '0')
+        return cls(adc[:2], adc[2:4], adc[4:6], adc[6:9], adc[9:12])
 
     @property
-    def label(self):
-        return self._label_
+    def level(self) -> int:
+        """
+        区划代码所在的层级。
+
+        使用整数 1 到 5 分别代表省、市、县、乡、村五个层级。
+
+        该层级仅根据代码分析。比如，
+        ``(52,05,02,000,000)`` 的层级在县，因为乡和村的代码为全 0 字符串。
+        """
+        # (xx,xx,xx,xxx,xxx) -> level 5
+        # (xx,xx,xx,xxx,000) -> level 4
+        # (xx,xx,xx,000,000) -> level 3
+        # (xx,xx,00,000,000) -> level 2
+        # (xx,00,00,000,000) -> level 1
+        if self.village != '000':
+            return 5
+        if self.township != '000':
+            return 4
+        if self.county != '00':
+            return 3
+        if self.prefecture != '00':
+            return 2
+        return 1
+
+    def tocode(self, level: int = None) -> DivisionCode:
+        """
+        提取某个层级的代码。
+
+        >>> dc3 = DivisionCode('52','05','02')
+        >>> dc5 = DivisionCode('52','05','02','111','006')
+        >>>
+        >>> assert dc5.tocode(3) == str(dc3)
+
+        :param level: 使用整数 1 到 5 分别代表省、市、县、乡、村五个层级。
+        :return: 该层级的 12 位代码字符串。
+        """
+        lv = self.level if level is None else level
+        defaults = ('00',) + tuple(self._field_defaults.values())
+        assert 0 < lv <= 5
+        return type(self)(*(self[:lv] + defaults[lv:]))
+
+    def tostr(self, level: int = None) -> str:
+        """
+        提取某个层级的代码。
+
+        >>> dc3 = DivisionCode('44','01','06')
+        >>> dc5 = DivisionCode('44','01','06','006','007')
+        >>>
+        >>> assert dc5.tostr(3) == str(dc3)
+
+        :param level: 使用整数 1 到 5 分别代表省、市、县、乡、村五个层级。
+        :return: 该层级的 12 位代码字符串。
+        """
+        lv = self.level if level is None else level
+        assert 0 < lv <= 5
+        return ''.join(self[:lv]).ljust(12, '0')
+
+    def partition(self, level: int = None) -> tuple[str, str, str]:
+        """
+        按照层级切割为三个部分。
+
+        >>> dc = DivisionCode('52', '05', '02', '111', '006')
+        >>>
+        >>> dc.partition(1)  # -> ('', '52', '0502111006')
+        >>> dc.partition(2)  # -> ('52', '05', '02111006')
+        >>> dc.partition(3)  # -> ('5205', '02', '111006')
+        >>> dc.partition(4)  # -> ('520502', '111', '006')
+        >>> dc.partition(5)  # -> ('520502111', '006', '')
+
+        :param level: 使用整数 1 到 5 分别代表省、市、县、乡、村五个层级。
+        :return: 左、中、右三个部分。
+        """
+        lv = self.level if level is None else level
+        assert 0 < level <= 5
+        return ''.join(self[:lv - 1]), self[lv - 1], ''.join(self[lv:])
 
 
-class Months(Items):
-    January = '1月'
-    February = '2月'
-    March = '3月'
-    April = '4月'
-    May = '5月'
-    June = '6月'
-    July = '7月'
-    August = '8月'
-    September = '9月'
-    October = '10月'
-    November = '11月'
-    December = '12月'
+class Division(NamedTuple):
+    """
+    行政区划。
+    """
+    name: str
+    code: DivisionCode
+    level: DivisionLevel
+    years: tuple[int] = ()
 
-
-class Weeks(Items):
-    Monday = '星期一'
-    Tuesday = '星期二'
-    Wednesday = '星期三'
-    Thursday = '星期四'
-    Friday = '星期五'
-    Saturday = '星期六'
-    Sunday = '星期天'
-
-
-class TimeZones(Items):
-    KLT = '+1400', '基里巴斯线岛时间'
-    NZDT = '+1300', '新西兰夏时制'
-    NZT = '+1200', '新西兰时间'
-    AESST = '+1100', '澳大利亚东部标准夏时制,（俄罗斯马加丹时区）,东边（俄罗斯彼得罗巴甫洛夫斯克时区）'
-    CST = '+1030', '澳大利亚中部标准时间'
-    EAST = '+1000', '东澳大利亚标准时间'
-    SAT = '+0930', '南澳大利亚标准时间'
-    KST = '+0900', '朝鲜标准时间'
-    WST = '+0800', '西澳大利亚标准时间'
-    JT = '+0730', '爪哇时间'
-    CXT = '+0700', '澳大利亚圣诞岛时间'
-    MMT = '+0630', '缅甸时间'
-    ALMT = '+0600', '哈萨克斯坦阿拉木图,时间（俄罗斯鄂木斯克时区）'
-    TFT = '+0500', '法属凯尔盖朗岛时间'
-    AFT = '+0430', '阿富汗时间'
-    SCT = '+0400', '塞舌尔马埃岛时间'
-    IRT = '+0330', '伊朗时间'
-    HMT = '+0300', '希腊地中海时间'
-    SST = '+0200', '瑞典夏时制'
-    WETDST = '+0100', '西欧光照利用时间（夏时制）'
-    GMT = '000', '格林尼治标准时间'
-    WET = '+0000', '西欧'
-    FNST = '-0100', '巴西费尔南多·迪诺罗尼亚岛,夏令时'
-    BRST = '-0200', '巴西利亚夏令时'
-    NDT = '-0230', '纽芬兰夏时制'
-    BRT = '-0300', '巴西利亚时间'
-    NST = '-0330', '纽芬兰（Newfoundland）标准时间'
-    EDT = '-0400', '东部夏时制'
-    EST = '-0500', '东部标准时间'
-    MDT = '-0600', '山地夏时制'
-    PDT = '-0700', '太平洋夏时制'
-    YST = '-0800', '育空地区标准时'
-    HDT = '-0900', '夏威夷/阿拉斯加夏时制'
-    MART = '-0930', '马克萨斯群岛时间'
-    CAT = '-1000', '中阿拉斯加时间'
-    NT = '-1100', '阿拉斯加诺姆时间（Nome,Time）'
-    IDLE = '-1200', '国际日期变更线，西边'
-
-    __properties__ = 'description',
-
-    @property
-    def description(self) -> str:
-        return self._description_
+    def __repr__(self):
+        return '<Division%i %s %s years=[%s]>' % (
+            self.level.value,
+            self.code, self.name,
+            ','.join(map(str, self.years)),
+        )

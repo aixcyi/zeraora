@@ -1,3 +1,6 @@
+"""
+日志相关。
+"""
 from __future__ import annotations
 
 __all__ = [
@@ -13,7 +16,8 @@ from functools import wraps
 from logging.handlers import TimedRotatingFileHandler
 from threading import Lock
 
-from zeraora.converters import delta2s, dict_
+from zeraora.daytime import delta2s
+from zeraora.utils import dict_
 
 logger = logging.getLogger('zeraora.bear')
 
@@ -206,6 +210,7 @@ class BearTimer(object):
         return curr
 
 
+# noinspection PyPep8Naming
 class CommonTimedRotatingFileHandler(TimedRotatingFileHandler):
     """
     用于记录到文件的处理程序，以特定的时间间隔轮换日志文件。
