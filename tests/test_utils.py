@@ -1,8 +1,10 @@
 import sys
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 
 from tests.base_test_case import BaseTestCase
-from zeraora.utils import *
+from zeraora.defence import deprecate, start
+from zeraora.logx import BearTimer
+from zeraora.utils import ReprMixin, represent
 
 SUBJECT_CATEGORY = {
     1: '工学', 8: '经济学',
@@ -53,6 +55,22 @@ class Student(ReprMixin):
 
 
 class UtilsTest(BaseTestCase):
+
+    def test_represent(self):
+        from uuid import UUID
+        from zeraora.area import Province
+
+        self.assertEqual('"string"', represent('string'))
+        self.assertEqual('[2012-01-23]', represent(date(2012, 1, 23)))
+        self.assertEqual('[0d+3.141590s]', represent(timedelta(seconds=3, milliseconds=140, microseconds=1590)))
+        self.assertEqual('[3d+3599.000000s]', represent(timedelta(days=3, hours=1, seconds=-1)))
+        self.assertEqual('[2012-01-23 08:29:59,000000]', represent(datetime(2012, 1, 23, 8, 29, 59)))
+        self.assertEqual('d6d0b9fac9fabbeed4daedc1d0a1d2ed', represent(UUID('d6d0b9fa-c9fa-bbee-d4da-edc1d0a1d2ed')))
+        self.assertEqual('(2, 3, 5, 7)', represent((2, 3, 5, 7)))
+        self.assertEqual('[2, 3, 5, 7]', represent([2, 3, 5, 7]))
+        self.assertEqual('{2, 3, 5, 7}', represent({2, 3, 5, 7}))
+        self.assertEqual("{200: 'ok', 404: 'no found'}", represent({200: 'ok', 404: 'no found'}))
+        self.assertEqual(str(Province.GUANGDONG.label), represent(Province.GUANGDONG))
 
     def testReprMixin(self):
         r00 = '<Student 男 工学 大四 姓名="叶秋然" 年龄=23 入学年份=2018 报道时间=[2018-08-29 16:29:00,000000]>'

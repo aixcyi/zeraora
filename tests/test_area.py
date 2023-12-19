@@ -1,10 +1,9 @@
 from unittest import TestCase
 
-from zeraora.constants import DivisionLevel
-from zeraora.structures import *
+from zeraora.area import Division, DivisionCode, DivisionLevel
 
 
-class ConvertersTest(TestCase):
+class AreaTest(TestCase):
 
     def testDivisionCode(self):
         t1 = ('52', '00', '00', '000', '000')
