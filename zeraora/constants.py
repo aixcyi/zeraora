@@ -165,14 +165,21 @@ class DivisionLevel(Enum):
     """村级。自顶向下的第五个层级。"""
 
 
+class Gender(Enum):
+    Male = True
+    Female = False
+
+
 class Degree(int, Items):
     """
-    描述程度的五个档位。
+    描述程度的七个档位。
     """
     HIGHEST = 100, '最高'
+    HIGHER = 75, '偏高'
     HIGH = 50, '高'
     NORMAL = 0, '正常'
     LOW = -50, '低'
+    LOWER = -75, '偏低'
     LOWEST = -100, '最低'
 
     __properties__ = 'label',
