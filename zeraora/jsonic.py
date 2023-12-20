@@ -111,7 +111,7 @@ class JSONObject(object):
         >>> resp.data  # => None
 
         :param _data: ``dict`` 或其子类的实例。
-        :param _depth: 递归转化的层数。负数和 ``0`` 表示无限递归转化。
+        :param _depth: 递归转化的层数。负数表示无限递归转化，若提供 ``0`` 则以 ``dict`` 类型返回合并 ``kwargs`` 后的 ``data`` 。
         :param _verify_keys: 遇到不符合 Python 命名规则的键名时是否抛出异常。 ``False`` 表示忽略该键。
         :return: OnionObject 的对象。
         :raise TypeError: ``dictionary`` 不是 ``dict`` 或其子类的实例。
@@ -120,10 +120,17 @@ class JSONObject(object):
         if _data is None:
             _data = {}
         if not isinstance(_data, dict):
-            raise TypeError('JSONObject.__new__() 的 dictionary 参数必须是一个 dict 或其子类的实例。')
+            raise TypeError(
+                'JSONObject.__new__() 的 dictionary 参数必须是一个 dict 或其子类的实例。'
+            )
         _data.update(kvs)
 
+        # 必须在 0 时返回原值，否则在有限层递归时，从Object跨越到Array后会导致无限递归
+        if _depth == 0:
+            return _data
+
         self = object.__new__(cls)
+        self.__verify = _verify_keys
         self.__depth = _depth
         self.__ior__(_data)
         return self
@@ -138,16 +145,21 @@ class JSONObject(object):
         )
         return f'JSONObject({attrs})'
 
-    def __or__(self, _data: dict) -> "JSONObject":
+    def __or__(self, _data: dict) -> JSONObject:
         for k, v in _data.items():
             k = str(k)
             if not k.isidentifier() or k.startswith('_'):
-                if self.__verify:
-                    raise KeyError(type(k), k, self.__depth, f'键名不符合 Python 命名规则或以下划线开头：{k!s}')
-                else:
+                if not self.__verify:
                     continue
-            if isinstance(v, dict) and self.__depth:
-                self.__setattr__(k, self.__class__(v, _depth=self.__depth - 1, _verify_keys=self.__verify))
+                else:
+                    raise KeyError(
+                        type(k), k, self.__depth,
+                        f'键名不符合 Python 命名规则或以下划线开头：{k!s}'
+                    )
+            if isinstance(v, dict):
+                self.__setattr__(k, self.__class__(
+                    v, _depth=self.__depth - 1, _verify_keys=self.__verify
+                ))
             elif isinstance(v, (list, tuple)):
                 self.__setattr__(k, self.__translate_items(v[:]))
             else:
@@ -163,12 +175,22 @@ class JSONObject(object):
         """
         转化列表或元组的成员，并保留 ``items`` 本身的类型。
         """
-        return type(items)(
-            type(self)(item, _depth=self.__depth - 1, _verify_keys=self.__verify) if isinstance(item, dict)
-            else self.__translate_items(item) if isinstance(item, (list, tuple))
-            else item
-            for item in items
-        )
+        cls = type(self)
+
+        def translate():
+            for item in items:
+                if isinstance(item, dict):
+                    yield cls(
+                        item,
+                        _depth=(self.__depth - 1) if self.__depth else -1,
+                        _verify_keys=self.__verify
+                    )
+                elif isinstance(item, (list, tuple)):
+                    yield self.__translate_items(item)
+                else:
+                    yield item
+
+        return type(items)(translate())
 
     def __convert_to_dict(self):
         prefix = f'_{type(self).__name__}__'

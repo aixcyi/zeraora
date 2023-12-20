@@ -7,6 +7,7 @@ class JsonicTest(TestCase):
 
     def testJSONObject(self):
         from decimal import Decimal
+
         data = {
             'code': 1,
             'info': 'done',
@@ -37,7 +38,7 @@ class JsonicTest(TestCase):
         }
         plus = {
             'pages': [2, 3, 4, 5, 6],
-            'carrier_choices': ('EMS', 'UPS', 'USPS'),
+            'carrier_choices': ('EMS', 'UPS', 'USPS', ['SF', 'ZTO']),
             '__previous': None,
             '0x7c': None,
             '标记': None,
@@ -54,37 +55,46 @@ class JsonicTest(TestCase):
         self.assertEqual(data['data']['customer']['uuid']['wx'], resp0.data.customer.uuid.wx)
         self.assertEqual(data['data']['goods'][1]['id'], resp0.data.goods[1].id)
         self.assertEqual(plus['pages'], resp0.pages)
-        self.assertEqual(list(plus['carrier_choices']), resp0.carrier_choices)
+        self.assertEqual(plus['carrier_choices'], resp0.carrier_choices)
         self.assertFalse(hasattr(resp0, '__private'))
         self.assertFalse(hasattr(resp0, f'_{type(resp0).__name__}__private'))
         self.assertFalse(hasattr(resp0, '0x7c'))
         self.assertFalse(hasattr(resp0, '2333'))
         self.assertTrue(hasattr(resp0, '标记'))
 
-        resp3 = JSONObject(data, depth=3)
+        resp3 = JSONObject(data, _depth=3)
         self.assertEqual(data['data']['order_id'], resp3.data.order_id)
         self.assertEqual(data['data']['payment'], resp3.data.payment)
         self.assertEqual(data['data']['customer']['username'], resp3.data.customer.username)
         self.assertEqual(data['data']['customer']['uuid']['wx'], resp3.data.customer.uuid['wx'])
         self.assertEqual(data['data']['goods'][1]['id'], resp3.data.goods[1].id)
 
-        resp2 = JSONObject(data, depth=2)
+        resp2 = JSONObject(data, _depth=2)
         self.assertEqual(data['data']['order_id'], resp2.data.order_id)
         self.assertEqual(data['data']['payment'], resp2.data.payment)
         self.assertEqual(data['data']['customer']['username'], resp2.data.customer['username'])
         self.assertEqual(data['data']['customer']['uuid']['wx'], resp2.data.customer['uuid']['wx'])
         self.assertEqual(data['data']['goods'][1]['id'], resp2.data.goods[1]['id'])
 
-        resp1 = JSONObject(data, depth=1)
+        resp1 = JSONObject(data, _depth=1)
         self.assertEqual(data['data']['order_id'], resp1.data['order_id'])
         self.assertEqual(data['data']['payment'], resp1.data['payment'])
         self.assertEqual(data['data']['customer']['username'], resp1.data['customer']['username'])
         self.assertEqual(data['data']['customer']['uuid']['wx'], resp1.data['customer']['uuid']['wx'])
         self.assertEqual(data['data']['goods'][1]['id'], resp1.data['goods'][1]['id'])
 
-        r0 = "JSONObject(_JSONObject__depth=-1, id=67, username='aixcyi')"
-        r1 = "JSONObject(_JSONObject__depth=-1, id=67, fk=JSONObject(...))"
+        r0 = "JSONObject(id=67, username='aixcyi')"
+        r1 = "JSONObject(id=67, fk=JSONObject(...))"
         self.assertEqual(r0, repr(JSONObject(id=67, username='aixcyi')))
         self.assertEqual(r1, repr(JSONObject(id=67, fk=JSONObject())))
 
         self.assertRaises(TypeError, JSONObject, [1, 2, 3])
+
+        # 用 _verify_keys=False 来跳过不符合命名的键
+        self.assertIsNotNone(JSONObject(plus))
+
+        # 用 _verify_keys=True 触发异常来终止转化
+        with self.assertRaises(KeyError) as cm:
+            JSONObject(plus, _verify_keys=True)
+        _tip = '键名不符合 Python 命名规则或以下划线开头：__previous'
+        self.assertEqual((str, '__previous', -1, _tip), cm.exception.args)
