@@ -3,7 +3,7 @@ from datetime import date, datetime, timedelta
 
 from tests.base_test_case import BaseTestCase
 from zeraora.defence import deprecate, start
-from zeraora.logx import BearTimer
+from zeraora.log import BearTimer
 from zeraora.utils import ReprMixin, represent
 
 SUBJECT_CATEGORY = {

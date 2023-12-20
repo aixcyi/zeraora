@@ -64,7 +64,7 @@ class BearTimer(object):
         使用前，需要先启用日志输出：
 
         >>> import logging.config
-        >>> from zeraora.logx import BearTimer
+        >>> from zeraora.log import BearTimer
         >>>
         >>> logging.config.dictConfig(BearTimer.CONFIG)
         >>> bear = BearTimer()
@@ -108,7 +108,7 @@ class BearTimer(object):
         带有多个装饰器时，计时器放哪里取决于你的计时范围：
 
         >>> from rest_framework.decorators import api_view
-        >>> from zeraora.logx import BearTimer
+        >>> from zeraora.log import BearTimer
         >>>
         >>> @BearTimer()  # 从请求转发过来那一刻开始计时
         >>> @api_view(['GET'])
