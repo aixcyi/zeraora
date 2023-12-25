@@ -1,5 +1,5 @@
 """
-对 Django REST Framework 视图集（viewset）的增强。
+对 Django REST Framework `ViewSet <https://www.django-rest-framework.org/api-guide/viewsets/>`_ 的增强。
 """
 
 from __future__ import annotations

@@ -1,11 +1,7 @@
 """
-定制的 Django QuerySet 查询器。
+定制的 Django QuerySet `查询器 <https://docs.djangoproject.com/zh-hans/4.2/ref/models/lookups/#lookup-reference>`_ 。
 
-这是什么？
-https://docs.djangoproject.com/zh-hans/4.2/ref/models/lookups/#lookup-reference
-
-如何自定义？
-https://docs.djangoproject.com/zh-hans/4.2/howto/custom-lookups/
+参阅 `如何编写自定义的查询器 <https://docs.djangoproject.com/zh-hans/4.2/howto/custom-lookups/>`_ 。
 """
 
 __all__ = [

@@ -1,5 +1,7 @@
 """
-定制的 Django ORM模型字段。
+定制的 Django ORM `模型字段 <https://docs.djangoproject.com/zh-hans/4.2/ref/models/fields/>`_ 。
+
+参阅 `编写自定义模型字段 <https://docs.djangoproject.com/zh-hans/4.2/howto/custom-model-fields/>`_ 。
 """
 
 __all__ = [

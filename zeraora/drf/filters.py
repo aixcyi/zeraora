@@ -1,11 +1,7 @@
 """
-对 Django REST Framework 过滤器中间件的增强。
+对 Django REST Framework `过滤器中间件 <https://www.django-rest-framework.org/api-guide/filtering/>`_ 的增强。
 
-这是什么？
-https://www.django-rest-framework.org/api-guide/filtering/
-
-如何自定义？
-https://www.django-rest-framework.org/api-guide/filtering/#custom-generic-filtering
+参阅 `Custom generic filtering <https://www.django-rest-framework.org/api-guide/filtering/#custom-generic-filtering>`_ 。
 """
 
 __all__ = [

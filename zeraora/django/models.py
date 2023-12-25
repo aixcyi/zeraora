@@ -1,5 +1,5 @@
 """
-对 Django ORM模型 的增强。
+对 Django `ORM模型 <https://docs.djangoproject.com/zh-hans/4.2/topics/db/models/>`_ 的增强。
 """
 from __future__ import annotations
 
