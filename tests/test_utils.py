@@ -1,8 +1,6 @@
-import sys
 from datetime import date, datetime, timedelta
 
 from tests.base_test_case import BaseTestCase
-from zeraora.defence import deprecate, start
 from zeraora.log import BearTimer
 from zeraora.utils import ReprMixin, represent
 
@@ -112,38 +110,3 @@ class UtilsTest(BaseTestCase):
                 return sum(range(length))
 
             _ = calc_summary(100_0000)
-
-    def testDecorator_start(self):
-        tip = '咩咩咩'
-        ver = sys.version_info
-
-        @start(ver.major, ver.minor, note=tip)
-        def limit(a, b, *args, minimal=False):
-            return (min if minimal else max)((a, b) + args)
-
-        self.assertEqual(2, limit(1, 2))
-
-        with self.assertRaises(RuntimeError) as cm:
-            @start(ver.major, ver.minor + 1, note=tip)
-            def limit():
-                """never run to here."""
-
-            limit()
-        self.assertTrue(str(cm.exception.args[0]).endswith(tip))
-
-    def test_deprecate(self):
-        ver = sys.version_info
-
-        with self.assertWarns(PendingDeprecationWarning):
-            @deprecate(ver.major, ver.minor + 1)
-            def limit(a, b, *args, minimal=False):
-                return (min if minimal else max)((a, b) + args)
-
-            _ = limit(1, 2)
-
-        with self.assertWarns(DeprecationWarning):
-            @deprecate(ver.major, ver.minor - 1)
-            def limit(a, b, *args, minimal=False):
-                return (min if minimal else max)((a, b) + args)
-
-            _ = limit(1, 2)

@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from zeraora.defence import datasize, true
+from zeraora.defence import datasize
 
 
 class DefenceTest(TestCase):
@@ -23,17 +23,3 @@ class DefenceTest(TestCase):
         self.assertEqual(0, datasize('47'))
         self.assertEqual(0, datasize('47KiBytes'))
         self.assertRaises(TypeError, datasize, 1024)
-
-    def testMethod_true(self):
-        self.assertTrue(true(True))
-        self.assertTrue(true('True'))
-        self.assertTrue(true('true'))
-        self.assertTrue(true('TRUE'))
-        self.assertTrue(true(1))
-        self.assertTrue(true('1'))
-        self.assertFalse(true(False))
-        self.assertFalse(true('False'))
-        self.assertFalse(true('false'))
-        self.assertFalse(true('FALSE'))
-        self.assertFalse(true(0))
-        self.assertFalse(true('0'))
