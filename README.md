@@ -9,24 +9,20 @@
     <!--a href=""><img src="https://img.shields.io/conda/v/conda-forge/zeraora"></a-->
 </div>
 <div align="center">
-    <i>一个纯粹的工具库，为跨平台跨项目复用代码而开发</i>
+    <i>实用至上的个人工具库</i>
     <br>
-    <i>A utility Python package for our personal and corporate projects, with long time support</i>
+    <i>Personal utility Python package for my projects, with long time support</i>
 </div>
-
-
-
 
 ## 特性
 
 - 支持with、注解和实例化三种方式调用的计时器 `BearTimer` ；
-- 生成通用representation方便调试时查看对象内部信息的 `ReprMixin` ；
 - 自动为Django模型生成下划线小写（即蛇形）数据表名的 `SnakeModel` ；
-- 将字典的任意层级递归转化为对象，以便支持点分法访问数据的 `OnionObject` ；
+- 将字典的任意层级递归转化为对象，以便支持点分法访问数据的 `JSONObject` ；
 - 受 Django 的 `Choices` 启发和 Java 原生枚举影响的、可为枚举添加任意属性的 `Items` ；
 - 基于 `Items` 的包含34个省级行政区名称、区划代码、字母码、大区、简称、缩写的枚举 `Province` ；
-- 不强制依赖任何非[标准库](https://docs.python.org/zh-cn/3/library/index.html)；
-- 更多符号见[Zeraora全局符号索引](./docs/README.md)。
+- 允许用 curd 等字符简化 `ViewSet.as_view()` 参数的 `EasyViewSetMixin` ；
+- 不强制依赖任何非[标准库](https://docs.python.org/zh-cn/3/library/index.html)。
 
 ## 安装
 
@@ -52,29 +48,10 @@ pip install zeraora -i http://pypi.mirrors.ustc.edu.cn/simple/
 
 ## 版本
 
-|       | 状态      | 首版时间   | 安全版本自 | 结束维护于 | Python |
-| ----- | --------- | ---------- | ---------- | ---------- | ------ |
-| 0.3.x | 🆕feature  | 2023.06.09 | -          | ~ 0.5.x    | >=3.7  |
-| 0.2.x | ✅security | 2023.04.12 | 0.2.14     | ~ 0.4.x    | >=3.7  |
-| 0.1.x | ❌EOL      | 2023.03.27 | -          | 2023.06.09 | >=3.7  |
+|       | 维护时间起止                      | Python                         |
+|-------|-----------------------------| ------------------------------ |
+| 1.x   | 2024.01.01 ~ 2025.01.01（暂定） | 3.7，3.8，3.9，3.10，3.11，3.12 |
+| 0.3.x | 2023.06.09 ~ 2024.06.09     | 3.7，3.8，3.9，3.10            |
+| 0.2.x | 2023.04.12 ~ 2024.04.12     | 3.7，3.8，3.9，3.10            |
+| 0.1.x | 2023.03.27 ~ 2023.06.09     | 3.7，3.8，3.9，3.10            |
 
-#### 状态
-
-- feature 处于新增和测试的阶段。更新或回退子版本可能会出现兼容性问题。
-- security 处于功能稳定的阶段。在标记为安全的子版本之间切换不会出现兼容性问题；会为问题修复发布新的子版本，但不会迁移新版功能。
-- EOL 处于停止维护的阶段。不会处理与之相关的任何问题，也不会发布新的子版本。
-
-
-## 文档
-
-详见[全局符号索引](./docs/README.md)。
-
-## 开发
-
-这个库只是为了跨平台、跨项目复用代码而已。有些是直接封装实际在用的功能，有些是在库里开发然后通过pip依赖传递给各个项目，有些可能真的只是奇思妙想灵光乍现。如果你有同样的需求，也认可这份努力，那么欢迎加入。
-
-详见[开发指南](./CONTRIBUTING.md)。
-
-## 帮助
-
-可以通过 Issue 反馈，或通过 Pull Request 添加你的工具；如有需要，可以进入QQ群 699090940 获取非即时性的帮助。

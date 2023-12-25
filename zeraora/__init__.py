@@ -1,8 +1,8 @@
 """
-一个纯粹的工具库，为跨平台跨项目复用代码而开发。
+实用至上的个人工具库。
 
-A utility Python package for our personal and corporate projects, with long time support.
+Personal utility Python package for my projects, with long time support.
 """
 
-__version__ = (0, 3, 5)
-version = '0.3.5'
+__version__ = '1.0.0'
+VERSION = (1, 0, 0, 'beta', 0)
