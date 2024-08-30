@@ -1,8 +1,8 @@
 """
-实用至上的个人工具库。
+Zeraora
 
-Personal utility Python package for my projects, with long time support.
+A personal utility package, with long time supports.
 """
 
-__version__ = '1.0.0'
-VERSION = (1, 0, 0, 'beta', 0)
+__version__ = (0, 4, 0, 'a1')
+VERSION = '0.4.0.a1'

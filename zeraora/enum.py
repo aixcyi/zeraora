@@ -1,5 +1,5 @@
 """
-增强型枚举类型。
+枚举相关工具和类型。
 """
 from __future__ import annotations
 
@@ -13,7 +13,9 @@ from typing import Any
 
 
 class ItemsMeta(enum.EnumMeta):
-    """用于创建带有任意属性的枚举的类（元类）。"""
+    """
+    一个元类，用于创建带有任意属性的枚举的类。
+    """
 
     def __new__(metacls, classname, bases, classdict, **kwds):
         # 获取属性名（pks）
@@ -147,17 +149,35 @@ class Items(enum.Enum, metaclass=ItemsMeta):
     >>>     def label(self) -> str:
     >>>         return self._label_
     >>>
-    >>> print(Grade.SENIOR.name)  # 'SENIOR'
-    >>> print(Grade.SENIOR.value)  # 4
-    >>> print(Grade.SENIOR.code)  # 'SR'
-    >>> print(hex(Grade.SENIOR.color))  # '0xa0408e'
-    >>> print(Grade.SENIOR.label)  # 'Senior'
-    >>>
-    >>> print(Grade.names)  # ['FRESHMAN', 'SOPHOMORE', ...]
-    >>> print(Grade.values)  # [1, 2, 3, 4, 5]
-    >>> print(Grade.codes)  # ['FR', 'SO', 'JR', 'SR', 'GR']
-    >>> print(Grade.colors)  # [14897940, 15537588, ...]
-    >>> print(Grade.labels)  # ['Freshman', 'Sophomore', ...]
+    >>> Grade.SENIOR.name
+    SENIOR
+
+    >>> Grade.SENIOR.value
+    4
+
+    >>> Grade.SENIOR.code
+    SR
+
+    >>> hex(Grade.SENIOR.color)
+    0xa0408e
+
+    >>> Grade.SENIOR.label
+    Senior
+
+    >>> Grade.names
+    ['FRESHMAN', 'SOPHOMORE', ...]
+
+    >>> Grade.values
+    [1, 2, 3, 4, 5]
+
+    >>> Grade.codes
+    ['FR', 'SO', 'JR', 'SR', 'GR']
+
+    >>> Grade.colors
+    [14897940, 15537588, ...]
+
+    >>> Grade.labels
+    ['Freshman', 'Sophomore', ...]
     """
 
     __properties__ = ()

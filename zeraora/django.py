@@ -1,5 +1,5 @@
 """
-对 Django `ORM模型 <https://docs.djangoproject.com/zh-hans/4.2/topics/db/models/>`_ 的增强。
+对 `Django <https://docs.djangoproject.com/zh-hans/4.2/>`_ 的扩展和增强。
 """
 from __future__ import annotations
 
@@ -13,7 +13,11 @@ from django.apps import apps
 from django.db import models
 
 
-def convert_camel_name(name):
+def case_camel_to_snake(name: str) -> str:
+    """
+    将类似 ``CombineOrderSKUModel`` 大小写形式的字符串
+    转换为 ``combine_order_sku_model`` 。
+    """
     # "CombineOrderSKUModel"
     # -> "Combine OrderSKU Model"
     # -> "Combine Order SKU Model"
@@ -25,23 +29,32 @@ def convert_camel_name(name):
 
 class SnakeModel(models.base.ModelBase):
     """
-    自动生成一个下划线小写的（蛇形）数据表名。
+    为模型生成一个下划线分隔的小写的数据表名（即蛇形命名法）。
 
-    >>> class GoodsSKUInfo(models.Model,
-    >>>                    metaclass=SnakeModel):
-    >>>     # 字段声明...
-    >>>
-    >>>     class Meta:
-    >>>         # SnakeModel的生成格式
-    >>>         db_table = "{app}_goods_sku_info"
-    >>>
-    >>>         # Django的生成格式
-    >>>         # db_table = "{app}_goodsskuinfo"
+    - 通过 ``Meta`` 手动指定的表名不会被覆盖。
+    - 只会给非抽象模型（``Meta.abstract == False``）生成表名。
 
-    - 不会覆盖已经指定了的表名。
-    - 可以用于抽象模型中，但只会为继承了抽象模型的非抽象模型生成表名。
+    ----
 
-    适用于：``django.db.models.Model`` 的子类
+    用法如下： ::
+
+        # ./apps/mall/models.py
+
+        from django.db import models
+        from zeraora.django import SnakeModel
+
+        class GoodsSKUInfo(models.Model, metaclass=SnakeModel):
+            name = models.CharField(max_length=64)
+            price = models.IntegerField()
+            stock = models.IntegerField()
+
+            class Meta:
+                abstract = False
+                # db_table = ""
+
+    以上模型没有设置 ``Meta.db_table``，
+    那么 Django 默认生成的是 ``mall_goodsskuinfo``，
+    而使用 SnakeModel 之后会默认生成 ``mall_goods_sku_info`` 。
     """
 
     def __new__(cls, name, bases, attrs, **kwargs):
@@ -51,7 +64,7 @@ class SnakeModel(models.base.ModelBase):
             return super().__new__(cls, name, bases, attrs, **kwargs)
 
         app_name = app_config.label
-        model_name = convert_camel_name(app_name)
+        model_name = case_camel_to_snake(app_name)
         table_name = f'{app_name}_{model_name}'
 
         if 'Meta' not in attrs:

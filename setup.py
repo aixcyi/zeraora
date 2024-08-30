@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 with open("./zeraora/__init__.py") as f:
     for line in f.readlines():
-        if line.startswith("__version__"):
+        if line.startswith("VERSION"):
             delim = '"' if '"' in line else "'"
             version = line.split(delim)[1]
             break
@@ -20,8 +20,7 @@ setup(
     license='MIT',
     author='aixcyi',
     author_email='75880483+aixcyi@users.noreply.github.com',
-    description="一个实用至上的个人工具库。"
-                "Personal utility Python package for my projects, with long time support.",
+    description="A personal utility package, with long time supports.",
     long_description=long_description,
     long_description_content_type='text/markdown',
     classifiers=[
@@ -45,5 +44,5 @@ setup(
         "Tracker": "https://github.com/aixcyi/zeraora/issues",
     },
     python_requires='>=3.7',
-    packages=find_packages(where=".", exclude=['test*', 'dataset']),
+    packages=find_packages(where=".", exclude=['test*']),
 )
