@@ -15,5 +15,6 @@ def randbytes(n: int) -> bytes:
 
     此函数用于在 Python 3.9 以前提供标准库中 random.randbytes(n) 的等效能力。
     """
-    assert n >= 0
+    if n < 1:
+        return b''
     return getrandbits(n * 8).to_bytes(n, 'little')

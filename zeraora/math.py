@@ -62,22 +62,23 @@ def digitstream(integer: int, base: int) -> Generator[int, None, None]:
     """
     获取一个非负整数在 base 进制下的各位数码，**以逆序生成** 。
 
-    >>> digits = digitstream(1008611,16)
-    >>> mapper = lambda d: '0123456789abcdef'[d]
-    >>> ''.join(map(mapper, digits))
-    '3e36f'
+    生成器无法直接反转顺序，建议调用者处理好生成结果后再取出对象、进行反转。
 
-    >>> hex(1008611)
-    '0xf63e3'
+    >>> digits = digitstream(1008612, 16)
+    >>> mapper = '0123456789abcdef'.__getitem__
+    >>> ''.join(map(mapper, digits))[::-1]
+    'f63e4'
 
-    :param integer: 十进制整数。
+    >>> hex(1008612)
+    '0xf63e4'
+
+    :param integer: 十进制整数。参数会被取绝对值，需要提前保留整数的符号。
     :param base: 需要转换为什么进位制。参数不能小于 2 。
     :return: 一个迭代器，每次迭代会 “从右到左” 输出结果的一位的十进制表示。
     :raise AssertionError: 参数不符合要求。
     """
-    assert isinstance(integer, int), '只能转换整数的进位制。'
-    assert isinstance(base, int), '无法处理非整数进位制。'
-    assert 2 <= base, '无法处理低于二进制的进位制。'
+    if not 2 <= base:
+        raise ValueError(f'Cannot resolve base-{base} (lower than base-2). 无法处理低于二进制的进位制。')
     integer = abs(integer)
     while integer >= base:
         yield integer % base
