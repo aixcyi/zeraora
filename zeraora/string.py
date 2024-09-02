@@ -16,6 +16,7 @@ __all__ = [
 import os
 from base64 import b64encode, urlsafe_b64encode
 from itertools import chain
+from math import ceil
 from random import getrandbits
 
 
@@ -65,7 +66,8 @@ def randb64(n: int, safe=False) -> str:
     - 使用标准库 random 生成，受 random.seed() 影响。
     - 在大量调用时，此函数可能会比 randb64o() 耗费略多的时间。
     """
-    assert n >= 0
+    if n < 1:
+        return ''
     if not safe:
         return b64encode(getrandbits(n * 8).to_bytes(n, 'little')).decode('ASCII')
     else:
@@ -80,7 +82,8 @@ def randb64o(n: int, safe=False) -> str:
     - 使用标准库的 os.urandom(n) 函数生成，不会受 random.seed() 影响。
     - 在大量调用时，此函数可能会比 randb64() 花费略少的时间。
     """
-    assert n >= 0
+    if n < 1:
+        return ''
     if not safe:
         return b64encode(os.urandom(n)).decode('ASCII')
     else:
@@ -94,7 +97,8 @@ def randb62(n: int) -> str:
     - 使用标准库 random 生成，受 random.seed() 影响。
     - 在大量调用时，此函数可能会比 randb62o() 耗费略多的时间。
     """
-    assert n >= 0
+    if n < 1:
+        return ''
     return ''.join(Notations.BASE62[i % 62] for i in getrandbits(n * 8).to_bytes(n, 'little'))
 
 
@@ -105,7 +109,8 @@ def randb62o(n: int) -> str:
     - 使用标准库的 os.urandom(n) 函数生成，不会受 random.seed() 影响。
     - 在大量调用时，此函数可能会比 randb62() 花费略少的时间。
     """
-    assert n >= 0
+    if n < 1:
+        return ''
     return ''.join(Notations.BASE62[i % 62] for i in os.urandom(n))
 
 
@@ -116,7 +121,8 @@ def randb16(n: int) -> str:
     - 使用标准库 random 生成，受 random.seed() 影响。
     - 在大量调用时，此函数可能会比 randb16o() 耗费略多的时间。
     """
-    assert n >= 0
+    if n < 1:
+        return ''
     return getrandbits(n * 8).to_bytes(n, 'little').hex()
 
 
@@ -127,5 +133,6 @@ def randb16o(n: int) -> str:
     - 使用标准库的 os.urandom(n) 函数生成，不会受 random.seed() 影响。
     - 在大量调用时，此函数可能会比 randb16() 花费略少的时间。
     """
-    assert n >= 0
+    if n < 1:
+        return ''
     return os.urandom(n).hex()
