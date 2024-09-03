@@ -6,11 +6,8 @@ __all__ = [
     'Chars',
     'SafeChars',
     'randb64',
-    'randb64o',
     'randb62',
-    'randb62o',
     'randb16',
-    'randb16o',
 ]
 
 import os
@@ -58,68 +55,49 @@ class SafeChars:
     SYMBOL_SHIFT = r'~!@#$%^&*()_+{}|:"<>?'
 
 
-def randb64(n: int, safe=False) -> str:
+def randb64(n: int, safe=False, use_os=False) -> str:
     """
-    快速生成 n 个 Base64 随机字符。
+    快速生成 n 个 Base64（不包含 ``=``）随机字符。
 
-    - 参数 ``safe`` 决定是否生成 URL-Safe Base64 字符串。
-    - 使用标准库 random 生成，受 random.seed() 影响。
-    - 在大量调用时，此函数可能会比 randb64o() 耗费略多的时间。
-    """
-    if n < 1:
-        return ''
-    if not safe:
-        return b64encode(getrandbits(n * 6).to_bytes(ceil(n * 6 / 8), 'little')).decode('ASCII')[:n]
-    else:
-        return urlsafe_b64encode(getrandbits(n * 6).to_bytes(ceil(n * 6 / 8), 'little')).decode('ASCII')[:n]
-
-
-def randb64o(n: int, safe=False) -> str:
-    """
-    生成 n 个 Base64 随机字符。
-
-    - 参数 ``safe`` 决定是否生成 URL-Safe Base64 字符串。
-    - 使用标准库的 os.urandom(n) 函数生成，不会受 random.seed() 影响。
-    - 在大量调用时，此函数可能会比 randb64() 花费略少的时间。
+    - ``safe`` 决定是否生成 URL-Safe Base64 字符串。
+    - ``use_os=False`` 时会受 random.seed() 影响。
+    - ``use_os=True`` 则使用 os 库，在大量调用时可能会耗费略少的时间。
     """
     if n < 1:
         return ''
     if not safe:
-        return b64encode(os.urandom(ceil(n * 6 / 8))).decode('ASCII')[:n]
+        if use_os:
+            return b64encode(os.urandom(ceil(n * 6 / 8))).decode('ASCII')[:n]
+        else:
+            return b64encode(getrandbits(n * 6).to_bytes(ceil(n * 6 / 8), 'little')).decode('ASCII')[:n]
     else:
-        return urlsafe_b64encode(os.urandom(ceil(n * 6 / 8))).decode('ASCII')[:n]
+        if use_os:
+            return urlsafe_b64encode(os.urandom(ceil(n * 6 / 8))).decode('ASCII')[:n]
+        else:
+            return urlsafe_b64encode(getrandbits(n * 6).to_bytes(ceil(n * 6 / 8), 'little')).decode('ASCII')[:n]
 
 
-def randb62(n: int) -> str:
+def randb62(n: int, use_os=False) -> str:
     """
     生成 n 个 Base62 随机字符。
 
-    - 使用标准库 random 生成，受 random.seed() 影响。
-    - 在大量调用时，此函数可能会比 randb62o() 耗费略多的时间。
+    - ``use_os=False`` 时会受 random.seed() 影响。
+    - ``use_os=True`` 则使用 os 库，在大量调用时可能会耗费略少的时间。
     """
     if n < 1:
         return ''
-    return ''.join(Notations.BASE62[i % 62] for i in getrandbits(n * 8).to_bytes(n, 'little'))
+    if use_os:
+        return ''.join(Notations.BASE62[i % 62] for i in os.urandom(n))
+    else:
+        return ''.join(Notations.BASE62[i % 62] for i in getrandbits(n * 8).to_bytes(n, 'little'))
 
 
-def randb62o(n: int) -> str:
-    """
-    生成 n 个 Base62 随机字符。
-
-    - 使用标准库的 os.urandom(n) 函数生成，不会受 random.seed() 影响。
-    - 在大量调用时，此函数可能会比 randb62() 花费略少的时间。
-    """
-    if n < 1:
-        return ''
-    return ''.join(Notations.BASE62[i % 62] for i in os.urandom(n))
-
-
-def randb16(n: int) -> str:
+def randb16(n: int, use_os=False) -> str:
     """
     生成 n 个 Base16（即 Hex）随机字符。
 
-    - 使用标准库 random 生成，受 random.seed() 影响。
-    - 在大量调用时，此函数可能会比 randb16o() 耗费略多的时间。
+    - ``use_os=False`` 时会受 random.seed() 影响。
+    - ``use_os=True`` 则使用 os 库，在大量调用时可能会耗费略少的时间。
 
     >>> randb16(8)
     'd7d3d2ed'
@@ -129,22 +107,7 @@ def randb16(n: int) -> str:
     """
     if n < 1:
         return ''
-    return getrandbits(n * 4).to_bytes(ceil(n / 2), 'little').hex()[:n]
-
-
-def randb16o(n: int) -> str:
-    """
-    生成 n 个 Base16（即 Hex）随机字符。
-
-    - 使用标准库的 os.urandom(n) 函数生成，不会受 random.seed() 影响。
-    - 在大量调用时，此函数可能会比 randb16() 花费略少的时间。
-
-    >>> randb16o(8)
-    'd7d3d2ed'
-
-    >>> randb16o(8).upper()
-    'D7D3D2ED'
-    """
-    if n < 1:
-        return ''
-    return os.urandom(ceil(n / 2)).hex()[:n]
+    if use_os:
+        return os.urandom(ceil(n / 2)).hex()[:n]
+    else:
+        return getrandbits(n * 4).to_bytes(ceil(n / 2), 'little').hex()[:n]
