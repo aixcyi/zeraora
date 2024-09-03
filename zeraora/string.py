@@ -6,6 +6,7 @@ __all__ = [
     'Chars',
     'SafeChars',
     'randb64',
+    'randb64e',
     'randb62',
     'randb16',
 ]
@@ -75,6 +76,36 @@ def randb64(n: int, safe=False, use_os=False) -> str:
             return urlsafe_b64encode(os.urandom(ceil(n * 6 / 8))).decode('ASCII')[:n]
         else:
             return urlsafe_b64encode(getrandbits(n * 6).to_bytes(ceil(n * 6 / 8), 'little')).decode('ASCII')[:n]
+
+
+def randb64e(n: int, safe=False, use_os=False) -> str:
+    """
+    快速生成 n 字节的 Base64 随机字符（可能包含 ``=``）。
+
+    - 不移除尾缀的 ``=`` 则生成长度为 ``ceil(n/3)*4`` 。
+    - 移除尾缀的 ``=`` 的话生成长度为 ``ceil(n/3*4)`` 。
+    - ``safe`` 决定是否生成 URL-Safe Base64 字符串。
+    - ``use_os=False`` 时会受 random.seed() 影响。
+    - ``use_os=True`` 则使用 os 库，在大量调用时可能会耗费略少的时间。
+
+    >>> randb64e(13)
+    NP4W8LAhbqz6sSRuNg==
+
+    >>> randb64e(13).rstrip('=')
+    NP4W8LAhbqz6sSRuNg
+    """
+    if n < 1:
+        return ''
+    if not safe:
+        if use_os:
+            return b64encode(os.urandom(n)).decode('ASCII')
+        else:
+            return b64encode(getrandbits(n * 8).to_bytes(n, 'little')).decode('ASCII')
+    else:
+        if use_os:
+            return urlsafe_b64encode(os.urandom(n)).decode('ASCII')
+        else:
+            return urlsafe_b64encode(getrandbits(n * 8).to_bytes(n, 'little')).decode('ASCII')
 
 
 def randb62(n: int, use_os=False) -> str:
