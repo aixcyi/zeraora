@@ -23,12 +23,19 @@ class Notations:
     进位制数码。
     """
     BASE8 = '01234567'
+    """包含：阿拉伯数字 ``0`` 到 ``7`` 。"""
     BASE10 = '0123456789'
+    """包含：阿拉伯数字 ``0`` 到 ``9`` 。"""
     BASE16 = ''.join(chain(BASE10, map(chr, range(ord('A'), ord('F') + 1))))
+    """包含：阿拉伯数字 ``0`` 到 ``9``、大写字母 ``A`` 到 ``F`` 。"""
     BASE36 = ''.join(chain(BASE10, map(chr, range(ord('A'), ord('Z') + 1))))
+    """包含：阿拉伯数字 ``0`` 到 ``9``、大写字母 ``A`` 到 ``Z`` 。"""
     BASE62 = ''.join(chain(BASE36, map(chr, range(ord('a'), ord('z') + 1))))
+    """包含：阿拉伯数字 ``0`` 到 ``9``、大写字母 ``A`` 到 ``Z``、小写字母 ``a`` 到 ``z``。"""
     BASE64 = BASE62 + '+/'
+    """包含：阿拉伯数字 ``0`` 到 ``9``、大写字母 ``A`` 到 ``Z``、小写字母 ``a`` 到 ``z``、符号 ``+`` 和 ``/``。"""
     BASE64SAFE = BASE62 + '-_'
+    """包含：阿拉伯数字 ``0`` 到 ``9``、大写字母 ``A`` 到 ``Z``、小写字母 ``a`` 到 ``z``、符号 ``-`` 和 ``_``。"""
 
 
 class Chars:
@@ -36,22 +43,31 @@ class Chars:
     不同类型的字符。
     """
     DIGIT = Notations.BASE10
+    """包含：阿拉伯数字 ``0`` 到 ``9`` 。"""
     UPPER = ''.join(map(chr, range(ord('A'), ord('Z') + 1)))
+    """包含：大写字母 ``A`` 到 ``Z`` 。"""
     LOWER = ''.join(map(chr, range(ord('a'), ord('z') + 1)))
+    """包含：小写字母 ``a`` 到 ``z``。"""
     LETTER = UPPER + LOWER
+    """包含：大写字母 ``A`` 到 ``Z``、小写字母 ``a`` 到 ``z``。"""
     SYMBOL = ''.join(chain(
         map(chr, range(0x21, 0x2F + 1)),
         map(chr, range(0x3A, 0x40 + 1)),
         map(chr, range(0x5B, 0x60 + 1)),
         map(chr, range(0x7B, 0x7E + 1)),
     ))
+    """包含 ``0x21`` 到 ``0x7e`` 之间的所有可见符号，即除了空格、控制符、数字、大小写字母。"""
 
 
 class SafeChars:
     DIGIT = Chars.DIGIT.replace('0', '').replace('1', '')
+    """除了 ``0`` 和 ``1`` 以外的阿拉伯数字。"""
     UPPER = Chars.UPPER.replace('I', '').replace('O', '')
+    """包含：大写字母 ``A`` 到 ``Z``，除了 ``I`` 和 ``O``。"""
     LOWER = Chars.LOWER.replace('l', '')
+    """包含：小写字母 ``a`` 到 ``z``，除了 ``l``。"""
     LETTER = UPPER + LOWER
+    """包含：大写字母 ``A`` 到 ``Z`` 和小写字母 ``a`` 到 ``z``，除了大写字母 ``I``、``O`` 和小写字母 ``l``。"""
     SYMBOL_NORMAL = r"`-=[]\;',./"
     SYMBOL_SHIFT = r'~!@#$%^&*()_+{}|:"<>?'
 
