@@ -1,5 +1,3 @@
-import unittest
-
 from tests.base_test_case import BaseTestCase
 from zeraora.math import *
 
@@ -55,7 +53,3 @@ class MathsTest(BaseTestCase):
         self.assertTupleEqual(tuple(), tuple(digitstream(1008612, 1)))
         self.assertTupleEqual(tuple(), tuple(digitstream(1008612, 0)))
         self.assertTupleEqual(tuple(), tuple(digitstream(1008612, -1)))
-
-
-if __name__ == '__main__':
-    unittest.main()

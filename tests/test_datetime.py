@@ -1,9 +1,9 @@
-from unittest import TestCase
+import unittest
 
 from zeraora.datetime import BearTimer
 
 
-class DateTimeTest(TestCase):
+class DatetimeTest(unittest.TestCase):
 
     def testBearTimer(self):
         bear = BearTimer()
@@ -15,10 +15,10 @@ class DateTimeTest(TestCase):
             bear.stop()
         with self.assertLogs('zeraora.datetime', 'DEBUG'):
             with BearTimer():
-                _ = sum(range(100_0000))
+                _ = sum(range(10_0000))
         with self.assertLogs('zeraora.datetime', 'DEBUG'):
             @BearTimer()
             def calc_summary(length: int) -> int:
                 return sum(range(length))
 
-            _ = calc_summary(100_0000)
+            _ = calc_summary(10_0000)
