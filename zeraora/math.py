@@ -52,6 +52,9 @@ def bitstream(integer: int) -> Generator[int, None, None]:
     []
     """
     sign, positive = absolute(integer)
+    if not isinstance(positive, int):
+        yield from []
+        return
     for power in range(0, positive.bit_length()):
         bit = 1 << power
         if positive & bit:
