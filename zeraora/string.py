@@ -6,7 +6,7 @@ __all__ = [
     'Chars',
     'SafeChars',
     'randb64',
-    'randb64e',
+    'randb64y',
     'randb62',
     'randb16',
 ]
@@ -94,7 +94,7 @@ def randb64(n: int, safe=False, use_os=False) -> str:
             return urlsafe_b64encode(getrandbits(n * 6).to_bytes(ceil(n * 6 / 8), 'little')).decode('ASCII')[:n]
 
 
-def randb64e(n: int, safe=False, use_os=False) -> str:
+def randb64y(n: int, safe=False, use_os=False) -> str:
     """
     快速生成 n 字节的 Base64 随机字符（可能包含 ``=``）。
 
@@ -104,10 +104,10 @@ def randb64e(n: int, safe=False, use_os=False) -> str:
     - ``use_os=False`` 时会受 random.seed() 影响。
     - ``use_os=True`` 则使用 os 库，在大量调用时可能会耗费略少的时间。
 
-    >>> randb64e(13)
+    >>> randb64y(13)
     NP4W8LAhbqz6sSRuNg==
 
-    >>> randb64e(13).rstrip('=')
+    >>> randb64y(13).rstrip('=')
     NP4W8LAhbqz6sSRuNg
     """
     if n < 1:
