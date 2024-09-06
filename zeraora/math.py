@@ -4,22 +4,46 @@
 from __future__ import annotations
 
 __all__ = [
-    'ZERO',
-    'ONE',
+    'NaN',
+    'Decimal',
     'remove_exponent',
     'absolute',
     'bitstream',
     'digitstream',
 ]
 
-from decimal import Decimal
+from decimal import Decimal as StandardDecimal
 from typing import Generator
 
-ZERO = Decimal(0)
-"""``Decimal`` 类型的整数 ``0`` 。"""
+NaN = float('NaN')
+"""二进制小数型 ``NaN`` ，即 Not a Number（非数值）。"""
 
-ONE = Decimal(1)
-"""``Decimal`` 类型的整数 ``1`` 。"""
+
+class Decimal(StandardDecimal):
+    # 同名是为了方便无感替换
+
+    NAN = StandardDecimal('NaN')
+    """一个非数值的值（Not a Number）。"""
+
+    ZERO = StandardDecimal(0)
+    """``Decimal`` 类型的整数 ``0`` 。"""
+
+    ONE = StandardDecimal(1)
+    """``Decimal`` 类型的整数 ``1`` 。"""
+
+    PI = StandardDecimal('3.141592653589793238462643383279')
+    """包含 30 位小数的圆周率。"""
+
+    E = StandardDecimal('2.718281828459045')
+    """包含 15 位小数的自然常数。"""
+
+    def remove_exponent(self) -> Decimal:
+        """
+        去除十进制小数（Decimal）的尾导零。
+
+        摘录自 `Decimal 常见问题 <https://docs.python.org/zh-cn/3/library/decimal.html#decimal-faq>`_ 。
+        """
+        return self.quantize(self.ONE) if self == self.to_integral() else self.normalize()
 
 
 def remove_exponent(d: Decimal) -> Decimal:
@@ -28,7 +52,7 @@ def remove_exponent(d: Decimal) -> Decimal:
 
     摘录自 `Decimal 常见问题 <https://docs.python.org/zh-cn/3/library/decimal.html#decimal-faq>`_ 。
     """
-    return d.quantize(Decimal(1)) if d == d.to_integral() else d.normalize()
+    return d.quantize(Decimal.ONE) if d == d.to_integral() else d.normalize()
 
 
 def absolute(n: int | float | Decimal) -> tuple[bool, int | float | Decimal]:
