@@ -5,6 +5,9 @@ from __future__ import annotations
 
 __all__ = [
     'SnakeModel',
+    'HasBits',
+    'HasAllBits',
+    'NotAnyBits',
 ]
 
 from django.apps import apps
@@ -61,3 +64,42 @@ class SnakeModel(models.base.ModelBase):
             setattr(attrs['Meta'], 'db_table', table_name)
 
         return super().__new__(cls, name, bases, attrs, **kwargs)
+
+
+class HasBits(models.Lookup):
+    """
+    目标字段是否含有指定的任意一个或多个比特。
+    """
+    lookup_name = 'has_bits'
+
+    def as_sql(self, compiler, connection):
+        lhs, lhs_params = self.process_lhs(compiler, connection)
+        rhs, rhs_params = self.process_rhs(compiler, connection)
+        params = lhs_params + rhs_params
+        return '%s & %s != 0' % (lhs, rhs), params
+
+
+class HasAllBits(models.Lookup):
+    """
+    目标字段是否含有指定的所有比特。
+    """
+    lookup_name = 'has_all_bits'
+
+    def as_sql(self, compiler, connection):
+        lhs, lhs_params = self.process_lhs(compiler, connection)
+        rhs, rhs_params = self.process_rhs(compiler, connection)
+        params = lhs_params + rhs_params + rhs_params
+        return '%s & %s = %s' % (lhs, rhs, rhs), params
+
+
+class NotAnyBits(models.Lookup):
+    """
+    目标字段是否不含给定的任意比特。
+    """
+    lookup_name = 'not_any_bits'
+
+    def as_sql(self, compiler, connection):
+        lhs, lhs_params = self.process_lhs(compiler, connection)
+        rhs, rhs_params = self.process_rhs(compiler, connection)
+        params = lhs_params + rhs_params
+        return '%s & %s = 0' % (lhs, rhs), params
