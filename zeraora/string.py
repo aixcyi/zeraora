@@ -9,9 +9,11 @@ __all__ = [
     'randb64y',
     'randb62',
     'randb16',
+    'case_camel_to_snake',
 ]
 
 import os
+import re
 from base64 import b64encode, urlsafe_b64encode
 from itertools import chain
 from math import ceil
@@ -158,3 +160,17 @@ def randb16(n: int, use_os=False) -> str:
         return os.urandom(ceil(n / 2)).hex()[:n]
     else:
         return getrandbits(n * 4).to_bytes(ceil(n / 2), 'little').hex()[:n]
+
+
+def case_camel_to_snake(name: str) -> str:
+    """
+    将类似 ``CombineOrderSKUModel`` 大小写形式的字符串
+    转换为 ``combine_order_sku_model`` 。
+    """
+    # "CombineOrderSKUModel"
+    # -> "Combine OrderSKU Model"
+    # -> "Combine Order SKU Model"
+    # -> "combine_order_sku_model"
+    mid = re.sub('(.)([A-Z][a-z]+)', r'\1 \2', name)
+    words = re.sub('([a-z0-9])([A-Z])', r'\1 \2', mid)
+    return '_'.join(word.lower() for word in words.split())
