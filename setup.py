@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 with open("./zeraora/__init__.py") as f:
     for line in f.readlines():
-        if line.startswith("VERSION"):
+        if line.startswith("__version__"):
             delim = '"' if '"' in line else "'"
             version = line.split(delim)[1]
             break
@@ -24,7 +24,8 @@ setup(
     long_description=long_description,
     long_description_content_type='text/markdown',
     classifiers=[
-        "Development Status :: 4 - Beta",
+        # https://pypi.org/classifiers/
+        "Development Status :: 3 - Alpha",
         "Programming Language :: Python :: 3",
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
