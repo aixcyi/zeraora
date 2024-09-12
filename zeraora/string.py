@@ -80,7 +80,7 @@ def randb64(n: int, safe=False, use_os=False) -> str:
 
     - ``safe`` 决定是否生成 URL-Safe Base64 字符串。
     - ``use_os=False`` 时会受 random.seed() 影响。
-    - ``use_os=True`` 则使用 os 库，在大量调用时可能会耗费略少的时间。
+    - ``use_os=True`` 则使用 :mod:`os` 库，在大量调用时可能会耗费略少的时间。
     """
     if n < 1:
         return ''
@@ -104,7 +104,7 @@ def randb64y(n: int, safe=False, use_os=False) -> str:
     - 移除尾缀的 ``=`` 的话生成长度为 ``ceil(n/3*4)`` 。
     - ``safe`` 决定是否生成 URL-Safe Base64 字符串。
     - ``use_os=False`` 时会受 random.seed() 影响。
-    - ``use_os=True`` 则使用 os 库，在大量调用时可能会耗费略少的时间。
+    - ``use_os=True`` 则使用 :mod:`os` 库，在大量调用时可能会耗费略少的时间。
 
     >>> randb64y(13)
     NP4W8LAhbqz6sSRuNg==
@@ -131,7 +131,7 @@ def randb62(n: int, use_os=False) -> str:
     生成 n 个 Base62 随机字符。
 
     - ``use_os=False`` 时会受 random.seed() 影响。
-    - ``use_os=True`` 则使用 os 库，在大量调用时可能会耗费略少的时间。
+    - ``use_os=True`` 则使用 :mod:`os` 库，在大量调用时可能会耗费略少的时间。
     """
     if n < 1:
         return ''
@@ -146,7 +146,7 @@ def randb16(n: int, use_os=False) -> str:
     生成 n 个 Base16（即 Hex）随机字符。
 
     - ``use_os=False`` 时会受 random.seed() 影响。
-    - ``use_os=True`` 则使用 os 库，在大量调用时可能会耗费略少的时间。
+    - ``use_os=True`` 则使用 :mod:`os` 库，在大量调用时可能会耗费略少的时间。
 
     >>> randb16(8)
     'd7d3d2ed'

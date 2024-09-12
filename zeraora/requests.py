@@ -11,7 +11,7 @@ from requests.auth import AuthBase
 
 class HTTPBearerAuth(AuthBase):
     """
-    为 ``requests.post()`` 等方法的 ``auth`` 参数提供对象。
+    为 ``requests.post()`` 等方法的 *auth* 参数提供对象。
     """
 
     def __init__(self, token):

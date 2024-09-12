@@ -26,10 +26,10 @@ class Decimal(StandardDecimal):
     """一个非数值的值（Not a Number）。"""
 
     ZERO = StandardDecimal(0)
-    """``Decimal`` 类型的整数 ``0`` 。"""
+    """整数 ``0`` 。"""
 
     ONE = StandardDecimal(1)
-    """``Decimal`` 类型的整数 ``1`` 。"""
+    """整数 ``1`` 。"""
 
     PI = StandardDecimal('3.141592653589793238462643383279')
     """包含 30 位小数的圆周率。"""
@@ -39,7 +39,7 @@ class Decimal(StandardDecimal):
 
     def remove_exponent(self) -> Decimal:
         """
-        去除十进制小数（Decimal）的尾导零。
+        去除十进制小数的尾导零。
 
         摘录自 `Decimal 常见问题 <https://docs.python.org/zh-cn/3/library/decimal.html#decimal-faq>`_ 。
         """
@@ -48,7 +48,7 @@ class Decimal(StandardDecimal):
 
 def remove_exponent(d: Decimal) -> Decimal:
     """
-    去除十进制小数（Decimal）的尾导零。
+    去除十进制小数的尾导零。
 
     摘录自 `Decimal 常见问题 <https://docs.python.org/zh-cn/3/library/decimal.html#decimal-faq>`_ 。
     """
@@ -87,7 +87,7 @@ def bitstream(integer: int) -> Generator[int, None, None]:
 
 def digitstream(integer: int, base: int) -> Generator[int, None, None]:
     """
-    获取一个非负整数在 base 进制下的各位数码，**以逆序生成** 。
+    获取一个非负整数在 *base* 进制下的各位数码，**以逆序生成** 。
 
     生成器无法直接反转顺序，建议调用者处理好生成结果后再取出对象、进行反转。
 
@@ -95,12 +95,11 @@ def digitstream(integer: int, base: int) -> Generator[int, None, None]:
     >>> mapper = '0123456789abcdef'.__getitem__
     >>> ''.join(map(mapper, digits))[::-1]
     'f63e4'
-
     >>> hex(1008612)
     '0xf63e4'
 
     :param integer: 十进制整数。参数会被取绝对值，需要提前保留整数的符号。
-    :param base: 需要转换为什么进位制。参数不能小于 2 。
+    :param base: 需要转换为什么进位制。参数不能小于 ``2`` 。
     :return: 一个迭代器，每次迭代会 “从右到左” 输出结果的一位的十进制表示。
     """
     if base < 2:

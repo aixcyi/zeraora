@@ -37,12 +37,13 @@ class BearerAuthentication(TokenAuthentication):
 
 class EasyViewSetMixin(ViewSetMixin):
     """
-    提供了两个方法来简化 ``.as_view()`` 的传参。
+    提供了两个方法来简化 :func:`as_view() <rest_framework.viewsets.ViewSetMixin.as_view>` 的传参。
 
     适用于：
-      - ``rest_framework.viewsets.ViewSet`` 的子类
-      - ``rest_framework.viewsets.GenericViewSet`` 的子类
-      - 需要 ``rest_framework.viewsets.ViewSetMixin`` 的类
+
+    - :class:`ViewSet <rest_framework.viewsets.ViewSet>` 的子类
+    - :class:`GenericViewSet <rest_framework.viewsets.GenericViewSet>` 的子类
+    - 需要 :class:`ViewSetMixin <rest_framework.viewsets.ViewSetMixin>` 的类
     """
 
     @classonlymethod
@@ -50,14 +51,14 @@ class EasyViewSetMixin(ViewSetMixin):
         """
         将视图类存储在一个视图函数上，方便URL反向查找。
 
-        之所以调转 ``initkwargs`` 和 ``actions`` 的传参方式，是因为后者往往用得更频繁。
+        之所以互换 *initkwargs* 和 *actions* 的传参方式，是因为后者往往用得更频繁。
 
         :param initkwargs: 视图类的初始化参数。
         :param actions: HTTP方法及其在视图类中的方法函数名称。
                         不同方法（的组合）可以让不同的视图函数应对不同的HTTP请求。
                         至少要提供一个key-value。
         :return: 一个新的视图函数。
-        :raise TypeError: 来自 .as_view() 的异常。
+        :raise TypeError: 来自 :func:`as_view() <rest_framework.viewsets.ViewSetMixin.as_view>` 的异常。
         """
         if initkwargs is None:
             initkwargs = {}
@@ -85,7 +86,7 @@ class EasyViewSetMixin(ViewSetMixin):
         :param initkwargs: 视图类的初始化参数。
         :return: 一个新的视图函数。
         :raise KeyError: 缩写未被定义。
-        :raise TypeError: 来自 .as_view() 的异常。
+        :raise TypeError: 来自 :func:`as_view() <rest_framework.viewsets.ViewSetMixin.as_view>` 的异常。
         """
         # 缩写 p 是请求方法的性质向功能的妥协。
         # PATCH 请求是对资源进行部分修改，PUT 请求是对资源进行整体覆盖，与 partial 相悖；
@@ -112,11 +113,12 @@ class SoftDeleteModelMixin:
     - 通过 ``self.deletion_field`` 配置存储标记的字段，默认是 ``deleted``。
     - 通过 ``self.deletion_mark`` 配置标记是什么，默认是布尔值 ``True`` 。
 
-    适用于：``rest_framework.generics.GenericAPIView`` 的子类
+    适用于 :class:`rest_framework.generics.GenericAPIView` 的子类
     """
     deletion_field = 'deleted'
     deletion_mark = True
 
+    # noinspection PyUnresolvedReferences
     def soft_delete(self, request, *args, **kwargs):
         instance = self.get_object()
         self.perform_soft_delete(instance)
@@ -142,12 +144,13 @@ class ExistingFilterBackend(BaseFilterBackend):
 
     - 删除标记默认为 ``True`` ，可以通过在视图类中添加 ``deletion_mark`` 属性来更改。
     - 标记删除的字段默认是 ``deleted`` ，可以通过在视图类中添加 ``deletion_field`` 属性来更改。
-      若字段不存在，会抛出 ``django.core.exceptions.FieldDoesNotExist`` 。
+      若字段不存在，会抛出 :class:`django.core.exceptions.FieldDoesNotExist` 。
 
     适用于：
-      - ``rest_framework.viewsets.GenericViewSet`` 子类的 ``filter_backends`` 属性
-      - ``rest_framework.settings.DEFAULT_FILTER_BACKENDS``
-      - ``django.conf.settings.REST_FRAMEWORK["DEFAULT_FILTER_BACKENDS"]``
+
+    - :class:`rest_framework.viewsets.GenericViewSet` 子类的 ``filter_backends`` 属性
+    - ``rest_framework.settings.DEFAULT_FILTER_BACKENDS``
+    - ``django.conf.settings.REST_FRAMEWORK["DEFAULT_FILTER_BACKENDS"]``
     """
 
     def filter_queryset(self, request, queryset, view):
@@ -171,10 +174,10 @@ class ActiveStatusFilterBackend(BaseFilterBackend):
 
     - 启用标记默认为 ``True`` ，可以通过在视图类中添加 ``active_mark`` 属性来更改。
     - 标记启用的字段默认是 ``activated`` ，可以通过在视图类中添加 ``active_field`` 属性来更改。
-      若字段不存在，会抛出 ``django.core.exceptions.FieldDoesNotExist`` 。
+      若字段不存在，会抛出 :class:`django.core.exceptions.FieldDoesNotExist` 。
 
     适用于：
-      - ``rest_framework.viewsets.GenericViewSet`` 子类的 ``filter_backends`` 属性
+      - :class:`rest_framework.viewsets.GenericViewSet` 子类的 ``filter_backends`` 属性
       - ``rest_framework.settings.DEFAULT_FILTER_BACKENDS``
       - ``django.conf.settings.REST_FRAMEWORK["DEFAULT_FILTER_BACKENDS"]``
     """

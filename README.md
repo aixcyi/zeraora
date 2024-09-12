@@ -30,7 +30,9 @@
 pip install zeraora
 ```
 
-因为没有需求，所以还没有创建 conda 版。
+或者移步 PyPI 在 [Release history](https://pypi.org/project/Zeraora/#history) 选定版本后 Download files 手动下载。
+
+因为暂时没有需求，所以还没创建 conda 版。
 
 ## 兼容性／Compatibility
 
