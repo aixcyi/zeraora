@@ -30,6 +30,12 @@
 pip install zeraora
 ```
 
+安装最新的版本（预发布）
+
+```shell
+pip install zeraora --pre
+```
+
 或者移步 PyPI 在
 [Release history](https://pypi.org/project/Zeraora/#history)
 选定版本后 Download files 手动下载 .whl 文件并安装
