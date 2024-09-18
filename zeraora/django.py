@@ -56,7 +56,7 @@ class SnakeModel(models.base.ModelBase):
             return super().__new__(cls, name, bases, attrs, **kwargs)
 
         app_name = app_config.label
-        model_name = case_camel_to_snake(app_name)
+        model_name = case_camel_to_snake(name)
         table_name = f'{app_name}_{model_name}'
 
         if 'Meta' not in attrs:
