@@ -10,6 +10,8 @@ __all__ = [
     'NotAnyBits',
 ]
 
+from typing import Any
+
 from django.apps import apps
 from django.db import models
 
@@ -64,6 +66,19 @@ class SnakeModel(models.base.ModelBase):
             setattr(attrs['Meta'], 'db_table', table_name)
 
         return super().__new__(cls, name, bases, attrs, **kwargs)
+
+
+class PrefilterManager(models.Manager):
+    """
+    预设过滤的数据管理器。
+    """
+
+    def __init__(self, **conditions: Any):
+        super().__init__()
+        self._conditions = conditions
+
+    def get_queryset(self):
+        return super().get_queryset().filter(**self._conditions)
 
 
 class HasBits(models.Lookup):
