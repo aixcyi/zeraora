@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 __all__ = [
+    'BearerAuthentication',
     'EasyViewSetMixin',
     'SoftDeleteModelMixin',
     'ExistingFilterBackend',
