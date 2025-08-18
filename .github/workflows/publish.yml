@@ -19,7 +19,7 @@ permissions:
 
 jobs:
   build-and-publish:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-16.04
     steps:
 
     - name: 检出 ${{ github.ref_name }} 分支
