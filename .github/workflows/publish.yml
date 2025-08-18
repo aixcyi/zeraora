@@ -25,10 +25,10 @@ jobs:
     - name: 检出 ${{ github.ref_name }} 分支
       uses: actions/checkout@v4
 
-    - name: 安装 Python 3.7
+    - name: 安装 Python 3.7.9
       uses: actions/setup-python@v5
       with:
-        python-version: '3.7'
+        python-version: '3.7.9'
 
     - name: 安装打包所需依赖
       run: |
