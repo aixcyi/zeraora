@@ -1,68 +1,23 @@
 """
 数学相关工具和常量。
 """
-from __future__ import annotations
 
 __all__ = [
     'NaN',
-    'Decimal',
     'remove_exponent',
-    'absolute',
     'bitstream',
     'digitstream',
+    'decimalize',
 ]
 
-from decimal import Decimal as StandardDecimal
-from typing import Generator
+from decimal import Context, Decimal, ROUND_FLOOR
+from typing import Iterator
 
 NaN = float('NaN')
 """二进制小数型 ``NaN`` ，即 Not a Number（非数值）。"""
 
 
-class Decimal(StandardDecimal):
-    # 同名是为了方便无感替换
-
-    NAN = StandardDecimal('NaN')
-    """一个非数值的值（Not a Number）。"""
-
-    ZERO = StandardDecimal(0)
-    """整数 ``0`` 。"""
-
-    ONE = StandardDecimal(1)
-    """整数 ``1`` 。"""
-
-    PI = StandardDecimal('3.141592653589793238462643383279')
-    """包含 30 位小数的圆周率。"""
-
-    E = StandardDecimal('2.718281828459045')
-    """包含 15 位小数的自然常数。"""
-
-    def remove_exponent(self) -> Decimal:
-        """
-        去除十进制小数的尾导零。
-
-        摘录自 `Decimal 常见问题 <https://docs.python.org/zh-cn/3/library/decimal.html#decimal-faq>`_ 。
-        """
-        return self.quantize(self.ONE) if self == self.to_integral() else self.normalize()
-
-
-def remove_exponent(d: Decimal) -> Decimal:
-    """
-    去除十进制小数的尾导零。
-
-    摘录自 `Decimal 常见问题 <https://docs.python.org/zh-cn/3/library/decimal.html#decimal-faq>`_ 。
-    """
-    return d.quantize(Decimal.ONE) if d == d.to_integral() else d.normalize()
-
-
-def absolute(n: int | float | Decimal) -> tuple[bool, int | float | Decimal]:
-    """
-    返回一个实数的符号及其绝对值。``True`` 表示正数，``False`` 表示负数。
-    """
-    return n >= 0, abs(n)
-
-
-def bitstream(integer: int) -> Generator[int, None, None]:
+def bitstream(integer: int) -> Iterator[int]:
     """
     获取一个整数的所有比特位。
 
@@ -75,17 +30,19 @@ def bitstream(integer: int) -> Generator[int, None, None]:
     >>> list(bitstream(0))
     []
     """
-    sign, positive = absolute(integer)
-    if not isinstance(positive, int):
-        yield from []
+    if not isinstance(absolute := abs(integer), int):
         return
-    for power in range(0, positive.bit_length()):
-        bit = 1 << power
-        if positive & bit:
-            yield bit if sign else -bit
+    if integer >= 0:
+        for power in range(0, absolute.bit_length()):
+            if absolute & (bit := 1 << power):
+                yield bit
+    else:
+        for power in range(0, absolute.bit_length()):
+            if absolute & (bit := 1 << power):
+                yield -bit
 
 
-def digitstream(integer: int, base: int) -> Generator[int, None, None]:
+def digitstream(integer: int, base: int) -> Iterator[int]:
     """
     获取一个非负整数在 *base* 进制下的各位数码，**以逆序生成** 。
 
@@ -103,10 +60,32 @@ def digitstream(integer: int, base: int) -> Generator[int, None, None]:
     :return: 一个迭代器，每次迭代会 “从右到左” 输出结果的一位的十进制表示。
     """
     if base < 2:
-        yield from []
         return
     integer = abs(integer)
     while integer >= base:
         yield integer % base
         integer //= base
     yield integer
+
+
+def remove_exponent(d: Decimal) -> Decimal:
+    """
+    去除十进制小数的尾导零。
+
+    摘录自 `Decimal 常见问题 <https://docs.python.org/zh-cn/3/library/decimal.html#decimal-faq>`_ 。
+    """
+    return d.quantize(Decimal('1')) if d == d.to_integral() else d.normalize()
+
+
+def decimalize(value: str | int | float | Decimal, max_digits=12, decimal_places=2) -> Decimal:
+    """
+    将“浮点数”转化为“定点数”，（小数部分）多余数位会直接丢掉。
+
+    :param value: 字符串、整数、小数或 :class:`Decimal` 对象。
+    :param max_digits: 数字中允许的最大位数。请注意，这个数字必须大于或等于 `decimal_places`。
+    :param decimal_places: 与数字一起存储的小数位数。
+    :return: 一个 :class:`Decimal` 对象，总位数量控制在 `max_digits` 位，小数位数控制在 `decimal_places` 位。
+    """
+    if not isinstance(value, Decimal):
+        value = Decimal(value)
+    return value.quantize(Decimal(f'1e{-decimal_places}'), context=Context(prec=max_digits, rounding=ROUND_FLOOR))

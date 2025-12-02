@@ -1,22 +1,30 @@
 """
 对 `Django <https://docs.djangoproject.com/zh-hans/4.2/>`_ 的扩展和增强。
 """
-from __future__ import annotations
 
 __all__ = [
     'SnakeModel',
     'PrefilterManager',
-    'HasBits',
-    'HasAllBits',
-    'NotAnyBits',
 ]
 
-from typing import Any
+import re
 
 from django.apps import apps
 from django.db import models
 
-from zeraora.string import case_camel_to_snake
+
+def _camel_to_snake(name: str) -> str:
+    """
+    将类似 ``CombineOrderSKUModel`` 大小写形式的字符串
+    转换为 ``combine_order_sku_model`` 。
+    """
+    # "CombineOrderSKUModel"
+    # -> "Combine OrderSKU Model"
+    # -> "Combine Order SKU Model"
+    # -> "combine_order_sku_model"
+    mid = re.sub('(.)([A-Z][a-z]+)', r'\1 \2', name)
+    words = re.sub('([a-z0-9])([A-Z])', r'\1 \2', mid)
+    return '_'.join(word.lower() for word in words.split())
 
 
 class SnakeModel(models.base.ModelBase):
@@ -56,7 +64,7 @@ class SnakeModel(models.base.ModelBase):
             return super().__new__(cls, name, bases, attrs, **kwargs)
 
         app_name = app_config.label
-        model_name = case_camel_to_snake(name)
+        model_name = _camel_to_snake(name)
         table_name = f'{app_name}_{model_name}'
 
         if 'Meta' not in attrs:
@@ -71,51 +79,13 @@ class SnakeModel(models.base.ModelBase):
 
 class PrefilterManager(models.Manager):
     """
-    预设过滤的数据管理器。
+    预设过滤条件的数据管理器。
     """
 
-    def __init__(self, **conditions: Any):
+    def __init__(self, *args, **kwargs):
         super().__init__()
-        self._conditions = conditions
+        self._args_ = args
+        self._kwargs_ = kwargs
 
     def get_queryset(self):
-        return super().get_queryset().filter(**self._conditions)
-
-
-class HasBits(models.Lookup):
-    """
-    目标字段是否含有指定的任意一个或多个比特。
-    """
-    lookup_name = 'has_bits'
-
-    def as_sql(self, compiler, connection):
-        lhs, lhs_params = self.process_lhs(compiler, connection)
-        rhs, rhs_params = self.process_rhs(compiler, connection)
-        params = lhs_params + rhs_params
-        return '%s & %s != 0' % (lhs, rhs), params
-
-
-class HasAllBits(models.Lookup):
-    """
-    目标字段是否含有指定的所有比特。
-    """
-    lookup_name = 'has_all_bits'
-
-    def as_sql(self, compiler, connection):
-        lhs, lhs_params = self.process_lhs(compiler, connection)
-        rhs, rhs_params = self.process_rhs(compiler, connection)
-        params = lhs_params + rhs_params + rhs_params
-        return '%s & %s = %s' % (lhs, rhs, rhs), params
-
-
-class NotAnyBits(models.Lookup):
-    """
-    目标字段是否不含给定的任意比特。
-    """
-    lookup_name = 'not_any_bits'
-
-    def as_sql(self, compiler, connection):
-        lhs, lhs_params = self.process_lhs(compiler, connection)
-        rhs, rhs_params = self.process_rhs(compiler, connection)
-        params = lhs_params + rhs_params
-        return '%s & %s = 0' % (lhs, rhs), params
+        return super().get_queryset().filter(*self._args_, **self._kwargs_)

@@ -1,3 +1,12 @@
+"""
+全局唯一身份标识符 Universally Unique IDentifier 相关工具。
+"""
+
+__all__ = [
+    'uuid7',
+    'uuid8',
+]
+
 from random import getrandbits
 from time import time_ns
 from uuid import UUID

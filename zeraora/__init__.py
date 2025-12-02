@@ -1,10 +1,12 @@
 """
 Zeraora
 
-A personal utility package, with long time supports.
+长期维护的个人基础设施工具包。
+
+Personal infrastructure toolkit with long-term maintenance.
 """
 
-VERSION = (0, 4, 0, 'alpha', 3)
+VERSION = (0, 4, 0, 'alpha', 4)
 
 # https://packaging.python.org/en/latest/specifications/version-specifiers/
-__version__ = '0.4.0a3'
+__version__ = '0.4.0a4'

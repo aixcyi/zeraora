@@ -1,23 +1,10 @@
+from decimal import Decimal
+
 from tests.base_test_case import BaseTestCase
 from zeraora.math import *
 
 
 class MathsTest(BaseTestCase):
-
-    def test_Decimal(self):
-        self.assertAttribute('E', Decimal)
-        self.assertAttribute('PI', Decimal)
-        self.assertAttribute('NAN', Decimal)
-        self.assertAttribute('ONE', Decimal)
-        self.assertAttribute('ZERO', Decimal)
-        self.assertTrue(Decimal.NAN.is_nan())
-        self.assertTrue(Decimal.ZERO.is_zero())
-        self.assertTrue(Decimal.ONE == Decimal('1'))
-        self.assertEqual(Decimal('3.14'), Decimal('3.14').remove_exponent())
-        self.assertEqual(Decimal('3.14'), Decimal('3.140').remove_exponent())
-        self.assertEqual(Decimal('3.14'), Decimal('3.1400').remove_exponent())
-        self.assertEqual(Decimal('03.14'), Decimal('03.14').remove_exponent())
-        self.assertEqual(Decimal('03.14'), Decimal('03.140').remove_exponent())
 
     def test_remove_exponent(self):
         self.assertEqual(Decimal('3.14'), remove_exponent(Decimal('3.14')))
@@ -25,14 +12,6 @@ class MathsTest(BaseTestCase):
         self.assertEqual(Decimal('3.14'), remove_exponent(Decimal('3.1400')))
         self.assertEqual(Decimal('03.14'), remove_exponent(Decimal('03.14')))
         self.assertEqual(Decimal('03.14'), remove_exponent(Decimal('03.140')))
-
-    def test_absolute(self):
-        self.assertTupleEqual((True, 1980), absolute(1980))
-        self.assertTupleEqual((False, 1980), absolute(-1980))
-        self.assertTupleEqual((True, 0), absolute(0))
-        self.assertTupleEqual((True, 0), absolute(-0))
-        self.assertTupleEqual((True, 0), absolute(0.0))
-        self.assertTupleEqual((True, 0), absolute(-0.0))
 
     # noinspection PyTypeChecker
     def test_bitstream(self):
