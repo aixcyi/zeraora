@@ -6,7 +6,7 @@ Zeraora
 Personal infrastructure toolkit with long-term maintenance.
 """
 
-VERSION = (0, 4, 0, 'alpha', 4)
+VERSION = (0, 4, 1)
 
 # https://packaging.python.org/en/latest/specifications/version-specifiers/
-__version__ = '0.4.0a4'
+__version__ = '0.4.1'

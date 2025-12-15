@@ -1,0 +1,66 @@
+# Specification
+# https://packaging.python.org/en/latest/specifications/pyproject-toml/
+# Quick Start
+# https://packaging.python.org/en/latest/guides/writing-pyproject-toml/
+
+[build-system]
+build-backend = "setuptools.build_meta"
+requires = [
+    "setuptools",
+]
+
+[project]
+name = "Zeraora"
+dynamic = ["version"]
+authors = [
+    { name = "aixcyi", email = "75880483+aixcyi@users.noreply.github.com" },
+]
+requires-python = ">=3.10"
+description = "Personal infrastructure toolkit with long-term maintenance."
+readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
+classifiers = [
+    # https://pypi.org/classifiers/
+    "Development Status :: 3 - Alpha",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Framework :: Django :: 3.2",
+    "Framework :: Django :: 4.0",
+    "Framework :: Django :: 4.1",
+    "Framework :: Django :: 4.2",
+    "Framework :: Django :: 5.0",
+    "Framework :: Django :: 5.1",
+    "Framework :: Django :: 5.2",
+    "Intended Audience :: Developers",
+    "Operating System :: OS Independent",
+    "Natural Language :: Chinese (Simplified)",
+    "Topic :: Utilities",
+    "Typing :: Typed",
+]
+
+# 允许使用者通过以下方式一键安装
+# pip install Zeraora[client]
+# pip install Zeraora[client,restful]
+[project.optional-dependencies]
+client = ["requests>=2.27"]
+backend = ["django>=3.2"]
+restful = ["django>=3.2", "djangorestframework>=3.13"]
+
+[project.urls]
+Homepage = "https://docs.tighnari.net/zeraora/"
+Documentation = "https://docs.tighnari.net/zeraora/"
+Source = "https://github.com/aixcyi/zeraora"
+Issues = "https://github.com/aixcyi/zeraora/issues"
+
+[tool.setuptools.dynamic]
+version = { attr = "zeraora.__version__" }
+
+[tool.setuptools.packages.find]
+include = ["zeraora*"]
