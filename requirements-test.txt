@@ -1,3 +1,4 @@
+typing_extensions>=4.14.0
 Django==4.2.*
 djangorestframework==3.15.2
 requests==2.31.*
