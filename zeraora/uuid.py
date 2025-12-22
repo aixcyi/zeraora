@@ -1,10 +1,7 @@
-"""
-全局唯一身份标识符 Universally Unique IDentifier 相关工具。
-"""
-
 __all__ = [
     'uuid7',
     'uuid8',
+    'uuid8i',
 ]
 
 from random import getrandbits
@@ -14,63 +11,56 @@ from uuid import UUID
 
 def uuid7() -> UUID:
     """
-    生成 RFC 4122 定义的第七版 UUID。
+    根据 RFC 9562 定义的第七版 UUID 生成一个带有毫秒级时间戳和一个随机数的 UUID 对象。
 
     注意：此函数使用了 :class:`random.Random`，因此不应将其用于安全目的。
-
-    第七版 UUID 的高 48 位使用大端字节序存储毫秒级 Unix 时间戳，对应第 128~81
-    位；低 80 位中的第 76~65、62~1 位共计 74 比特存储随机数，剩余的第
-    80、79、78、77、64、63 位共计 6 个比特存储 RFC 4122 UUID 标准的版本及种类。
-
-    获取时间戳的方式如下：
-
-    >>> # 毫秒时间戳
-    >>> mseconds: int = uuid7().int >> 80
-    >>> # 秒时间戳
-    >>> seconds: float = (uuid7().int >> 80) / 1000
-
-    ----
-
-    第七版 UUID 的鉴别方式如下：
-
-    >>> import uuid
-    >>>
-    >>> assert uuid7().variant == uuid.RFC_4122
-    >>> assert uuid7().version == 7
-
-    第一个断言是第二个断言成立的前置条件。
     """
     return UUID(int=(
-            (time_ns() // 1000_000 << 80 | getrandbits(80))
-            & 0xFFFFFFFF_FFFF_0FFF_3FFF_FFFFFFFFFFFF
-            | 0b10 << 62  # OSF's DCE UUID
-            | 0x7 << 76  # OSF's DCE UUIDv7
+            0
+            | time_ns() // 1000_000 << 80
+            | 0x7 << 76  # 表明是 RFC 9562 定义的第七版 UUID
+            | getrandbits(12) << 64
+            | 0b10 << 62  # 表明是 RFC 9562 定义的 UUID
+            | getrandbits(62)
     ))
 
 
-def uuid8(integer: int) -> UUID:
+def uuid8(
+        a: int = None,
+        b: int = None,
+        c: int = None,
+) -> UUID:
     """
-    生成 RFC 4122 定义的第八版 UUID。
+    根据 RFC 9562 定义的第八版 UUID 生成一个自定义结构的 UUID。
 
-    第八版 UUID 约定其结构由使用者自定义，其中有 122 个比特位可以自由使用，剩余
-    6 个比特位存储 RFC 4122 UUID 标准的版本及种类。被占用的比特位位于第 80、79、78、77、64、63
-    位。换句话说，第 128~81、76~65、62~1 位都是自由使用的。
+    三个参数预期为三个 48、12、62
+    比特的非负整数；如果超出长度，则仅保留最低有效位；若为负数，则将会取绝对值；如果没有提供，则替换成适当大小的伪随机数。
 
-    ----
+    注意：伪随机数使用了 :class:`random.Random` 生成，因此若是不提供参数，那么不应将本函数用于安全目的。
+    """
+    a = abs(getrandbits(48) if a is None else a) & 0xFFFF_FFFF_FFFF
+    b = abs(getrandbits(12) if b is None else b) & 0x0FFF
+    c = abs(getrandbits(62) if c is None else c) & 0x3FFF_FFFF_FFFF_FFFF
+    return UUID(int=(
+            0
+            | a << 80
+            | 0x8 << 76  # 表明是 RFC 9562 定义的第八版 UUID
+            | b << 64
+            | 0b10 << 62  # 表明是 RFC 9562 定义的 UUID
+            | c
+    ))
 
-    第八版 UUID 的鉴别方式如下：
 
-    >>> from random import getrandbits
-    >>> import uuid
-    >>>
-    >>> assert uuid8(getrandbits(128)).variant == uuid.RFC_4122
-    >>> assert uuid8(getrandbits(128)).version == 8
+def uuid8i(integer: int) -> UUID:
+    """
+    根据 RFC 9562 定义的第八版 UUID 生成一个自定义结构的 UUID。
 
-    第一个断言是第二个断言成立的前置条件。
+    可以传入一个 128 比特的整数，但函数会固定其中的 6 比特使其满足第八版
+    UUID 的要求，仅剩 122 比特可用于自定义结构。
     """
     return UUID(int=(
             integer
             & 0xFFFFFFFF_FFFF_0FFF_3FFF_FFFFFFFFFFFF
-            | 0b10 << 62  # OSF's DCE UUID
-            | 0x8 << 76  # OSF's DCE UUIDv8
+            | 0x8 << 76  # 表明是 RFC 9562 定义的第八版 UUID
+            | 0b10 << 62  # 表明是 RFC 9562 定义的 UUID
     ))
