@@ -1,11 +1,6 @@
-"""
-日志系统的扩展延伸及相关工具。
-"""
-
 __all__ = [
     'FoxStopwatch',
     'BearStopwatch',
-    'logc',
 ]
 
 import logging
@@ -13,8 +8,7 @@ import logging.config
 import sys
 from datetime import datetime, timedelta
 from functools import wraps
-from itertools import chain
-from typing import Any, NamedTuple
+from typing import NamedTuple
 
 
 class _Mark(NamedTuple):
@@ -73,7 +67,7 @@ class FoxStopwatch:
         带有多个装饰器时，秒表放哪里取决于你的计时范围：
 
         >>> from rest_framework.decorators import api_view
-        >>> from zeraora.logging import FoxStopwatch
+        >>> from zeraora.time import FoxStopwatch
         >>>
         >>> @FoxStopwatch()  # 从请求转发过来那一刻开始计时
         >>> @api_view(['GET'])
@@ -249,13 +243,13 @@ class BearStopwatch(FoxStopwatch):
 
         使用前，需要先启用日志输出： ::
 
-            from zeraora.logging import BearStopwatch
+            from zeraora.time import BearStopwatch
 
             bear = BearStopwatch.configit()
 
         若是使用装饰器，则可以 ::
 
-            from zeraora.logging import BearStopwatch
+            from zeraora.time import BearStopwatch
 
             @BearStopwatch.configit()
             def main():
@@ -300,7 +294,7 @@ class BearStopwatch(FoxStopwatch):
         带有多个装饰器时，秒表放哪里取决于你的计时范围：
 
         >>> from rest_framework.decorators import api_view
-        >>> from zeraora.logging import BearStopwatch
+        >>> from zeraora.time import BearStopwatch
         >>>
         >>> @BearStopwatch()  # 从请求转发过来那一刻开始计时
         >>> @api_view(['GET'])
@@ -351,51 +345,3 @@ class BearStopwatch(FoxStopwatch):
             f'[{self.name}] [{total:.9f} {delta:+.9f}]: {mark.msg}'
         )
         return self
-
-
-def logc(*pairs: tuple[str, Any] | list[str, Any], **kwargs: Any) -> dict[str, Any]:
-    """
-    专为 `配置字典架构 <https://docs.python.org/zh-cn/3/library/logging.config.html#configuration-dictionary-schema>`_
-    编写的 :class:`dict` 变种函数。
-
-    - 接受逐个键值对入参。
-    - 去除“键”尾随的所有 ``_`` 字符。
-    - 键等于 ``"_"`` 时替换为 ``"."``。
-    - 键等于 ``"__"`` 时替换为 ``"()"``。
-    - 键等于 ``"klass"`` 时替换为 ``"class"``。
-
-    >>> logc(
-    >>>     __='my.package.customFormatterFactory',
-    >>>     klass='logging.StreamHandler',
-    >>>     level='DEBUG',
-    >>>     filters=[],
-    >>>     formatter='bear',
-    >>>     _={
-    >>>         'foo': 'baz'
-    >>>     },
-    >>> )
-    {
-        '()': 'my.package.customFormatterFactory',
-        'class': 'logging.StreamHandler',
-        'level': 'DEBUG',
-        'filters': [],
-        'formatter': 'bear',
-        '.': {
-            'foo': 'baz'
-        },
-    }
-    """
-
-    def constructor():
-        for key, val in chain(pairs, kwargs.items()):
-            match key:
-                case 'klass':
-                    yield 'class', val
-                case '__':
-                    yield '()', val
-                case '_':
-                    yield '.', val
-                case _:
-                    yield key.rstrip('_'), val
-
-    return dict(constructor())

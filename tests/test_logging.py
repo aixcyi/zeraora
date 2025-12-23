@@ -1,6 +1,6 @@
 import unittest
 
-from zeraora.logging import *
+from zeraora.time import *
 
 
 class LoggingTest(unittest.TestCase):

@@ -1,11 +1,63 @@
 __all__ = [
+    'logc',
     'WrappedListProperty',
     'Configuration',
 ]
 
+from itertools import chain
+from typing import Any
+
 from typing_extensions import Self
 
 from zeraora.string import StringBuilder
+
+
+def logc(*pairs: tuple[str, Any] | list[str, Any], **kwargs: Any) -> dict[str, Any]:
+    """
+    专为 `配置字典架构 <https://docs.python.org/zh-cn/3/library/logging.config.html#configuration-dictionary-schema>`_
+    编写的 :class:`dict` 变种函数。
+
+    - 接受逐个键值对入参。
+    - 去除“键”尾随的所有 ``_`` 字符。
+    - 键等于 ``"_"`` 时替换为 ``"."``。
+    - 键等于 ``"__"`` 时替换为 ``"()"``。
+    - 键等于 ``"klass"`` 时替换为 ``"class"``。
+
+    >>> logc(
+    >>>     __='my.package.customFormatterFactory',
+    >>>     klass='logging.StreamHandler',
+    >>>     level='DEBUG',
+    >>>     filters=[],
+    >>>     formatter='bear',
+    >>>     _={
+    >>>         'foo': 'baz'
+    >>>     },
+    >>> )
+    {
+        '()': 'my.package.customFormatterFactory',
+        'class': 'logging.StreamHandler',
+        'level': 'DEBUG',
+        'filters': [],
+        'formatter': 'bear',
+        '.': {
+            'foo': 'baz'
+        },
+    }
+    """
+
+    def constructor():
+        for key, val in chain(pairs, kwargs.items()):
+            match key:
+                case 'klass':
+                    yield 'class', val
+                case '__':
+                    yield '()', val
+                case '_':
+                    yield '.', val
+                case _:
+                    yield key.rstrip('_'), val
+
+    return dict(constructor())
 
 
 class WrappedListProperty:
