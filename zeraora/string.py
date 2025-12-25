@@ -109,6 +109,9 @@ class StringBuilder:
                 repeat(sep, len(blocks) - 1),
                 fillvalue=end,
             ))
+        elif end:
+            blocks = *blocks, end
+
         self.writes(blocks)
         return self
 
