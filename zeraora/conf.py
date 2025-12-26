@@ -4,6 +4,7 @@ __all__ = [
     'Configuration',
 ]
 
+from abc import ABC, abstractmethod
 from itertools import chain
 from typing import Any
 
@@ -82,7 +83,7 @@ class WrappedListProperty:
         instance.__dict__[self.name] = list(map(self.serialize, value))
 
 
-class Configuration:
+class Configuration(ABC):
     """
     配置映射编辑器。
     """
@@ -130,11 +131,10 @@ class Configuration:
             if loaded[k] != edited[k]
         }
 
-    def fill(self, save=True) -> Self:
+    @abstractmethod
+    def fill(self, save=True, *args, **kwargs) -> Self:
         """
         将配置导出填充到某处。
-
-        *该方法为抽象方法*
 
         :param save: 填充后是否执行保存。
         :return: 自身。
