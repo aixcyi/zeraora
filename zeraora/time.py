@@ -193,13 +193,13 @@ class FoxStopwatch:
         if not self.marks:
             print('<没有标记下任何一个时刻>')
             return
-        for mark in self.marks:
+        for index, mark in enumerate(self.marks, start=1):
             print(
-                f'{mark.curr:%H:%M:%S.%f}\t',
-                f'{mark.total.total_seconds():.9f}',
-                f'{mark.delta.total_seconds():+.9f}',
-                mark.msg,
-                sep='\x20\x20',
+                f'[{mark.curr:%H:%M:%S.%f}] '
+                f'[{index:#>3}] '
+                f'[{mark.total.total_seconds():.9f}'
+                f' {mark.delta.total_seconds():+.9f}'
+                f']: {mark.msg}'
             )
 
 
