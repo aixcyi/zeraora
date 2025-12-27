@@ -1,16 +1,19 @@
 __all__ = [
     'logc',
     'WrappedListProperty',
+    'WrappedSetProperty',
     'Configuration',
 ]
 
 from abc import ABC, abstractmethod
 from itertools import chain
-from typing import Any, Callable
+from typing import Any, Callable, Generic, Iterable, TypeVar
 
 from typing_extensions import Self
 
 from zeraora.string import StringBuilder
+
+M = TypeVar('M')
 
 
 def logc(*pairs: tuple[str, Any] | list[str, Any], **kwargs: Any) -> dict[str, Any]:
@@ -61,11 +64,13 @@ def logc(*pairs: tuple[str, Any] | list[str, Any], **kwargs: Any) -> dict[str, A
     return dict(constructor())
 
 
-class WrappedListProperty:
+class WrappedListProperty(Generic[M]):
 
-    def __init__(self, primitive: type, wrapper: type):
+    def __init__(self, primitive: type, wrapper: type[M]):
         """
         包装列表属性。
+
+        在内部维护一个成员都是基本类型的列表（用于导出JSON），单独访问属性时会得到一个成员都是包装类型的列表。
 
         :param primitive: 基本类型。实际存储和批量提取的类型。
         :param wrapper: 包装类型。访问单个属性得到的类型。
@@ -76,10 +81,34 @@ class WrappedListProperty:
     def __set_name__(self, owner, name):
         self.name = name
 
-    def __get__(self, instance, owner):
+    def __get__(self, instance, owner) -> list[M]:
         return list(map(self.deserialize, instance.__dict__[self.name]))
 
-    def __set__(self, instance, value):
+    def __set__(self, instance, value: Iterable[M]):
+        instance.__dict__[self.name] = list(map(self.serialize, value))
+
+
+class WrappedSetProperty(Generic[M]):
+
+    def __init__(self, primitive: type, wrapper: M):
+        """
+        包装集合属性。
+
+        在内部维护一个成员都是基本类型的列表（用于导出JSON），单独访问属性时会得到一个成员都是包装类型的集合。
+
+        :param primitive: 基本类型。实际存储和批量提取的类型。
+        :param wrapper: 包装类型。访问单个属性得到的类型。
+        """
+        self.serialize = primitive
+        self.deserialize = wrapper
+
+    def __set_name__(self, owner, name):
+        self.name = name
+
+    def __get__(self, instance, owner) -> set[M]:
+        return set(map(self.deserialize, instance.__dict__[self.name]))
+
+    def __set__(self, instance, value: Iterable[M]):
         instance.__dict__[self.name] = list(map(self.serialize, value))
 
 
