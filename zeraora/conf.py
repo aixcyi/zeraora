@@ -6,7 +6,7 @@ __all__ = [
 
 from abc import ABC, abstractmethod
 from itertools import chain
-from typing import Any
+from typing import Any, Callable
 
 from typing_extensions import Self
 
@@ -141,16 +141,26 @@ class Configuration(ABC):
         """
         raise NotImplementedError
 
-    def show(self) -> Self:
+    def show(self, printer: Callable[[str], Any] = print) -> Self:
         """
-        打印配置信息。\n\n键为字段名，值为字段值。
+        打印配置信息。
+
+        键为字段名，值为字段值；前缀 * 表示字段值已被修改，无前缀则表示未被修改。
+
+        :param printer: 一个用于打印的函数或方法。其第一个参数必须字符串，其余参数必须允许省略。
+        :return: 自身。
         """
-        print(
+        fields = self.diff()
+        printer(
             StringBuilder()
             .writeline('=' * 32)
             .writeline(self.__class__.__name__)
             .writeline('-' * 32)
-            .writes(f'{k} = {v!r}\n' for k, v in self.dump().items())
+            .writes(
+                f'* {k} = {v!r}\n' if k in fields else
+                f'  {k} = {v!r}\n' for k, v in self.dump().items()
+            )
             .writeline('=' * 32)
+            .build()
         )
         return self
