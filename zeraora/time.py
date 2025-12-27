@@ -1,4 +1,5 @@
 __all__ = [
+    'MomentMark',
     'FoxStopwatch',
     'BearStopwatch',
 ]
@@ -10,8 +11,10 @@ from datetime import datetime, timedelta
 from functools import wraps
 from typing import NamedTuple
 
+from typing_extensions import Self
 
-class _Mark(NamedTuple):
+
+class MomentMark(NamedTuple):
     """
     时刻标记。
 
@@ -91,7 +94,7 @@ class FoxStopwatch:
         :param name: 秒表的标题，用以标明输出信息归属于哪个秒表。默认从打印消息时的上下文中获取。
         """
         self.name = str(name) or self._get_context_name() or self.__class__.__name__
-        self.marks: list[_Mark] = []
+        self.marks: list[MomentMark] = []
 
     def __call__(self, func):
         @wraps(func)
@@ -104,7 +107,7 @@ class FoxStopwatch:
 
         return wrapper
 
-    def __enter__(self):
+    def __enter__(self) -> Self:
         self.start()
         return self
 
@@ -121,7 +124,7 @@ class FoxStopwatch:
         except AttributeError:
             return ''
 
-    def _log(self, mark: _Mark):
+    def _log(self, mark: MomentMark) -> Self:
         """
         记录日志。
 
@@ -135,7 +138,7 @@ class FoxStopwatch:
         print(f'[{self.name}] [{total:.9f} {delta:+.9f}]: {mark.msg}')
         return self
 
-    def start(self, msg='开始计时……') -> _Mark:
+    def start(self, msg='开始计时……') -> MomentMark:
         """
         开始计时。
 
@@ -144,13 +147,13 @@ class FoxStopwatch:
         :param msg: 记录消息。
         :return: 新的计时标记。
         """
-        mark = _Mark(head := datetime.now(), head, head, msg)
+        mark = MomentMark(head := datetime.now(), head, head, msg)
         self.marks.clear()
         self.marks.append(mark)
         self._log(mark)
         return mark
 
-    def lap(self, msg='') -> _Mark:
+    def lap(self, msg='') -> MomentMark:
         """
         标记此刻。
 
@@ -162,12 +165,12 @@ class FoxStopwatch:
         if not self.marks:
             return self.start(msg or '自动开始计时……')
 
-        mark = _Mark(self.marks[0].head, self.marks[-1].head, datetime.now(), msg or '已标记~')
+        mark = MomentMark(self.marks[0].head, self.marks[-1].head, datetime.now(), msg or '已标记~')
         self.marks.append(mark)
         self._log(mark)
         return mark
 
-    def stop(self, msg='停止计时。') -> _Mark:
+    def stop(self, msg='停止计时。') -> MomentMark:
         """
         标记当前时刻，然后停止计时，最后清除所有标记。
 
@@ -175,10 +178,10 @@ class FoxStopwatch:
         :return: 新的计时标记。
         """
         if not self.marks:
-            mark = _Mark(head := datetime.now(), head, head, msg)
+            mark = MomentMark(head := datetime.now(), head, head, msg)
             self._log(mark)
         else:
-            mark = _Mark(self.marks[0].head, self.marks[-1].head, datetime.now(), msg)
+            mark = MomentMark(self.marks[0].head, self.marks[-1].head, datetime.now(), msg)
             self._log(mark)
             self.marks.clear()
         return mark
@@ -321,14 +324,14 @@ class BearStopwatch(FoxStopwatch):
         self.logger = logging.getLogger(self.LOGGER)
 
     @classmethod
-    def configit(cls, name: str = None, *args, **kwargs) -> "BearStopwatch":
+    def configit(cls, name: str = None, *args, **kwargs) -> Self:
         """
         配置日志系统，并创建一个熊牌秒表；参数与 :class:`BearStopwatch` 一致。
         """
         logging.config.dictConfig(BearStopwatch.CONFIG)
         return cls(name, *args, **kwargs)
 
-    def _log(self, mark: _Mark):
+    def _log(self, mark: MomentMark) -> Self:
         """
         记录日志。
 
