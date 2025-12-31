@@ -1,0 +1,34 @@
+/**
+ * Component: Custom Block
+ *
+ * 1、定义了主题没有定义的“块标题”颜色；
+ * 2、让强调文字适配“块”的背景色。
+ * -------------------------------------------------------------------------- */
+
+.custom-block.tip {
+    .custom-block-title,
+    *:not(a) > strong {
+        color: var(--vp-c-green-1);
+    }
+}
+
+.custom-block.important {
+    .custom-block-title,
+    *:not(a) > strong {
+        color: var(--vp-c-purple-1);
+    }
+}
+
+.custom-block.warning {
+    .custom-block-title,
+    *:not(a) > strong {
+        color: var(--vp-c-yellow-1);
+    }
+}
+
+.custom-block.caution {
+    .custom-block-title,
+    *:not(a) > strong {
+        color: var(--vp-c-red-1);
+    }
+}

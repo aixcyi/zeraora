@@ -1,7 +1,3 @@
-"""
-对 `requests <https://pypi.org/project/requests/>`_ 的扩展和增强。
-"""
-
 __all__ = [
     'HTTPTokenAuth',
     'HTTPBearerAuth',

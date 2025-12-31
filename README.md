@@ -1,5 +1,5 @@
 <div align="center">
-    <p><img src="./logo.svg"/></p>
+    <p><img src="./docs/public/logo.svg"/></p>
     <a href="https://docs.python.org/zh-cn/3/whatsnew/index.html"><img src="https://img.shields.io/pypi/pyversions/zeraora?logo=python&logoColor=yellow"></a>
     <a href="https://pypi.org/project/Zeraora/"><img src="https://img.shields.io/pypi/v/zeraora?color=darkgreen"></a>
     <a href=""><img src="https://img.shields.io/conda/v/conda-forge/zeraora"></a>
@@ -7,7 +7,7 @@
     <a href=""><img src="https://img.shields.io/pypi/dm/zeraora?color=C72777"></a>
 </div>
 <div align="center">
-    <i>长期维护的个人基础设施工具包</i>
+    <i>长期维护的实用基础设施工具包</i>
     <br>
     <i>Personal infrastructure toolkit with long-term maintenance.</i>
 </div>
@@ -36,7 +36,7 @@ pip install ./Zeraora-0.4.0.0a-none-any.whl
 
 ## 文档／Document
 
-参见 [文档（正在部署）](https://zeraora.navifox.net) 或 [GitHub Wiki](https://github.com/aixcyi/zeraora/wiki)
+参见 [文档（正在部署）](https://docs.navifox.net/zeraora/) 或 [GitHub Wiki](https://github.com/aixcyi/zeraora/wiki)
 
 ## 链接／Links
 

@@ -1,12 +1,19 @@
-"""
-Zeraora
+from typing import NamedTuple as _NamedTuple
 
-长期维护的个人基础设施工具包。
 
-Personal infrastructure toolkit with long-term maintenance.
-"""
+class _VersionInfo(_NamedTuple):
+    major: int
+    minor: int
+    micro: int
+    releaselevel: str
+    serial: int
 
-VERSION = (0, 4, 1)
+    # https://packaging.python.org/en/latest/specifications/version-specifiers/
+    def __str__(self):
+        level = {'alpha': 'a', 'beta': 'b', 'final': ''}[self.releaselevel]
+        return f'{self.major}.{self.minor}.{self.micro}{level}.{self.serial}'
 
-# https://packaging.python.org/en/latest/specifications/version-specifiers/
-__version__ = '0.4.1'
+
+VERSION = _VersionInfo(0, 4, 0, 'alpha', 5)
+
+__version__ = str(VERSION)

@@ -1,0 +1,30 @@
+{
+    "name": "zeraora-docs",
+    "private": false,
+    "version": "0.0.1",
+    "type": "module",
+    "scripts": {
+        "dev": "vitepress dev",
+        "build": "vitepress build",
+        "preview": "vitepress preview",
+        "jit:preview": "vitepress build && vitepress preview"
+    },
+    "dependencies": {
+        "@catppuccin/vitepress": "^0.1.2",
+        "vue": "^3.5.13"
+    },
+    "devDependencies": {
+        "@types/node": "^22.15.17",
+        "@vitejs/plugin-vue": "^5.2.3",
+        "@vue/language-server": "^2.2.10",
+        "@vue/tsconfig": "^0.7.0",
+        "glob": "^11.0.2",
+        "gray-matter": "^4.0.3",
+        "markdown-it": "^14.1.0",
+        "path-to-regexp": "^8.2.0",
+        "typescript": "~5.8.3",
+        "vite": "^6.3.5",
+        "vitepress": "^1.6.4",
+        "vue-tsc": "^2.2.8"
+    }
+}

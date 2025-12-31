@@ -1,7 +1,3 @@
-"""
-数学相关工具和常量。
-"""
-
 __all__ = [
     'NaN',
     'remove_exponent',
@@ -79,12 +75,12 @@ def remove_exponent(d: Decimal) -> Decimal:
 
 def decimalize(value: str | int | float | Decimal, max_digits=12, decimal_places=2) -> Decimal:
     """
-    将“浮点数”转化为“定点数”，（小数部分）多余数位会直接丢掉。
+    将小数（不含小数点）长度控制在 `max_digits` 位，小数位数控制在 `decimal_places` 位，多余的小数部分将被直接丢弃，不会执行舍入。
 
     :param value: 字符串、整数、小数或 :class:`Decimal` 对象。
     :param max_digits: 数字中允许的最大位数。请注意，这个数字必须大于或等于 `decimal_places`。
     :param decimal_places: 与数字一起存储的小数位数。
-    :return: 一个 :class:`Decimal` 对象，总位数量控制在 `max_digits` 位，小数位数控制在 `decimal_places` 位。
+    :return: 一个 :class:`Decimal` 对象。
     """
     if not isinstance(value, Decimal):
         value = Decimal(value)

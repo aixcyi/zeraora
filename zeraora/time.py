@@ -18,7 +18,7 @@ class MomentMark(NamedTuple):
     """
     时刻标记。
 
-    用于标定某一个时刻。
+    用于锚定某一个时刻。
     """
 
     head: datetime
@@ -51,45 +51,6 @@ class FoxStopwatch:
         狸子秒表。
 
         对代码运行进行正向计时，并通过 ``print()`` 在控制台打印。
-
-        ----
-
-        最简单是使用 ``with`` 语句包裹需要计时的部分：
-
-        >>> with FoxStopwatch() as fox:
-        >>>     # 业务逻辑
-        >>>     pass
-
-        如需对一整个函数进行计时，可以作为装饰器使用：
-
-        >>> @FoxStopwatch()
-        >>> def do_somthing():
-        >>>     # 业务逻辑
-        >>>     pass
-
-        带有多个装饰器时，秒表放哪里取决于你的计时范围：
-
-        >>> from rest_framework.decorators import api_view
-        >>> from zeraora.time import FoxStopwatch
-        >>>
-        >>> @FoxStopwatch()  # 从请求转发过来那一刻开始计时
-        >>> @api_view(['GET'])
-        >>> def query_status(request):
-        >>>     # 业务逻辑
-        >>>     pass
-        >>>
-        >>> @api_view(['POST'])
-        >>> @FoxStopwatch()  # 从login()执行那一刻开始计时
-        >>> def login(request):
-        >>>     # 业务逻辑
-        >>>     pass
-
-        此外还可以实例化一个对象。每个对象都是独立的秒表，互不影响。
-
-        >>> fox = FoxStopwatch()
-        >>> fox.start()
-        >>> # 业务逻辑
-        >>> fox.stop()
 
         :param name: 秒表的标题，用以标明输出信息归属于哪个秒表。默认从打印消息时的上下文中获取。
         """
@@ -240,83 +201,7 @@ class BearStopwatch(FoxStopwatch):
         """
         熊牌秒表。
 
-        对代码运行进行正向计时，并通过日志显示。
-
-        ----
-
-        使用前，需要先启用日志输出： ::
-
-            from zeraora.time import BearStopwatch
-
-            bear = BearStopwatch.configit()
-
-        若是使用装饰器，则可以 ::
-
-            from zeraora.time import BearStopwatch
-
-            @BearStopwatch.configit()
-            def main():
-                pass
-
-        对于使用 Django 的项目可以改为在 settings.py 中进行如下设置： ::
-
-            LOGGING = {
-                'version': 1,
-                'formatters': {...},
-                'filters': {...},
-                'handlers': {
-                    'Console': {  # 确保有一个控制台输出
-                        'level': 'DEBUG',
-                        'class': 'logging.StreamHandler',
-                    },
-                    ...
-                },
-                'loggers': {
-                    BearStopwatch.LOGGER: {  # 添加相应的日志记录器
-                        'level': 'DEBUG',  # 可以重写 BearStopwatch.log() 来自定义等级
-                        'handlers': ['Console'],
-                    },
-                },
-            }
-
-        ----
-
-        最简单是使用 ``with`` 语句包裹需要计时的部分：
-
-        >>> with BearStopwatch() as bear:
-        >>>     # 业务逻辑
-        >>>     pass
-
-        如需对一整个函数进行计时，可以作为装饰器使用：
-
-        >>> @BearStopwatch()
-        >>> def do_somthing():
-        >>>     # 业务逻辑
-        >>>     pass
-
-        带有多个装饰器时，秒表放哪里取决于你的计时范围：
-
-        >>> from rest_framework.decorators import api_view
-        >>> from zeraora.time import BearStopwatch
-        >>>
-        >>> @BearStopwatch()  # 从请求转发过来那一刻开始计时
-        >>> @api_view(['GET'])
-        >>> def query_status(request):
-        >>>     # 业务逻辑
-        >>>     pass
-        >>>
-        >>> @api_view(['POST'])
-        >>> @BearStopwatch()  # 从login()执行那一刻开始计时
-        >>> def login(request):
-        >>>     # 业务逻辑
-        >>>     pass
-
-        此外还可以实例化一个对象。每个对象都是独立的秒表，互不影响。
-
-        >>> bear = BearStopwatch()
-        >>> bear.start()
-        >>> # 业务逻辑
-        >>> bear.stop()
+        对代码运行进行正向计时，并向 Python 发送日志。使用前，需要先启用日志输出。
 
         :param name: 秒表的标题，用以标明输出信息归属于哪个秒表。默认从打印消息时的上下文中获取。
         """

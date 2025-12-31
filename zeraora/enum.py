@@ -1,8 +1,3 @@
-"""
-枚举相关工具和类型。
-"""
-from __future__ import annotations
-
 __all__ = [
     'MoreChoicesMeta',
     'MoreChoices',

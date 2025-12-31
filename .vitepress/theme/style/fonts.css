@@ -1,0 +1,39 @@
+@font-face {
+    font-family: 'JetBrains Mono';
+    src: url(JetBrainsMono-Regular.woff2) format('woff2');
+}
+
+@font-face {
+    font-family: 'JetBrains Mono';
+    font-weight: bold;
+    src: url(JetBrainsMono-Bold.woff2) format('woff2');
+}
+
+@font-face {
+    font-family: 'JetBrains Mono';
+    font-style: italic;
+    src: url(JetBrainsMono-Italic.woff2) format('woff2');
+}
+
+@font-face {
+    font-family: 'JetBrains Mono';
+    font-weight: bold;
+    font-style: italic;
+    src: url(JetBrainsMono-BoldItalic.woff2) format('woff2');
+}
+
+:root {
+    --vp-font-family-base: 'MiSans VF', sans-serif;
+
+    --vp-font-family-mono: 'JetBrains Mono', 'Consolas', 'Courier New', monospace;
+
+    --el-font-family: var(--vp-font-family-base);
+}
+
+i, em {
+    font-family: 'Segoe UI', 'MiSans VF', sans-serif;
+}
+
+.VPHomeHero .name {
+    line-height: 1.5em;
+}
