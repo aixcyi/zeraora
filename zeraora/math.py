@@ -1,16 +1,12 @@
 __all__ = [
-    'NaN',
-    'remove_exponent',
     'bitstream',
     'digitstream',
+    'remove_exponent',
     'decimalize',
 ]
 
 from decimal import Context, Decimal, ROUND_FLOOR
 from typing import Iterator
-
-NaN = float('NaN')
-"""二进制小数型 ``NaN`` ，即 Not a Number（非数值）。"""
 
 
 def bitstream(integer: int) -> Iterator[int]:
