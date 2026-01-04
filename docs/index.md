@@ -35,7 +35,6 @@ excerpt:
 - [<pre>zeraora.conf</pre>](/module/zeraora.conf)，配置辅助工具。
 - [<pre>zeraora.django</pre>](/module/zeraora.django)，对经典 Web 框架 [Django](https://docs.djangoproject.com/zh-hans/5.2/) 的扩展和增强。
 - [<pre>zeraora.drf</pre>](/module/zeraora.drf)，对 RESTful API 框架 [Django REST Framework](https://www.django-rest-framework.org/) 的扩展和增强。
-- [<pre>zeraora.enum</pre>](/module/zeraora.enum)，实用枚举。
 - [<pre>zeraora.math</pre>](/module/zeraora.math)，数学计算与常量。
 - [<pre>zeraora.requests</pre>](/module/zeraora.requests)，对 [Requests](https://requests.readthedocs.io/en/latest/) 的扩展和增强。
 - [<pre>zeraora.string</pre>](/module/zeraora.string)，字符集常量，与字符串生成。
