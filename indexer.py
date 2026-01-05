@@ -21,18 +21,24 @@ order: 2
 excerpt:
 ---
 
+# 全局符号索引
+
+%(body)s
+
 <style scoped>
 pre {
     display: inline;
     margin: 0;
 }
-.VPDoc a {
-    text-decoration: none;
+.VPDoc {
+    a {
+        text-decoration: none;
+    }
+    i, em {
+        color: var(--vp-c-purple-1);
+    }
 }
 </style>
-
-# 全局符号索引
-
 '''[1:]
 
 modulesIndexPath = './docs/modules.md'
@@ -45,6 +51,18 @@ excerpt:
 
 # 各个模块的符号索引
 
+%(body)s
+
+<style scoped>
+.VPDoc {
+    a {
+        text-decoration: none;
+    }
+    i, em {
+        color: var(--vp-c-purple-1);
+    }
+}
+</style>
 '''[1:]
 
 
@@ -127,12 +145,12 @@ class IndexGenerator:
     def cook(self):
         from zeraora.string import StringBuilder
 
-        builder = StringBuilder(modulesIndexMeta)
+        builder = StringBuilder()
         for module, symbols in self.modules.items():
             builder.writeline(f'## <pre>{module.__name__}</pre> {{#{module.__name__}}}\n')
             for _, _, _, symbol_name, define, kind in symbols:
                 builder.writeline(
-                    f'- _{define}_ [`{symbol_name}`](/module/{module.__name__}#{symbol_name})，_{kind}_'
+                    f'- _{define}_ [`{symbol_name}`](/module/{module.__name__}#{symbol_name})，{kind}'
                     if define and kind else
                     f'- _{define}_ [`{symbol_name}`](/module/{module.__name__}#{symbol_name})'
                     if define else
@@ -141,15 +159,16 @@ class IndexGenerator:
             else:
                 builder.writeline()
         with open(modulesIndexPath, 'w', encoding='UTF-8') as f:
-            f.write(builder.build())
+            f.write(modulesIndexMeta % dict(body=builder.build()))
 
-        builder = StringBuilder(symbolsIndexMeta)
-        builder.writeline(*[f'[{i}](#{i})' for i in sorted(self.indexes.keys())], sep=' ｜ ')
+        builder = StringBuilder()
+        builder.writeline('首字母', *[f'[{i}](#{i})' for i in sorted(self.indexes.keys())], sep=' ｜ ')
+        builder.writeline()
         for initial in sorted(self.indexes.keys()):
             builder.writeline(f'## {initial}\n')
             for module, _, _, symbol_name, define, kind in self.indexes[initial]:
                 builder.writeline(
-                    f'- _{define}_ <pre>{module.__name__}.</pre>[`{symbol_name}`](/module/{module.__name__}#{symbol_name})，_{kind}_'
+                    f'- _{define}_ <pre>{module.__name__}.</pre>[`{symbol_name}`](/module/{module.__name__}#{symbol_name})，{kind}'
                     if define and kind else
                     f'- _{define}_ <pre>{module.__name__}.</pre>[`{symbol_name}`](/module/{module.__name__}#{symbol_name})'
                     if define else
@@ -159,7 +178,7 @@ class IndexGenerator:
             else:
                 builder.writeline()
         with open(symbolsIndexPath, 'w', encoding='UTF-8') as f:
-            f.write(builder.build())
+            f.write(symbolsIndexMeta % dict(body=builder.build()))
 
         return self
 
