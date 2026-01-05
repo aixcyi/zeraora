@@ -1,12 +1,19 @@
 __all__ = [
+    'ZERO',
+    'ONE',
     'bitstream',
     'digitstream',
+    'fsum',
     'remove_exponent',
     'decimalize',
 ]
 
 from decimal import Context, Decimal, ROUND_FLOOR
-from typing import Iterator
+from itertools import chain
+from typing import Iterable, Iterator
+
+ZERO = Decimal(0)
+ONE = Decimal(1)
 
 
 def bitstream(integer: int) -> Iterator[int]:
@@ -60,13 +67,27 @@ def digitstream(integer: int, base: int) -> Iterator[int]:
     yield integer
 
 
+def fsum(iterable: Iterable[float | int], *numbers: float | int, start=ZERO, ndigits=2) -> Decimal:
+    """
+    求出 *iterable* 和 *numbers* 中所有数值的总和，并与 *start* 相加，最后以 :class:`Decimal` 类型返回。
+
+    - 数值支持 ``float`` 和 ``int`` 类型，但参数 start 必须是 :class:`Decimal` 类型。
+    - 所有数值在汇总前都会转换为 :class:`Decimal` 类型并四舍五入到小数点后 *ndigits* 位。
+    """
+    assert isinstance(start, Decimal)
+    return start + sum(
+        round(Decimal(str(f)), ndigits)
+        for f in chain(iterable, numbers)
+    )
+
+
 def remove_exponent(d: Decimal) -> Decimal:
     """
     去除十进制小数的尾导零。
 
     摘录自 `Decimal 常见问题 <https://docs.python.org/zh-cn/3/library/decimal.html#decimal-faq>`_ 。
     """
-    return d.quantize(Decimal('1')) if d == d.to_integral() else d.normalize()
+    return d.quantize(ONE) if d == d.to_integral() else d.normalize()
 
 
 def decimalize(value: str | int | float | Decimal, max_digits=12, decimal_places=2) -> Decimal:

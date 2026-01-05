@@ -7,6 +7,22 @@ excerpt:
 
 此模块提供了二进制小数、十进制小数、进位制相关的函数与常量。
 
+## `ZERO`
+
+值为 `0` 的
+[`Decimal`](https://docs.python.org/zh-cn/3/library/decimal.html#decimal-objects)
+类型小数。
+
+如需控制运算结果的最少小数位数，应另行定义一个值如 `Decimal('0.00')` 的常量。
+
+## `ONE`
+
+值为 `1` 的
+[`Decimal`](https://docs.python.org/zh-cn/3/library/decimal.html#decimal-objects)
+类型小数。
+
+如需控制运算结果的最少小数位数，应另行定义一个值如 `Decimal('1.00')` 的常量。
+
 ## `bitstream(integer)`
 
 获取一个整数 _integer_ 的所有比特位，以生成器的方式从 **低位** 到 **高位** 返回。
@@ -57,3 +73,15 @@ print(hex(1008612))
 _d_ 支持传入 `str`、`int`、`float` 或
 [`Decimal`](https://docs.python.org/zh-cn/3/library/decimal.html#decimal-objects)
 对象。
+
+## `fsum(iterable, *numbers, start=ZERO, ndigits=2)`
+
+针对浮点数的精确求和。
+
+求出可迭代对象 _iterable_ 和位置参数 _numbers_ 中所有数值的总和，并与起始值 _start_ 相加，最后以
+[`Decimal`](https://docs.python.org/zh-cn/3/library/decimal.html#decimal-objects)
+类型返回。
+
+- 数值支持 `float` 和 `int` 类型，但 _start_ 必须是 `Decimal` 类型。
+- 起始值 _start_ 默认是 `Decimal(0)`。
+- 所有数值在汇总前都会转换为 `Decimal` 并四舍五入到小数点后 _ndigits_ 位。
