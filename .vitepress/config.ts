@@ -27,7 +27,7 @@ const configurator = new VitePressConfigurator({
             lang: 'zh-CN',
             label: '简体中文',
             title: "Zeraora",
-            titleTemplate: ":title - Zeraora",
+            titleTemplate: ":title × Zeraora",
             description: "Zeraora 文档",
             themeConfig: {
                 // https://vitepress.dev/zh/reference/default-theme-config
@@ -37,8 +37,16 @@ const configurator = new VitePressConfigurator({
                 darkModeSwitchTitle: '切换到深色主题',
                 lightModeSwitchTitle: '切换到浅色主题',
                 returnToTopLabel: '回到顶部',
-                outline: {label: '大纲'},
-                docFooter: {prev: '上一篇', next: '下一篇'},
+                outline: { label: '大纲' },
+                editLink: {
+                    text: '前往 GitHub 编辑此页',
+                    pattern: 'https://github.com/aixcyi/Zeraora/tree/main/docs/:path',
+                },
+                docFooter: { prev: '上一篇', next: '下一篇' },
+                lastUpdated: {
+                    text: '最后提交时间',
+                    formatOptions: { dateStyle: 'full', timeStyle: 'medium' }
+                },
                 nav: [],
                 sidebar: {},
                 socialLinks: [
@@ -48,6 +56,7 @@ const configurator = new VitePressConfigurator({
             },
         },
     },
+    lastUpdated: true,
     markdown: {
         theme: {
             light: 'catppuccin-macchiato',

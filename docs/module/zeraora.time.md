@@ -1,5 +1,5 @@
 ---
-title: "`time` — 时间与计时"
+title: "`time` 时间与计时"
 outline: deep
 excerpt:
 ---

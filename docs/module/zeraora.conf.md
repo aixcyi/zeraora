@@ -1,5 +1,5 @@
 ---
-title: "`conf` — 配置辅助工具"
+title: "`conf` 配置辅助工具"
 outline: deep
 excerpt:
 ---

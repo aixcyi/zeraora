@@ -1,6 +1,8 @@
 ---
 prev: false
 next: false
+editLink: false
+lastUpdated: false
 titleTemplate: ":title"
 title: Zeraora
 aside: false

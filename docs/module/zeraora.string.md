@@ -1,5 +1,5 @@
 ---
-title: "`string` — 字符集与字符串"
+title: "`string` 字符集与字符串"
 outline: deep
 excerpt:
 ---

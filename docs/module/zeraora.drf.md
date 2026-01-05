@@ -1,5 +1,5 @@
 ---
-title: "`drf` — REST Framework 扩展"
+title: "Django REST Framework 扩展"
 excerpt:
 ---
 

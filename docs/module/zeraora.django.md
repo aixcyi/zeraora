@@ -1,5 +1,5 @@
 ---
-title: "`django` — 框架扩展"
+title: "`django` 框架扩展"
 excerpt:
 ---
 

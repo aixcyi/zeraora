@@ -18,6 +18,8 @@ symbolsIndexMeta = '''
 ---
 title: 全局符号索引
 order: 2
+editLink: false
+lastUpdated: false
 excerpt:
 ---
 
@@ -46,6 +48,8 @@ modulesIndexMeta = '''
 ---
 title: 各个模块的符号索引
 order: 1
+editLink: false
+lastUpdated: false
 excerpt:
 ---
 

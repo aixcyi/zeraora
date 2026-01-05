@@ -1,5 +1,5 @@
 ---
-title: "`math` — 数学计算与常量"
+title: "`math` 数学计算与常量"
 excerpt:
 ---
 
