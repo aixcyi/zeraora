@@ -1,4 +1,4 @@
-import {PageHooks, VitePressConfigurator} from './utils/vitepress'
+import { PageHooks, VitePressConfigurator } from './utils/vitepress'
 import './utils/string'
 
 
@@ -16,11 +16,11 @@ const configurator = new VitePressConfigurator({
     ],
     base: '/zeraora/',
     head: [
-        ['link', {rel: 'icon', href: '/favicon.ico', type: 'image/ico'}],
-        ['link', {
+        [ 'link', { rel: 'icon', href: '/favicon.ico', type: 'image/ico' } ],
+        [ 'link', {
             rel: 'stylesheet',
             href: 'https://cdn-font.hyperos.mi.com/font/css?family=MiSans_VF:VF:Chinese_Simplify,Latin&display=swap'
-        }],
+        } ],
     ],
     locales: {
         root: {
@@ -50,8 +50,8 @@ const configurator = new VitePressConfigurator({
                 nav: [],
                 sidebar: {},
                 socialLinks: [
-                    {icon: 'github', link: 'https://github.com/aixcyi/Zeraora', ariaLabel: 'GitHub 仓库'},
-                    {icon: 'qq', link: 'https://qm.qq.com/q/9RfmeydwNq', ariaLabel: 'QQ 群'},
+                    { icon: 'github', link: 'https://github.com/aixcyi/Zeraora', ariaLabel: 'GitHub 仓库' },
+                    { icon: 'qq', link: 'https://qm.qq.com/q/9RfmeydwNq', ariaLabel: 'QQ 群' },
                 ],
             },
         },
@@ -107,8 +107,8 @@ const hooksOrdered: PageHooks = {
 configurator
     .goto('root')
     .autoNavMenu('./docs/module/')
-    .autoNavMenu('./docs/', {text: '参考', hooks: hooksOrdered})
-    .autoSidebar('/', './docs/', {hooks: hooksOrdered})
-    .autoSidebar('/module/', './docs/module/', {deep: true})
+    .autoNavMenu('./docs/', { text: '参考', hooks: hooksOrdered })
+    .autoSidebar('/', './docs/', { hooks: hooksOrdered })
+    .autoSidebar('/module/', './docs/module/', { deep: true })
 
 export default configurator.define()

@@ -1,5 +1,5 @@
-import {resolve} from 'path'
-import {defineConfig} from 'vite'
+import { resolve } from 'path'
+import { defineConfig } from 'vite'
 
 
 // https://vite.dev/config/
@@ -12,7 +12,7 @@ export default defineConfig({
     },
     css: {
         preprocessorOptions: {
-            scss: {api: 'modern-compiler'},
+            scss: { api: 'modern-compiler' },
         },
     }
 })
