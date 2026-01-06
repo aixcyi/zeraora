@@ -74,13 +74,15 @@ pip install "Zeraora[client,restful]"
 Zeraora 目前仍在积极开发中，无法保证每个 0.x 之间能够互相迁移；但一旦正式发布第一个
 0.x，那么接下来每一个 0.x.y 都会维持比较高的兼容性，以确保可以随时回退，不会因迁移而产生太多更改。
 
-| 要求 | 兼容范围    |                                                                                                           |
-|----|---------|-----------------------------------------------------------------------------------------------------------|
-| 刚需 | 3.10.0+ | [Python](https://docs.python.org/zh-cn/3/index.html) · 一门编程语言。                                            |
-| 刚需 | 4.14.0+ | [typing_extensions](https://typing-extensions.readthedocs.io/en/latest/) · 用于兼容标准库 `typing` 模块，提供运行时类型提示。 |
-| 可选 | 2.27.0+ | [Requests](https://requests.readthedocs.io/en/latest/) · 简洁优雅的 HTTP 库。                                    |
-| 可选 | 3.2.0+  | [Django](https://docs.djangoproject.com/zh-hans/5.2/) · Web 服务开发框架。                                       |
-| 可选 | 3.13.0+ | [Django REST Framework](https://www.django-rest-framework.org/) · 基于 Django 的 RESTful Web 服务开发框架。         |
+| 依赖性 | 兼容范围    |                                                                                                           |
+|:---:|---------|-----------------------------------------------------------------------------------------------------------|
+| 必需  | 3.10.0+ | [Python](https://docs.python.org/zh-cn/3/index.html) · 一门编程语言。                                            |
+| 必需  | 4.14.0+ | [typing_extensions](https://typing-extensions.readthedocs.io/en/latest/) · 用于兼容标准库 `typing` 模块，提供运行时类型提示。 |
+| 非必需 | 2.27.0+ | [Requests](https://requests.readthedocs.io/en/latest/) · 简洁优雅的 HTTP 库。                                    |
+| 非必需 | 3.2.0+  | [Django](https://docs.djangoproject.com/zh-hans/5.2/) · Web 服务开发框架。                                       |
+| 非必需 | 3.13.0+ | [Django REST Framework](https://www.django-rest-framework.org/) · 基于 Django 的 RESTful Web 服务开发框架。         |
+
+> “非必需”是指仅在用到某些模块的情况下，才需要安装某个依赖；这会在那些模块文档的顶部标明。
 
 ## 社区 {#community}
 
