@@ -252,7 +252,7 @@ StoreConfiguration
 ```python
 import logging
 
-logger = logging.getLogger('tighnari.store')
+logger = logging.getLogger('navifox.store')
 
 if __name__ == '__main__':
     store = ...

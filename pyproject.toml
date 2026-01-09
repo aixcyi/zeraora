@@ -58,8 +58,8 @@ backend = ["django>=3.2"]
 restful = ["django>=3.2", "djangorestframework>=3.13"]
 
 [project.urls]
-Homepage = "https://docs.tighnari.net/zeraora/"
-Documentation = "https://docs.tighnari.net/zeraora/"
+Homepage = "https://docs.navifox.net/zeraora/"
+Documentation = "https://docs.navifox.net/zeraora/"
 Source = "https://github.com/aixcyi/zeraora"
 Issues = "https://github.com/aixcyi/zeraora/issues"
 

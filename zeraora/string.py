@@ -75,7 +75,7 @@ class StringBuilder:
         self._queue = deque()
         self.write(*blocks, sep=sep, end=end)
 
-    # () << 'tighnari'
+    # () << 'navifox'
     def __lshift__(self, block) -> Self:
         self.write(block)
         return self
@@ -163,11 +163,11 @@ class PathBuilder:
     def __str__(self) -> str:
         return ''.join(self._queue)
 
-    # () / 'tighnari' / ...
+    # () / 'navifox' / ...
     def __truediv__(self, path: str | EllipsisType) -> Self:
         return self._concat(self._slash, path)
 
-    # () // 'tighnari' / ...
+    # () // 'navifox' / ...
     def __floordiv__(self, path: str | EllipsisType) -> Self:
         return self._concat(self._slashes, path)
 

@@ -34,7 +34,7 @@ import requests
 from zeraora.requests import HTTPTokenAuth
 
 requests.post(
-    url='https://zeraora.tighnari.net/docs-testing/',
+    url='https://zeraora.navifox.net/docs-testing/',
     auth=HTTPTokenAuth('c2b7bafcd3f000000000000000000000'),
 )
 ```
