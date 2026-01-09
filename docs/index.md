@@ -3,7 +3,7 @@ prev: false
 next: false
 editLink: false
 lastUpdated: false
-titleTemplate: ":title"
+titleTemplate: false
 title: Zeraora
 aside: false
 sidebar: false
@@ -91,7 +91,7 @@ Zeraora 目前仍在积极开发中，无法保证每个 0.x 之间能够互相�
 
 
 
-<style scoped>
+<style module>
 li pre {
     display: inline;
     margin: 0;

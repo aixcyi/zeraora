@@ -27,7 +27,7 @@ excerpt:
 
 %(body)s
 
-<style scoped>
+<style module>
 pre {
     display: inline;
     margin: 0;
@@ -57,7 +57,7 @@ excerpt:
 
 %(body)s
 
-<style scoped>
+<style module>
 .VPDoc {
     a {
         text-decoration: none;

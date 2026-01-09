@@ -203,7 +203,9 @@ builder >> stdout
 你好，我叫提纳里！
 ```
 
-<style scoped>
+
+
+<style module>
 th, td {
     text-wrap: nowrap;
 }
