@@ -160,11 +160,3 @@ integer = getrandbits(128)
 assert uuid8i(integer).variant == uuid.RFC_4122
 assert uuid8i(integer).version == 8
 ```
-
-
-
-<style module>
-th, td {
-    text-wrap: nowrap;
-}
-</style>

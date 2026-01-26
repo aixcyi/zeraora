@@ -202,11 +202,3 @@ builder >> stdout
 ```text
 你好，我叫提纳里！
 ```
-
-
-
-<style module>
-th, td {
-    text-wrap: nowrap;
-}
-</style>

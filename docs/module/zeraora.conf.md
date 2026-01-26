@@ -6,7 +6,7 @@ excerpt:
 
 # <pre>zeraora.conf</pre>
 
-此模块提供了一些方便开发人员编辑与使用“配置”的快捷方法和工具。
+此模块提供了一些方便开发、运维、运营编辑与使用“配置”的快捷方法和工具。
 
 ## `logc(*pairs, **kwargs)`
 
@@ -49,12 +49,9 @@ assert logc(
 
 包装列表属性。
 
-一个数据描述器。在内部维护一个成员都是基本类型 _primitive_ 的列表（用于导出JSON），单独访问属性时会得到一个成员都是包装类型
-_wrapper_ 的列表。
+属性在内部维护了一个 _primitive_ 类型元素的列表，当你访问被定义的属性时，则会得到一个拥有 _wrapper_ 类型元素的列表。
 
-> [!TIP] 属性的内部值
-> 属性的内部值寄存于所在对象的 `__dict__` 属性中，专门用于配合
-> [`Configuration`](#Configuration) 使用，不太建议手动单独提取。
+换句话说，内部存储了一个 `list[primitive]` 类型的列表，访问时拿到了一个 `list[wrapper]` 类型的列表。
 
 ```python :line-numbers
 from decimal import Decimal
@@ -62,7 +59,7 @@ from zeraora.conf import Configuration, WrappedListProperty
 
 
 class StoreConfiguration(Configuration):
-    # 定义属性
+
     concessions = WrappedListProperty(str, Decimal)  # [!code highlight]
 
     def __init__(self, __configs=None):
@@ -75,29 +72,54 @@ class StoreConfiguration(Configuration):
         return self
 
 
-# 使用时，直接覆盖属性
 configs = StoreConfiguration()
 configs.concessions  # [Decimal('0.9')]
 configs.concessions = [Decimal('0.9'), Decimal('0.85')]  # [!code highlight]
 configs.concessions  # [Decimal('0.9'), Decimal('0.85')]
 configs.dump()  # {'$version': 1, 'concessions': ['0.9', '0.85']}
-
-# 请不要在原地修改
-configs.concessions  # [Decimal('0.9')]
-configs.concessions.append(Decimal('0.85'))  # [!code error]
-configs.concessions  # [Decimal('0.9')]
 ```
+
+可以通过 `configs.__didct__['concessions']` 拿到 `list[primitive]`
+类型的内部列表，不过一般情况下你不太会需要这个。
+
+_primitive_ 和 _wrapper_ 两种类型一定要可以相互转换，比如 str 和 Decimal 可以做到 `str(Decimal())` 和
+`Decimal(str())`；如果不能，推荐改成一个函数，比如 str 和 datetime 可以这样写：
+
+```python
+from datetime import datetime
+from zeraora.conf import Configuration, WrappedListProperty
+
+def ymdhms(v: str):
+    return datetime.strptime(v, '%Y-%m-%d %H:%M:%S')
+
+class StoreConfiguration(Configuration):
+    shelf_at = WrappedListProperty(str, ymdhms)
+```
+
+_primitive_ 一般来说都是用可导出 JSON 或其它文本格式的类型，这样可以让“配置类”的存储格式更加广泛；_wrapper_
+应该优先考虑类型，如果实在不能互相转换，应当定义成函数，而不是使用 _lambda_，这样会加重代码阅读者的心智负担！
+
+> [!CAUTION] 不要在原地修改
+> 
+> 切记，不要直接修改属性，这么做不会改变“真正的”属性值。
+> 
+> ```python
+> configs.concessions  # [Decimal('0.9')]
+> configs.concessions.append(Decimal('0.85'))  # [!code error]
+> configs.concessions  # [Decimal('0.9')]
+> ```
+
+> [!WARNING] 必须定义为“类属性”
+> 它是一个很乖的描述器类，按照[《描述器指南》](https://docs.python.org/zh-cn/3/howto/descriptor.html)，使用它时，必须直接在
+> `class` 中定义成“类属性”，而不能在 `def` 内定义成“对象属性”，不然会失效。
 
 ## `WrappedSetProperty(primitive, wrapper)`
 
 包装集合属性。
 
-一个数据描述器。在内部维护一个成员都是基本类型 _primitive_ 的 **列表**（方便用于导出JSON），单独访问属性时会得到一个成员都是包装类型
-_wrapper_ 的集合。
+属性在内部维护了一个 _primitive_ 类型元素的 **列表**，当你访问被定义的属性时，则会得到一个拥有 _wrapper_ 类型元素的 **集合**。
 
-> [!TIP] 属性的内部值
-> 属性的内部值寄存于所在对象的 `__dict__` 属性中，专门用于配合
-> [`Configuration`](#Configuration) 使用，不太建议手动单独提取。
+换句话说，内部存储了一个 `list[primitive]` 类型的列表，访问时拿到了一个 `set[wrapper]` 类型的集合。
 
 ```python :line-numbers
 from decimal import Decimal
@@ -124,12 +146,41 @@ configs.concessions  # {Decimal('0.9')}
 configs.concessions = {Decimal('0.9'), Decimal('0.85')}  # [!code highlight]
 configs.concessions  # {Decimal('0.9'), Decimal('0.85')}
 configs.dump()  # {'$version': 1, 'concessions': ['0.9', '0.85']}
-
-# 请不要在原地修改
-configs.concessions  # {Decimal('0.9')}
-configs.concessions.add(Decimal('0.85'))  # [!code error]
-configs.concessions  # {Decimal('0.9')}
 ```
+
+可以通过 `configs.__didct__['concessions']` 拿到 `list[primitive]`
+类型的内部列表，不过一般情况下你不太会需要这个。
+
+_primitive_ 和 _wrapper_ 两种类型一定要可以相互转换，比如 str 和 Decimal 可以做到 `str(Decimal())` 和
+`Decimal(str())`；如果不能，推荐改成一个函数，比如 str 和 datetime 可以这样写：
+
+```python
+from datetime import datetime
+from zeraora.conf import Configuration, WrappedSetProperty
+
+def ymdhms(v: str):
+    return datetime.strptime(v, '%Y-%m-%d %H:%M:%S')
+
+class StoreConfiguration(Configuration):
+    shelf_at = WrappedSetProperty(str, ymdhms)
+```
+
+_primitive_ 一般来说都是用可导出 JSON 或其它文本格式的类型，这样可以让“配置类”的存储格式更加广泛；_wrapper_
+应该优先考虑类型，如果实在不能互相转换，应当定义成函数，而不是使用 _lambda_，这样会加重代码阅读者的心智负担！
+
+> [!CAUTION] 不要在原地修改
+> 
+> 切记，不要直接修改属性，这么做不会改变“真正的”属性值。
+> 
+> ```python
+> configs.concessions  # {Decimal('0.9')}
+> configs.concessions.add(Decimal('0.85'))  # [!code error]
+> configs.concessions  # {Decimal('0.9')}
+> ```
+
+> [!WARNING] 必须定义为“类属性”
+> 它是一个很乖的描述器类，按照[《描述器指南》](https://docs.python.org/zh-cn/3/howto/descriptor.html)，使用它时，必须直接在
+> `class` 中定义成“类属性”，而不能在 `def` 内定义成“对象属性”，不然会失效。
 
 ## `Configuration`
 

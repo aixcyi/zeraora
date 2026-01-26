@@ -17,7 +17,7 @@ authors = [
     { name = "aixcyi", email = "75880483+aixcyi@users.noreply.github.com" },
 ]
 requires-python = ">=3.10"
-description = "Personal infrastructure toolkit with long-term maintenance."
+description = "Zeraora lightweight collection of utilities that save your dev time."
 readme = "README.md"
 license = "MIT"
 license-files = ["LICENSE"]

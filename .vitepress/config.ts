@@ -106,9 +106,16 @@ const hooksOrdered: PageHooks = {
 
 configurator
     .goto('root')
-    .autoNavMenu('./docs/module/')
-    .autoNavMenu('./docs/', { text: '参考', hooks: hooksOrdered })
     .autoSidebar('/', './docs/', { hooks: hooksOrdered })
     .autoSidebar('/module/', './docs/module/', { deep: true })
+    .autoNavMenu('./docs/module/')
+    .autoNavMenu('./docs/', { text: '参考', hooks: hooksOrdered })
+    .pushNavMenu({
+        text: '链接',
+        items: [
+            { text: '路狐领航', link: 'https://www.navifox.net/' },
+            { text: '文档月饼盒', link: 'https://docs.navifox.net/' },
+        ],
+    })
 
 export default configurator.define()

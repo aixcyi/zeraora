@@ -10,30 +10,26 @@ excerpt:
 
 ### 0.4.x {#compatibility-0.4.x}
 
-| 依赖性 | 兼容范围    |                                                                                                           |
-|:---:|---------|-----------------------------------------------------------------------------------------------------------|
-| 必需  | 3.10.0+ | [Python](https://docs.python.org/zh-cn/3/index.html) · 一门编程语言。                                            |
-| 必需  | 4.14.0+ | [typing_extensions](https://typing-extensions.readthedocs.io/en/latest/) · 用于兼容标准库 `typing` 模块，提供运行时类型提示。 |
-| 非必需 | 2.27.0+ | [Requests](https://requests.readthedocs.io/en/latest/) · 简洁优雅的 HTTP 库。                                    |
-| 非必需 | 3.2.0+  | [Django](https://docs.djangoproject.com/zh-hans/5.2/) · Web 服务开发框架。                                       |
-| 非必需 | 3.13.0+ | [Django REST Framework](https://www.django-rest-framework.org/) · 基于 Django 的 RESTful Web 服务开发框架。         |
-
-> “非必需”是指仅在用到某些模块的情况下，才需要安装某个依赖；这会在那些模块文档的顶部标明。
+| 依赖程度 | 兼容范围    |                                                                                                           |
+|:----:|---------|-----------------------------------------------------------------------------------------------------------|
+|  必需  | 3.10.0+ | [Python](https://docs.python.org/zh-cn/3/index.html) · 一门编程语言。                                            |
+|  必需  | 4.14.0+ | [typing_extensions](https://typing-extensions.readthedocs.io/en/latest/) · 用于兼容标准库 `typing` 模块，提供运行时类型提示。 |
+| 非必需  | 2.27.0+ | [Requests](https://requests.readthedocs.io/en/latest/) · 简洁优雅的 HTTP 库。                                    |
+| 非必需  | 3.2.0+  | [Django](https://docs.djangoproject.com/zh-hans/5.2/) · Web 服务开发框架。                                       |
+| 非必需  | 3.13.0+ | [Django REST Framework](https://www.django-rest-framework.org/) · 基于 Django 的 RESTful Web 服务开发框架。         |
 
 ### 0.3.x {#compatibility-0.3.x}
 
-| 依赖性 | 兼容范围    |                                                                                                   |
-|:---:|---------|---------------------------------------------------------------------------------------------------|
-| 必需  | 3.7.0+  | [Python](https://docs.python.org/zh-cn/3/index.html) · 一门编程语言。                                    |
-| 非必需 | 2.27.0+ | [Requests](https://requests.readthedocs.io/en/latest/) · 简洁优雅的 HTTP 库。                            |
-| 非必需 | 3.2.0+  | [Django](https://docs.djangoproject.com/zh-hans/5.2/) · Web 服务开发框架。                               |
-| 非必需 | 3.13.0+ | [Django REST Framework](https://www.django-rest-framework.org/) · 基于 Django 的 RESTful Web 服务开发框架。 |
-
-> “非必需”是指仅在用到某些模块的情况下，才需要安装某个依赖；这会在那些模块文档的顶部标明。
+| 依赖程度 | 兼容范围    |                                                                                                   |
+|:----:|---------|---------------------------------------------------------------------------------------------------|
+|  必需  | 3.7.0+  | [Python](https://docs.python.org/zh-cn/3/index.html) · 一门编程语言。                                    |
+| 非必需  | 2.27.0+ | [Requests](https://requests.readthedocs.io/en/latest/) · 简洁优雅的 HTTP 库。                            |
+| 非必需  | 3.2.0+  | [Django](https://docs.djangoproject.com/zh-hans/5.2/) · Web 服务开发框架。                               |
+| 非必需  | 3.13.0+ | [Django REST Framework](https://www.django-rest-framework.org/) · 基于 Django 的 RESTful Web 服务开发框架。 |
 
 ## 开发周期 {#development}
 
-由于开发时间和精力有限，Zeraora 采用短周期敏捷开发与迭代，目前发行的每个 0.x.y 可以对应三个阶段之一，分别是
+没有固定的开发周期，会随着时间慢慢积累一些实用小玩意儿。目前每个 0.x.y 都可以对应三个阶段之一，分别是
 [`zeraora.VERSION`](/module/zeraora#VERSION) 的 _releaselevel_ 属性可能出现的三个值：
 
 - _alpha_ 版本包含了新功能，尚处于测试阶段，仅供开发人员测试。

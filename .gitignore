@@ -7,6 +7,8 @@
 /node_modules
 /dist-ssr
 /dist-docs
+/dist.*
+/package-lock.json
 /*.egg-info
 /*.local
 

@@ -55,9 +55,17 @@
 
 h1 > pre,
 h2 > pre,
+li pre,
 table pre {
     display: inline;
     margin: 0;
+}
+
+/**
+ * 表格
+ * -------------------------------------------------------------------------- */
+table {
+    text-wrap: nowrap;
 }
 
 /**
