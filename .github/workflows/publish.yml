@@ -35,11 +35,8 @@ jobs:
         python -m pip install --upgrade pip
         pip install wheel build twine
 
-    - name: 构建源码包（sdist）
-      run: python setup.py sdist
-
-    - name: 构建轮子（wheel）
-      run: python -m build --wheel --no-isolation
+    - name: 构建阶段
+      run: python -m build
 
     - name: 发布到 TestPyPI
       env:

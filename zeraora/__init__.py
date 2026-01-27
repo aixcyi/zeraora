@@ -14,6 +14,6 @@ class _VersionInfo(_NamedTuple):
         return f'{self.major}.{self.minor}.{self.micro}{level}.{self.serial}'
 
 
-VERSION = _VersionInfo(0, 4, 0, 'alpha', 4)
+VERSION = _VersionInfo(0, 4, 0, 'final', 6)
 
 __version__ = str(VERSION)

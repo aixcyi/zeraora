@@ -45,9 +45,9 @@ classifiers = [
     "Topic :: Utilities",
     "Typing :: Typed",
 ]
-
-[project.dependencies]
-typing_extensions = ">=4.14.0"
+dependencies = [
+    "typing_extensions>=4.14.0",
+]
 
 # 允许使用者通过以下方式一键安装
 # pip install Zeraora[client]
