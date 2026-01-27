@@ -1,9 +1,14 @@
+#!/usr/bin/python3
+
 """
-此脚本主要用于为 Zeraora 构建符号索引，来生成相应的 Markdown 格式文档。
+为 Zeraora 构建符号索引并生成 Markdown 文档。
 """
+
 import inspect
 from collections import defaultdict
+from dataclasses import dataclass
 from importlib import import_module
+from pathlib import Path
 from pkgutil import iter_modules
 from types import ModuleType
 from typing import Any
@@ -13,57 +18,37 @@ from typing_extensions import NamedTuple
 # 拥有此属性的模块不会收录进索引，也不会出现在文档中。
 DUNDER_UNRELEASED = '__unreleased__'
 
-symbolsIndexPath = './docs/symbols.md'
-symbolsIndexMeta = '''
----
-title: 全局符号索引
-order: 2
-editLink: false
-lastUpdated: false
-excerpt:
----
+PROJECT_ROOT = Path(__file__).absolute().parent.parent.parent
 
-# 全局符号索引
 
-%(body)s
+@dataclass
+class Template:
+    """
+    模板。存储模板位置和目标位置，提供模板加载与内容渲染。
+    """
 
-<style scoped>
-.VPDoc {
-    a {
-        text-decoration: none;
-    }
-    i, em {
-        color: var(--vp-c-purple-1);
-    }
-}
-</style>
-'''[1:]
+    source: Path
+    """模板位置。"""
 
-modulesIndexPath = './docs/modules.md'
-modulesIndexMeta = '''
----
-title: 各个模块的符号索引
-order: 1
-editLink: false
-lastUpdated: false
-excerpt:
----
+    target: Path
+    """渲染结果输出位置。"""
 
-# 各个模块的符号索引
+    def __call__(self, **kwargs):
+        with self.source.absolute().open('r', encoding='UTF-8') as f:
+            template = f.read()
+        with self.target.absolute().open('w', encoding='UTF-8') as f:
+            f.write(template % kwargs)
 
-%(body)s
 
-<style scoped>
-.VPDoc {
-    a {
-        text-decoration: none;
-    }
-    i, em {
-        color: var(--vp-c-purple-1);
-    }
-}
-</style>
-'''[1:]
+class DocTemplateSet:
+    symbols = Template(
+        source=PROJECT_ROOT / './scripts/docs/symbols.template.md',
+        target=PROJECT_ROOT / './docs/symbols.md',
+    )
+    modules = Template(
+        source=PROJECT_ROOT / './scripts/docs/modules.template.md',
+        target=PROJECT_ROOT / './docs/modules.md',
+    )
 
 
 class SymbolInfo(NamedTuple):
@@ -158,8 +143,7 @@ class IndexGenerator:
                 )
             else:
                 builder.writeline()
-        with open(modulesIndexPath, 'w', encoding='UTF-8') as f:
-            f.write(modulesIndexMeta % dict(body=builder.build()))
+        DocTemplateSet.modules(body=builder.build())
 
         builder = StringBuilder()
         builder.writeline('首字母', *[f'[{i}](#{i})' for i in sorted(self.indexes.keys())], sep=' ｜ ')
@@ -177,8 +161,7 @@ class IndexGenerator:
                 )
             else:
                 builder.writeline()
-        with open(symbolsIndexPath, 'w', encoding='UTF-8') as f:
-            f.write(symbolsIndexMeta % dict(body=builder.build()))
+        DocTemplateSet.symbols(body=builder.build())
 
         return self
 
