@@ -1,42 +1,44 @@
 <div align="center">
-    <p><img src="./docs/public/logo.svg" alt="Zeraora Logo" /></p>
-    <a href="https://docs.python.org/zh-cn/3/whatsnew/index.html">
-        <img alt="[Python Compatibility]"
-             src="https://img.shields.io/pypi/pyversions/zeraora?logo=python&logoColor=yellow">
-    </a>
-    <a href="https://pypi.org/project/Zeraora/">
-        <img alt="[PyPI Version]"
-             src="https://img.shields.io/pypi/v/zeraora?color=darkgreen">
-    </a>
-    <a href="">
-        <img alt="[Conda Version]"
-             src="https://img.shields.io/conda/v/conda-forge/zeraora">
-    </a>
-    <a href="">
-        <img alt="[Package Status]"
-             src="https://img.shields.io/pypi/status/Zeraora">
-    </a>
-    <a href="">
-        <img alt="[Downloads per month]"
-             src="https://img.shields.io/pypi/dm/zeraora?color=C72777">
-    </a>
-</div>
-<div align="center">
-    <i>一堆实用小玩意儿，轻如电，快如猫</i>
-    <br>
-    <i>Zeraora lightweight collection of utilities that save your dev time.</i>
+    <p><img alt="Zeraora Logo" src="./docs/public/logo.svg" /></p>
+    <p>
+        <a href="https://docs.python.org/zh-cn/3/whatsnew/index.html">
+            <img alt="[Python Compatibility]"
+                 src="https://img.shields.io/pypi/pyversions/zeraora?logo=python&logoColor=yellow" />
+        </a>
+        <a href="https://pypi.org/project/Zeraora/">
+            <img alt="[PyPI Version]"
+                 src="https://img.shields.io/pypi/v/zeraora?color=darkgreen" />
+        </a>
+        <a href="">
+            <img alt="[Conda Version]"
+                 src="https://img.shields.io/conda/v/conda-forge/zeraora" />
+        </a>
+        <a href="">
+            <img alt="[Package Status]"
+                 src="https://img.shields.io/pypi/status/Zeraora" />
+        </a>
+        <a href="">
+            <img alt="[Downloads per month]"
+                 src="https://img.shields.io/pypi/dm/zeraora?color=C72777" />
+        </a>
+    </p>
+    <p>
+        <i>一堆实用小玩意儿，轻如电，快如猫</i>
+        <br />
+        <i>Zeraora lightweight collection of utilities that save your dev time.</i>
+    </p>
 </div>
 
 一个 Python 工具包，包含一堆杂七杂八的工具，大部分都是从日常业务代码里提取抽象的，有些是为了保障兼容性，希望能帮你少写几行代码。
 
-- [`zeraora.conf`](/module/zeraora.conf)，配置辅助工具。
-- [`zeraora.django`](/module/zeraora.django)，对经典 Web 框架 [Django](https://docs.djangoproject.com/zh-hans/5.2/) 的扩展和增强。
-- [`zeraora.drf`](/module/zeraora.drf)，对 RESTful API 框架 [Django REST Framework](https://www.django-rest-framework.org/) 的扩展和增强。
-- [`zeraora.math`](/module/zeraora.math)，数学计算与常量。
-- [`zeraora.requests`](/module/zeraora.requests)，对 [Requests](https://requests.readthedocs.io/en/latest/) 的扩展和增强。
-- [`zeraora.string`](/module/zeraora.string)，字符集常量，与字符串生成。
-- [`zeraora.time`](/module/zeraora.time)，时间与计时。
-- [`zeraora.uuid`](/module/zeraora.uuid)，UUID 生成函数。
+- [`zeraora.conf`](https://docs.navifox.net/zeraora/module/zeraora.conf)，配置辅助工具。
+- [`zeraora.django`](https://docs.navifox.net/zeraora/module/zeraora.django)，对经典 Web 框架 [Django](https://docs.djangoproject.com/zh-hans/5.2/) 的扩展和增强。
+- [`zeraora.drf`](https://docs.navifox.net/zeraora/module/zeraora.drf)，对 RESTful API 框架 [Django REST Framework](https://www.django-rest-framework.org/) 的扩展和增强。
+- [`zeraora.math`](https://docs.navifox.net/zeraora/module/zeraora.math)，数学计算与常量。
+- [`zeraora.requests`](https://docs.navifox.net/zeraora/module/zeraora.requests)，对 [Requests](https://requests.readthedocs.io/en/latest/) 的扩展和增强。
+- [`zeraora.string`](https://docs.navifox.net/zeraora/module/zeraora.string)，字符集常量，与字符串生成。
+- [`zeraora.time`](https://docs.navifox.net/zeraora/module/zeraora.time)，时间与计时。
+- [`zeraora.uuid`](https://docs.navifox.net/zeraora/module/zeraora.uuid)，UUID 生成函数。
 
 优点：除了 [typing_extensions](https://typing-extensions.readthedocs.io/en/latest/)
 用来兼容类型提示外，它不强制依赖任何第三方库。  
