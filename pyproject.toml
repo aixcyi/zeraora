@@ -68,3 +68,21 @@ version = { attr = "zeraora.__version__" }
 
 [tool.setuptools.packages.find]
 include = ["zeraora*"]
+
+[dependency-groups]
+dev = [
+    "django==4.2.*",
+    "djangorestframework==3.15.2",
+    "requests==2.31.*",
+    "typing-extensions>=4.14.0",
+]
+test = [
+    "build>=1.4.4",
+    "django==4.2.*",
+    "djangorestframework==3.15.2",
+    "requests==2.31.*",
+    "setuptools==80.9.0",
+    "twine>=6.2.0",
+    "typing-extensions>=4.14.0",
+    "wheel>=0.47.0",
+]
