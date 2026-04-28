@@ -1,17 +1,30 @@
-from typing import NamedTuple as _NamedTuple
+from typing import Literal as _Literal, NamedTuple as _NamedTuple
 
 
 class _VersionInfo(_NamedTuple):
     major: int
     minor: int
     micro: int
-    releaselevel: str
+    level: _Literal['alpha', 'beta', 'final']  # Zeraora 不需要 candidate 级别
     serial: int
 
     # https://packaging.python.org/en/latest/specifications/version-specifiers/
     def __str__(self):
-        level = {'alpha': 'a', 'beta': 'b', 'final': ''}[self.releaselevel]
+        level = {'alpha': 'a', 'beta': 'b', 'final': ''}[self.level]
         return f'{self.major}.{self.minor}.{self.micro}{level}.{self.serial}'
+
+    def __int__(self):
+        level = {'alpha': 0xA, 'beta': 0xB, 'final': 0xF}[self.level]
+        return self.major << 24 | self.minor << 16 | self.micro << 8 | level << 4 | self.serial
+
+    # noinspection SpellCheckingInspection
+    @property
+    def releaselevel(self):
+        return self.level
+
+    @property
+    def is_final(self):
+        return self.level == 'final'
 
 
 VERSION = _VersionInfo(0, 4, 0, 'final', 6)

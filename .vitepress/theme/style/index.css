@@ -64,8 +64,11 @@ table pre {
 /**
  * 表格
  * -------------------------------------------------------------------------- */
-table {
+.VPDoc table {
     text-wrap: nowrap;
+    max-width: fit-content;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 /**
