@@ -1,5 +1,5 @@
-import { PageHooks, VitePressConfigurator } from './utils/vitepress'
-import './utils/string'
+import { type PageHooks, VitePressConfigurator } from './utils/vitepress'
+import { trimSuffix } from './utils/string'
 
 
 // https://vitepress.dev/zh/reference/site-config
@@ -96,7 +96,7 @@ const configurator = new VitePressConfigurator({
     },
 }, {
     compareFolder: (a, b) => a.url.localeCompare(b.url),
-    compareFile: (a, b) => a.url.trimSuffix('.html').localeCompare(b.url.trimSuffix('.html')),
+    compareFile: (a, b) => trimSuffix(a.url, '.html').localeCompare(trimSuffix(b.url, '.html')),
     compareItem: () => 1,
 })
 
