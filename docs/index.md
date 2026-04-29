@@ -121,8 +121,13 @@ pip install "Zeraora[client,restful]"
 
 ## 社区 {#community}
 
-有什么新奇想法，或者实在搞不定的话，就来[罗狐会馆](https://qm.qq.com/q/9RfmeydwNq)坐坐吧，QQ 群坐标 699090940。
+前往 [GitHub](https://github.com/aixcyi/Zeraora/issues)
+反馈 Bug，为项目添砖 Java；实在拿不准的话，就来[罗狐会馆](https://qm.qq.com/q/70TQXUMtQk)坐坐吧。
 
-作者毛茸茸的，很好挼。
-
-Bug 需要前往 [GitHub](https://github.com/aixcyi/Zeraora/issues) 反馈喔~ 不然记不住容易忘。
+<div style="display: flex; flex-direction: column; justify-content: center; align-items: center">
+    <img
+        alt="QRCode"
+        src="/qrcode.png"
+        style="width: 240px; margin-top: 64px; padding: 24px; background-color: #24273a; border-radius: 32px"
+    />
+</div>
