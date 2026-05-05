@@ -16,7 +16,7 @@ ZERO = Decimal(0)
 ONE = Decimal(1)
 
 
-def bitstream(integer: int) -> Iterator[int]:
+def bitstream(integer: int, /) -> Iterator[int]:
     """
     获取一个整数的所有比特位。
 
@@ -41,7 +41,7 @@ def bitstream(integer: int) -> Iterator[int]:
                 yield -bit
 
 
-def digitstream(integer: int, base: int) -> Iterator[int]:
+def digitstream(integer: int, /, base: int) -> Iterator[int]:
     """
     获取一个非负整数在 *base* 进制下的各位数码，**以逆序生成** 。
 
@@ -67,7 +67,7 @@ def digitstream(integer: int, base: int) -> Iterator[int]:
     yield integer
 
 
-def fsum(iterable: Iterable[float | int], *numbers: float | int, start=ZERO, ndigits=2) -> Decimal:
+def fsum(iterable: Iterable[float | int], /, *numbers: float | int, start=ZERO, ndigits=2) -> Decimal:
     """
     求出 *iterable* 和 *numbers* 中所有数值的总和，并与 *start* 相加，最后以 :class:`Decimal` 类型返回。
 
@@ -81,7 +81,7 @@ def fsum(iterable: Iterable[float | int], *numbers: float | int, start=ZERO, ndi
     )
 
 
-def remove_exponent(d: Decimal) -> Decimal:
+def remove_exponent(d: Decimal, /) -> Decimal:
     """
     去除十进制小数的尾导零。
 
@@ -90,7 +90,7 @@ def remove_exponent(d: Decimal) -> Decimal:
     return d.quantize(ONE) if d == d.to_integral() else d.normalize()
 
 
-def decimalize(value: str | int | float | Decimal, max_digits=12, decimal_places=2) -> Decimal:
+def decimalize(value: str | int | float | Decimal, /, max_digits=12, decimal_places=2) -> Decimal:
     """
     将小数（不含小数点）长度控制在 `max_digits` 位，小数位数控制在 `decimal_places` 位，多余的小数部分将被直接丢弃，不会执行舍入。
 

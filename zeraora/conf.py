@@ -119,7 +119,7 @@ class Configuration(ABC):
     """
     VERSION = 1
 
-    def __init__(self, configs: dict):
+    def __init__(self, configs: dict, /):
         self._version_ = self.VERSION
         self._loaded_ = dict()
         self.load(configs)
@@ -139,7 +139,7 @@ class Configuration(ABC):
             .build()
         )
 
-    def load(self, configs: dict) -> Self:
+    def load(self, configs: dict, /) -> Self:
         """
         载入并覆盖当前配置。
         """
@@ -152,7 +152,7 @@ class Configuration(ABC):
         )
         return self
 
-    def dump(self, pure=False) -> dict:
+    def dump(self, *, pure=False) -> dict:
         """
         导出配置。
 
