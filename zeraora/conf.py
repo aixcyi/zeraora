@@ -7,16 +7,17 @@ __all__ = [
 
 from abc import ABC, abstractmethod
 from itertools import chain
-from typing import Any, Callable, Generic, Iterable, TypeVar
+from typing import Any, Generic, Iterable, TypeVar
 
-from typing_extensions import Self
+from typing_extensions import Self, deprecated
 
 from zeraora.string import StringBuilder
 
 M = TypeVar('M')
 
 
-def logc(*pairs: tuple[str, Any] | list[str, Any], **kwargs: Any) -> dict[str, Any]:
+@deprecated('未来可能会调整替换规则。', category=FutureWarning)
+def logc(*pairs: tuple[str, Any], **kwargs: Any) -> dict[str, Any]:
     """
     专为 `配置字典架构 <https://docs.python.org/zh-cn/3/library/logging.config.html#configuration-dictionary-schema>`_
     编写的 :class:`dict` 变种函数。
@@ -123,6 +124,21 @@ class Configuration(ABC):
         self._loaded_ = dict()
         self.load(configs)
 
+    def __str__(self):
+        fields = self.diff()
+        return (
+            StringBuilder()
+            .writeline('=' * 32)
+            .writeline(self.__class__.__name__)
+            .writeline('-' * 32)
+            .writes(
+                f'* {k} = {v!r}\n' if k in fields else
+                f'  {k} = {v!r}\n' for k, v in self.dump().items()
+            )
+            .writeline('=' * 32)
+            .build()
+        )
+
     def load(self, configs: dict) -> Self:
         """
         载入并覆盖当前配置。
@@ -136,13 +152,16 @@ class Configuration(ABC):
         )
         return self
 
-    def dump(self) -> dict:
+    def dump(self, pure=False) -> dict:
         """
         导出配置。
+
+        :param pure: 是否仅导出普通配置，不额外添加 ``$version`` 字段。
+        :return: 以字典类型存放的数据。
         """
-        return {
+        return ({} if pure else {
             '$version': self.VERSION,
-        } | {
+        }) | {
             k: self.__dict__[k]
             for k in sorted(self.__dict__.keys())
             if not k.startswith('_')
@@ -169,27 +188,3 @@ class Configuration(ABC):
         :return: 自身。
         """
         raise NotImplementedError
-
-    def show(self, printer: Callable[[str], Any] = print) -> Self:
-        """
-        打印配置信息。
-
-        键为字段名，值为字段值；前缀 * 表示字段值已被修改，无前缀则表示未被修改。
-
-        :param printer: 一个用于打印的函数或方法。其第一个参数必须字符串，其余参数必须允许省略。
-        :return: 自身。
-        """
-        fields = self.diff()
-        printer(
-            StringBuilder()
-            .writeline('=' * 32)
-            .writeline(self.__class__.__name__)
-            .writeline('-' * 32)
-            .writes(
-                f'* {k} = {v!r}\n' if k in fields else
-                f'  {k} = {v!r}\n' for k, v in self.dump().items()
-            )
-            .writeline('=' * 32)
-            .build()
-        )
-        return self
