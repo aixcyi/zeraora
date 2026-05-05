@@ -46,7 +46,7 @@ class MomentMark(NamedTuple):
 
 class FoxStopwatch:
 
-    def __init__(self, name: str = None, *args, **kwargs):
+    def __init__(self, name: str | None = None, *args, **kwargs):
         """
         狸子秒表。
 
@@ -81,7 +81,7 @@ class FoxStopwatch:
             return ''
         try:
             # noinspection PyUnresolvedReferences,PyProtectedMember
-            return sys._getframe().f_back.f_code.co_name
+            return sys._getframe().f_back.f_code.co_name  # type: ignore
         except AttributeError:
             return ''
 
@@ -197,7 +197,7 @@ class BearStopwatch(FoxStopwatch):
         },
     )
 
-    def __init__(self, name: str = None, *args, **kwargs):
+    def __init__(self, name: str | None = None, *args, **kwargs):
         """
         熊牌秒表。
 
@@ -209,7 +209,7 @@ class BearStopwatch(FoxStopwatch):
         self.logger = logging.getLogger(self.LOGGER)
 
     @classmethod
-    def configit(cls, name: str = None, *args, **kwargs) -> Self:
+    def configit(cls, name: str | None = None, *args, **kwargs) -> Self:
         """
         配置日志系统，并创建一个熊牌秒表；参数与 :class:`BearStopwatch` 一致。
         """
