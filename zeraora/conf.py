@@ -5,9 +5,10 @@ __all__ = [
     'Configuration',
 ]
 
+import json
 from abc import ABC, abstractmethod
 from itertools import chain
-from typing import Any, Generic, Iterable, TypeVar
+from typing import Any, Callable, Generic, Iterable, TypeVar
 
 from typing_extensions import Self, deprecated
 
@@ -188,3 +189,38 @@ class Configuration(ABC):
         :return: 自身。
         """
         raise NotImplementedError
+
+    def json(
+            self, *, pure=False, skipkeys=False, ensure_ascii=True, check_circular=True, allow_nan=True,
+            cls: type[json.JSONEncoder] | None = None, indent: int | str | None = None,
+            separators: tuple[str, str] | None = None, default: Callable | None = None, sort_keys=False, **kw
+    ) -> str:
+        """
+        导出配置为 JSON 字符串。
+
+        :param pure: 是否仅导出普通配置，不额外添加 ``$version`` 字段。
+        :param skipkeys: 见 ``json.dumps()``。
+        :param ensure_ascii: 见 ``json.dumps()``。
+        :param check_circular: 见 ``json.dumps()``。
+        :param allow_nan: 见 ``json.dumps()``。
+        :param cls: 见 ``json.dumps()``。
+        :param indent: 见 ``json.dumps()``。
+        :param separators: 见 ``json.dumps()``。
+        :param default: 见 ``json.dumps()``。
+        :param sort_keys: 见 ``json.dumps()``。
+        :param kw: 见 ``json.dumps()``。
+        :return: 一个 JSON 字符串。
+        """
+        return json.dumps(
+            self.dump(pure=pure),
+            skipkeys=skipkeys,
+            ensure_ascii=ensure_ascii,
+            check_circular=check_circular,
+            allow_nan=allow_nan,
+            cls=cls,
+            indent=indent,
+            separators=separators,
+            default=default,
+            sort_keys=sort_keys,
+            **kw,
+        )
