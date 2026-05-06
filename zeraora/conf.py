@@ -118,6 +118,7 @@ class Configuration(ABC):
     """
     配置映射编辑器。
     """
+    VERSIONING_CONTROL_FIELD = '$version'
     VERSION = 1
 
     def __init__(self, configs: dict, /):
@@ -144,7 +145,7 @@ class Configuration(ABC):
         """
         载入并覆盖当前配置。
         """
-        self._version_ = configs.get('$version', self.VERSION)
+        self._version_ = configs.get(self.VERSIONING_CONTROL_FIELD, self.VERSION)
         self._loaded_ = configs
         self.__dict__.update(
             (k, v)
@@ -161,7 +162,7 @@ class Configuration(ABC):
         :return: 以字典类型存放的数据。
         """
         return ({} if pure else {
-            '$version': self.VERSION,
+            self.VERSIONING_CONTROL_FIELD: self.VERSION,
         }) | {
             k: self.__dict__[k]
             for k in sorted(self.__dict__.keys())
