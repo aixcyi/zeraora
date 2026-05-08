@@ -132,12 +132,16 @@ class StringBuilder:
 
     def build(self) -> str:
         """
-        构建最终的字符串，并清空构建器内部的缓存。
+        构建字符串，但不会清空构建器内部的缓存。
         """
-        try:
-            return ''.join(self._queue)
-        finally:
-            self._queue.clear()
+        return ''.join(self._queue)
+
+    def clear(self) -> Self:
+        """
+        清空构建器内部的缓存。
+        """
+        self._queue.clear()
+        return self
 
 
 class PathBuilder:
