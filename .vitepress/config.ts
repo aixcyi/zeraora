@@ -109,10 +109,14 @@ configurator
     .autoSidebar('/', './docs/', { hooks: hooksOrdered })
     .autoSidebar('/module/', './docs/module/', { deep: true })
     .autoNavMenu('./docs/module/')
-    .autoNavMenu('./docs/', { text: '参考', hooks: hooksOrdered })
+    .pushNavLink({ text: '模块索引', link: '/modules' })
+    .pushNavLink({ text: '符号索引', link: '/symbols' })
+    .pushNavLink({ text: '更新日志', link: '/changelog' })
     .pushNavMenu({
-        text: '链接',
+        text: '更多',
         items: [
+            { text: '发行说明', link: '/releases' },
+            { text: '如何参与贡献？', link: '/contributing' },
             { text: '路狐领航', link: 'https://www.navifox.net/' },
             { text: '文档月饼盒', link: 'https://docs.navifox.net/' },
         ],

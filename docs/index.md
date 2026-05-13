@@ -48,7 +48,7 @@ excerpt:
         </a>
     </p>
     <p style="text-align: center">
-        <i>一堆实用小玩意儿，轻如电，快如猫</i>
+        <i>一堆实用小玩意儿，快如电，轻如猫</i>
         <br />
         <i>Zeraora lightweight collection of utilities that save your dev time.</i>
     </p>
@@ -68,7 +68,7 @@ excerpt:
 - [<pre>zeraora.uuid</pre>](/module/zeraora.uuid)，UUID 生成函数。
 
 优点：除了 [typing_extensions](https://typing-extensions.readthedocs.io/en/latest/)
-用来兼容类型提示外，它不强制依赖任何第三方库。  
+用来兼容类型提示外，它**不强制依赖**任何第三方库。  
 缺点：优点太少。
 
 ## 安装 {#install}
@@ -79,7 +79,7 @@ excerpt:
 pip install Zeraora
 ```
 
-也可以这样，网络不好的时候用镜像源：
+也可以这样，网络不好的时候用[镜像源](https://refs.navifox.net/mirror)：
 
 ```shell
 pip install Zeraora -i https://pypi.tuna.tsinghua.edu.cn/simple --trusted-host pypi.tuna.tsinghua.edu.cn
@@ -101,19 +101,14 @@ pip install "Zeraora[client,restful]"
 
 ## 兼容性 {#compatibility}
 
-已经推进到第四个大版本，基本上都稳定了（毕竟东西就那点）；新的东西会细水长流慢慢测、慢慢加。
-
-某个 0.x 内的小版本基本是兼容的，但每个 0.x 的大版本之间改动太大，就不太能兼容了。
-
-| 依赖程度 | 兼容范围    |                                                                                                           |
-|:----:|---------|-----------------------------------------------------------------------------------------------------------|
-|  必需  | 3.10.0+ | [Python](https://docs.python.org/zh-cn/3/index.html) · 一门编程语言。                                            |
-|  必需  | 4.14.0+ | [typing_extensions](https://typing-extensions.readthedocs.io/en/latest/) · 用于兼容标准库 `typing` 模块，提供运行时类型提示。 |
-| 非必需  | 2.27.0+ | [Requests](https://requests.readthedocs.io/en/latest/) · 简洁优雅的 HTTP 库。                                    |
-| 非必需  | 3.2.0+  | [Django](https://docs.djangoproject.com/zh-hans/5.2/) · Web 服务开发框架。                                       |
-| 非必需  | 3.13.0+ | [Django REST Framework](https://www.django-rest-framework.org/) · 基于 Django 的 RESTful Web 服务开发框架。         |
-
-没有办法兼容以前的 Python，3.10 新增的 match-case 实在太好用了！！
+| 依赖程度 | 兼容范围    |                                                                                                                                   |
+|:----:|---------|-----------------------------------------------------------------------------------------------------------------------------------|
+|  必需  | 3.10.0+ | [Python](https://docs.python.org/zh-cn/3/index.html) · 一门编程语言。                                                                    |
+|  必需  | 4.14.0+ | [typing_extensions](https://typing-extensions.readthedocs.io/en/latest/) · 用于兼容标准库 `typing` 模块，提供运行时类型提示。Zeraora 0.4.0 之前不需要这个依赖。 |
+| 非必需  | 2.27.0+ | [Requests](https://requests.readthedocs.io/en/latest/) · 简洁优雅的 HTTP 库。                                                            |
+| 非必需  | 3.2.0+  | [Django](https://docs.djangoproject.com/zh-hans/5.2/) · Web 服务开发框架。                                                               |
+| 非必需  | 3.13.0+ | [Django REST Framework](https://www.django-rest-framework.org/) · 基于 Django 的 RESTful Web 服务开发框架。                                 |
+| 非必需  | 3.14.0+ | [djangorestframework-stubs](https://pypi.org/project/djangorestframework-stubs/) · Django REST Framework 的类型提示。                   |
 
 ## 许可证 {#license}
 

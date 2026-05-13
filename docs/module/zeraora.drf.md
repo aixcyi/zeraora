@@ -11,7 +11,7 @@ excerpt:
 > [!WARNING] 依赖性警告
 > 使用此模块前，请务必确保您安装了 Django REST Framework 这个框架！
 
-## `BitListField`
+## BitListField
 
 一个序列化器字段，允许在“整数”和“比特数组”之间转换。
 
@@ -37,23 +37,23 @@ class TicketDetailSerializer(serializers.ModelSerializer):
         fields = '__all__'
 ```
 
-## `BearerAuthentication`
+## BearerAuthentication
 
 一个基于 Token 的认证器。
 
-使用框架的 [`TokenAuthentication`](https://www.django-rest-framework.org/api-guide/authentication/#tokenauthentication)
-需要提供以下格式的 HTTP 头，否则无法提取认证信息：
+框架的 [TokenAuthentication](https://www.django-rest-framework.org/api-guide/authentication/#tokenauthentication)
+只能提供以下格式的 Authorization 标头：
 
 ```http request
-GET /api
-Authorization: Token xxxxxx
+GET /api/oms/orders
+Authorization: Token c2b7bafcd3f000000000000000000000
 ```
 
-而如果需要对接 apifox 等自动化软件，则可以使用 `BearerAuthentication` 来要求更加通用的格式：
+而如果需要 `Bearer` 这个更通用的格式来对接 apifox 等自动化软件，则可以使用这个类。
 
 ```http request
-GET /api
-Authorization: Bearer xxxxxx
+GET /api/oms/orders
+Authorization: Bearer c2b7bafcd3f000000000000000000000
 ```
 
 在函数视图中，用法如下：
@@ -87,7 +87,7 @@ class OrderView(APIView):
     ...
 ```
 
-## `IsAdminUserOrReadOnly`
+## IsAdminUserOrReadOnly
 
 一个权限校验器。要么请求来自一个已认证的管理员，要么它是一个只读请求。
 

@@ -8,9 +8,9 @@ excerpt:
 
 此模块提供了一些与计时有关的工具。
 
-## `MomentMark`
+## MomentMark
 
-一个具名元组，用于锚定某一个时刻，有以下属性：
+一个[具名元组](https://docs.python.org/zh-cn/3/library/typing.html#typing.NamedTuple)，用于锚定某一个时刻，有以下属性：
 
 | 下标 | 属性      | 类型                                                                                              | 说明                              |
 |---:|---------|-------------------------------------------------------------------------------------------------|---------------------------------|
@@ -21,12 +21,20 @@ excerpt:
 |  4 | `total` | <pre>[timedelta](https://docs.python.org/zh-cn/3/library/datetime.html#timedelta-objects)</pre> | 当前时刻 `curr` 减去开始时刻 `head` 的时间差。 |
 |  5 | `delta` | <pre>[timedelta](https://docs.python.org/zh-cn/3/library/datetime.html#timedelta-objects)</pre> | 当前时刻 `curr` 减去上一时刻 `prev` 的时间差。 |
 
-## `FoxStopwatch(name=None)`
+> [!NOTE] 设计冗余
+> 这个结构体专用于给[狸子秒表](#FoxStopwatch)和[熊牌秒表](#BearStopwatch)记录时刻，为了快速满足复杂需求，设计时就是允许记录冗余信息的。
+
+## FoxStopwatch
+
+```python
+class FoxStopwatch:
+    def __init__(self, name: str | None = None) -> None:
+```
 
 狸子秒表。
 
 对代码运行进行正向计时，并通过 `print()` 在控制台打印。内部维护了一个
-[`MomentMark`](#MomentMark) 列表，用于随时提取记下的所有时刻。
+[MomentMark](#MomentMark) 列表，用于随时提取记下的所有时刻。
 
 ```text
 [FoxStopwatch.name] [0.000000000] [+0.000000000]: 开始计时……
@@ -45,7 +53,7 @@ with FoxStopwatch() as fox:
     pass
 ```
 
-如需对一整个函数进行计时，可以作为装饰器使用，此时狸子会将构造参数 _name_ 设置为被装饰的函数名。
+如需对一整个函数进行计时，可以作为装饰器使用，此时狸子会将参数 _name_ 设置为被装饰的函数名。
 
 ```python
 from zeraora.time import FoxStopwatch
@@ -86,27 +94,47 @@ fox.start()
 fox.stop()
 ```
 
-### `start(msg='开始计时……')` {#FoxStopwatch.start}
+### start 方法 {#FoxStopwatch.start}
+
+```python
+class FoxStopwatch:
+    def start(self, msg='开始计时……') -> MomentMark:
+```
 
 开始计时。
 
-清除当前秒表中的所有 [`MomentMark`](#MomentMark)，重新标记并返回一个 `MomentMark`，然后触发打印。
+清除当前秒表中的所有 [MomentMark](#MomentMark)，重新标记并返回一个 MomentMark，然后触发打印。
 
-### `lap(msg='')` {#FoxStopwatch.lap}
+### lap 方法 {#FoxStopwatch.lap}
+
+```python
+class FoxStopwatch:
+    def lap(self, msg='') -> MomentMark:
+```
 
 标记此刻。
 
-标记并返回一个 [`MomentMark`](#MomentMark)，然后触发打印；如果计时尚未开始，改为调用 `start()`。
+标记并返回一个 [MomentMark](#MomentMark)，然后触发打印；如果计时尚未开始，改为调用 `self.start()`。
 
-### `stop(msg='停止计时。')` {#FoxStopwatch.stop}
+### stop 方法 {#FoxStopwatch.stop}
+
+```python
+class FoxStopwatch:
+    def stop(self, msg='停止计时。') -> MomentMark:
+```
 
 停止计时。
 
-标记一个 [`MomentMark`](#MomentMark) 后触发打印，然后停止计时，返回所有秒表中的所有 `MomentMark` 后清除。
+标记一个 [MomentMark](#MomentMark) 后触发打印，然后停止计时，返回所有秒表中的所有 MomentMark 后清除。
 
-### `print()` {#FoxStopwatch.print}
+### print 方法 {#FoxStopwatch.print}
 
-使用 `print()` 打印所有 [`MomentMark`](#MomentMark)。
+```python
+class FoxStopwatch:
+    def print(self) -> None:
+```
+
+使用内置函数 `print()` 打印所有 [MomentMark](#MomentMark)。
 
 ```text
 [23:04:00.000] [##1] [0.000000000 +0.000000000]: 开始计时……
@@ -115,11 +143,28 @@ fox.stop()
 [23:04:00.358] [##4] [0.358979000 +0.044820000]: 停止计时。
 ```
 
-## `BearStopwatch(name=None)`
+## BearStopwatch
+
+```python
+class BearStopwatch(FoxStopwatch):
+    def __init__(self, name: str | None = None) -> None:
+```
 
 熊牌秒表。
 
-对代码运行进行正向计时，并向 Python 发送日志。大多数对象方法的用法同 [`FoxStopwatch`](#FoxStopwatch)。
+对代码运行进行正向计时，并向 Python 发送日志。大多数对象方法的用法同
+[FoxStopwatch](#FoxStopwatch)，不过使用前，需要先调用
+[`BearStopwatch.configit()`](#BearStopwatch.configit) 启用日志输出：
+
+```python
+from zeraora.time import BearStopwatch
+
+bear = BearStopwatch.configit()
+bear.start()
+bear.lap('标记1')
+bear.lap('标记2')
+bear.stop()
+```
 
 ```text
 [23:04:00.000] [DEBUG] [zeraora.bear] [FoxStopwatch.name] [0.000000000] [+0.000000000]: 开始计时……
@@ -128,9 +173,17 @@ fox.stop()
 [23:04:00.358] [DEBUG] [zeraora.bear] [FoxStopwatch.name] [0.358979000] [+0.044820000]: 停止计时。
 ```
 
-使用前，需要先调用 [`configit()`](#BearStopwatch.configit) 启用日志输出。
+若是使用装饰器，则可以
 
-对于使用 Django 的项目，可以省去这一步，但需要在 settings.py 中为秒表配置处理器及记录器：
+```python
+from zeraora.time import BearStopwatch
+
+@BearStopwatch.configit()
+def main():
+    pass
+```
+
+对于使用 Django 的项目，可以省去这一步，只需要在 settings.py 中为 BearStopwatch 配置 _handlers_ 和 _loggers_：
 
 ```python :line-numbers
 from zeraora.time import BearStopwatch
@@ -155,94 +208,104 @@ LOGGING = {
 }
 ```
 
-### `LEVEL` {#BearStopwatch.LEVEL}
+### LEVEL {#BearStopwatch.LEVEL}
 
-熊牌秒表发送到 Python
-日志系统的[日志级别](https://docs.python.org/zh-cn/3/library/logging.html#logging-levels)，默认是
-`"DEBUG"`。
+```python
+class BearStopwatch:
+    LEVEL: str = 'DEBUG'
+```
 
-### `LOGGER` {#BearStopwatch.LOGGER}
+BearStopwatch 发送的日志消息的[日志级别](https://docs.python.org/zh-cn/3/library/logging.html#logging-levels)。
 
-熊牌秒表在 Python
-日志系统注册的[记录器名称](https://docs.python.org/zh-cn/3/library/logging.html#logging.Logger.name)，默认是
-`"zeraora.bear"`。
+### LOGGER {#BearStopwatch.LOGGER}
 
-### `CONFIG` {#BearStopwatch.CONFIG}
+```python
+class BearStopwatch:
+    LOGGER: str = 'zeraora.bear'
+```
 
-熊牌秒表的默认[日志记录配置](https://docs.python.org/zh-cn/3/library/logging.config.html)，值如下：
+BearStopwatch 在 Python
+日志系统中注册的[记录器名称](https://docs.python.org/zh-cn/3/library/logging.html#logging.Logger.name)。
+
+### CONFIG {#BearStopwatch.CONFIG}
+
+BearStopwatch 的默认[日志配置](https://docs.python.org/zh-cn/3/library/logging.config.html)。
 
 ```python :line-numbers
-from zeraora.time import BearStopwatch
-
-dict(
-    version=1,
-    formatters={
-        'bear': dict(
-            format='[%(asctime)s] [%(levelname)s] %(message)s',
-        ),
-        'bear_plus': dict(
-            format='[%(asctime)s] [%(levelname)s] '
-                   '[%(module)s.%(funcName)s:%(lineno)d] '
-                   '%(message)s',
-        ),
-    },
-    filters={},
-    handlers={
-        'Console': {
-            'level': BearStopwatch.LEVEL,
-            'class': 'logging.StreamHandler',
-            'filters': [],
-            'formatter': 'bear',
+class BearStopwatch:
+    CONFIG: dict = dict(
+        version=1,
+        formatters={
+            'bear': dict(
+                format='[%(asctime)s] [%(levelname)s] %(message)s',
+            ),
+            'bear_plus': dict(
+                format='[%(asctime)s] [%(levelname)s] '
+                       '[%(module)s.%(funcName)s:%(lineno)d] '
+                       '%(message)s',
+            ),
         },
-    },
-    loggers={
-        BearStopwatch.LOGGER: dict(
-            level=BearStopwatch.LEVEL,
-            handlers=['Console'],
-            propagate=False,
-        ),
-    },
-)
+        filters={},
+        handlers={
+            'Console': {
+                'level': BearStopwatch.LEVEL,
+                'class': 'logging.StreamHandler',
+                'filters': [],
+                'formatter': 'bear',
+            },
+        },
+        loggers={
+            BearStopwatch.LOGGER: dict(
+                level=BearStopwatch.LEVEL,
+                handlers=['Console'],
+                propagate=False,
+            ),
+        },
+    )
 ```
 
-### `configit(name=None)` {#BearStopwatch.configit}
-
-_**一个类方法**_。配置日志系统，创建并返回一个熊牌秒表，参数与构造器一致。
-
-最基础的用法是
+### configit 方法 {#BearStopwatch.configit}
 
 ```python
-from zeraora.time import BearStopwatch
-
-bear = BearStopwatch.configit()
-bear.start()
-bear.lap('标记1')
-bear.lap('标记2')
-bear.stop()
+class BearStopwatch:
+    @classmethod
+    def configit(cls, name: str | None = None) -> Self:
 ```
 
-若是使用装饰器，则可以
+配置日志系统，创建并返回一个熊牌秒表，参数与构造器一致。
+
+### start 方法 {#BearStopwatch.start}
 
 ```python
-from zeraora.time import BearStopwatch
-
-@BearStopwatch.configit()
-def main():
-    pass
+class BearStopwatch(FoxStopwatch):
+    def start(self, msg='开始计时……') -> MomentMark:
 ```
 
-### `start(msg='开始计时……')` {#BearStopwatch.start}
+继承 [FoxStopwatch](#FoxStopwatch.start) 同名方法。
 
-见 [`FoxStopwatch.start()`](#FoxStopwatch.start)
+### lap 方法 {#BearStopwatch.lap}
 
-### `lap(msg='')` {#BearStopwatch.lap}
+```python
+class BearStopwatch(FoxStopwatch):
+    def lap(self, msg='') -> MomentMark:
+```
 
-见 [`FoxStopwatch.lap()`](#FoxStopwatch.lap)
+继承 [FoxStopwatch](#FoxStopwatch.lap) 同名方法。
 
-### `stop(msg='停止计时。')` {#BearStopwatch.stop}
+### stop 方法 {#BearStopwatch.stop}
 
-见 [`FoxStopwatch.stop()`](#FoxStopwatch.stop)
+```python
+class BearStopwatch(FoxStopwatch):
+    def stop(self, msg='停止计时。') -> MomentMark:
+```
 
-### `print()` {#BearStopwatch.print}
+继承 [FoxStopwatch](#FoxStopwatch.stop) 同名方法。
 
-见 [`FoxStopwatch.print()`](#FoxStopwatch.print)
+### print 方法 {#BearStopwatch.print}
+
+```python
+class BearStopwatch(FoxStopwatch):
+    def print(self) -> None:
+```
+
+继承 [FoxStopwatch](#FoxStopwatch.print) 同名方法。

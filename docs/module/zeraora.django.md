@@ -11,7 +11,7 @@ excerpt:
 > [!WARNING] 依赖性警告
 > 使用此模块前，请务必确保您安装了 Django 这个框架！
 
-## `SnakeModel`
+## SnakeModel
 
 一个元类，用于为模型生成一个下划线分隔的小写的数据表名（即蛇形命名法）。
 
@@ -26,16 +26,15 @@ class GoodsSKUInfo(models.Model, metaclass=SnakeModel):  # [!code highlight]
     stock = models.IntegerField()
 ```
 
-使用以上代码，Django 将生成一个名为 `wms_goods_sku_info` 的数据表；但若没有指定元类，那么
-Django 会默认生成一个名为 `wms_goodsskuinfo` 的数据表。
+默认情况下，Django 会为 GoodsSKUInfo 模型生成一个名为 `wms_goodsskuinfo`
+的表，而使用 SnakeModel 元类后，会生成一个名为 `wms_goods_sku_info` 的表。
 
-## `PrefilterManager`
+## PrefilterManager
 
 一个[管理器](https://docs.djangoproject.com/zh-hans/5.2/topics/db/managers/)类，允许预设任意过滤条件。
 
-> [!IMPORTANT] 实践指南
-> Django 建议使用一个管理器前先定义 `objects`，避免
-> Django
+> [!TIP] 实践指南
+> 用一个管理器之前，建议先定义 `objects` 属性，避免 Django
 > 将不符合预期的管理器认作[默认管理器](https://docs.djangoproject.com/zh-hans/5.2/topics/db/managers/#default-managers)。
 
 ```python :line-numbers

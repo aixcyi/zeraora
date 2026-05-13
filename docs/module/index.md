@@ -1,4 +1,4 @@
 ---
-title: 所有模块
+title: 模块
 excerpt:
 ---
