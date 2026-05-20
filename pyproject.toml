@@ -1,29 +1,16 @@
-# Specification
-# https://packaging.python.org/en/latest/specifications/pyproject-toml/
-# Quick Start
-# https://packaging.python.org/en/latest/guides/writing-pyproject-toml/
-
-[build-system]
-build-backend = "setuptools.build_meta"
-requires = [
-    "setuptools",
-    "typing_extensions>=4.14.0",
-]
-
 [project]
 name = "Zeraora"
 dynamic = ["version"]
 authors = [
     { name = "aixcyi", email = "75880483+aixcyi@users.noreply.github.com" },
 ]
-requires-python = ">=3.10"
 description = "Zeraora lightweight collection of utilities that save your dev time."
 readme = "README.md"
 license = "MIT"
 license-files = ["LICENSE"]
 classifiers = [
     # https://pypi.org/classifiers/
-    "Development Status :: 3 - Alpha",
+    "Development Status :: 5 - Production/Stable",
     "Programming Language :: Python",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3 :: Only",
@@ -45,17 +32,11 @@ classifiers = [
     "Topic :: Utilities",
     "Typing :: Typed",
 ]
+requires-python = ">=3.10"
 dependencies = [
     "typing_extensions>=4.14.0",
 ]
 
-# 允许使用者通过以下方式一键安装
-# pip install Zeraora[client]
-# pip install Zeraora[client,restful]
-[project.optional-dependencies]
-client = ["requests>=2.27"]
-backend = ["django>=3.2"]
-restful = ["django>=3.2", "djangorestframework>=3.13"]
 
 [project.urls]
 Homepage = "https://docs.navifox.net/zeraora/"
@@ -63,26 +44,77 @@ Documentation = "https://docs.navifox.net/zeraora/"
 Source = "https://github.com/aixcyi/zeraora"
 Issues = "https://github.com/aixcyi/zeraora/issues"
 
+
+[project.optional-dependencies]
+client = [
+    "requests>=2.27",
+]
+backend = [
+    "django>=3.2",
+]
+restful = [
+    "django>=3.2",
+    "djangorestframework>=3.13",
+]
+
+
+[build-system]
+build-backend = "setuptools.build_meta"
+requires = [
+    "setuptools",
+]
+
+
+[dependency-groups]
+latest = [
+    "django",
+    "djangorestframework",
+    "requests",
+    "typing-extensions",
+]
+stable = [
+    "django==5.2.*",
+    "djangorestframework==3.16.*",
+    "requests==2.32.*",
+    "typing-extensions==4.*",
+]
+legacy = [
+    "django==3.2.*",
+    "djangorestframework==3.13.*",
+    "requests==2.27.*",
+    "typing-extensions==4.14.0",
+]
+dev = [
+    { include-group = "stable" },
+]
+test = [
+    { include-group = "stable" },
+]
+test-latest = [
+    { include-group = "latest" },
+]
+test-legacy = [
+    { include-group = "legacy" },
+]
+
+
 [tool.setuptools.dynamic]
 version = { attr = "zeraora.__version__" }
+
 
 [tool.setuptools.packages.find]
 include = ["zeraora*"]
 
-[dependency-groups]
-dev = [
-    "django==4.2.*",
-    "djangorestframework==3.15.2",
-    "requests==2.31.*",
-    "typing-extensions>=4.14.0",
-]
-test = [
-    "build>=1.4.4",
-    "django==4.2.*",
-    "djangorestframework==3.15.2",
-    "requests==2.31.*",
-    "setuptools==80.9.0",
-    "twine>=6.2.0",
-    "typing-extensions>=4.14.0",
-    "wheel>=0.47.0",
+
+[tool.uv]
+conflicts = [
+    [
+        { group = "latest" },
+        { group = "stable" },
+        { group = "legacy" },
+        { group = "dev" },
+        { group = "test" },
+        { group = "test-latest" },
+        { group = "test-legacy" },
+    ],
 ]
