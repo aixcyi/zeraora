@@ -18,7 +18,7 @@ from typing_extensions import NamedTuple
 # 拥有此属性的模块不会收录进索引，也不会出现在文档中。
 DUNDER_UNRELEASED = '__unreleased__'
 
-PROJECT_ROOT = Path(__file__).absolute().parent.parent.parent
+PROJECT_ROOT = Path(__file__).absolute().parent
 
 
 @dataclass
@@ -42,11 +42,11 @@ class Template:
 
 class DocTemplateSet:
     symbols = Template(
-        source=PROJECT_ROOT / './scripts/docs/symbols.template.md',
+        source=PROJECT_ROOT / './docs/symbols.template.md',
         target=PROJECT_ROOT / './docs/symbols.md',
     )
     modules = Template(
-        source=PROJECT_ROOT / './scripts/docs/modules.template.md',
+        source=PROJECT_ROOT / './docs/modules.template.md',
         target=PROJECT_ROOT / './docs/modules.md',
     )
 

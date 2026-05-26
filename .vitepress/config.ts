@@ -13,6 +13,8 @@ const configurator = new VitePressConfigurator({
         './venv*',
         './test',
         './zeraora',
+        '**/README.md',
+        '**/*.template.md',
     ],
     base: '/zeraora/',
     head: [

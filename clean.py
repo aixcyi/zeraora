@@ -11,7 +11,7 @@ import sys
 from pathlib import Path
 from typing import Iterable, Iterator
 
-PROJECT_ROOT = Path(__file__).absolute().parent.parent
+PROJECT_ROOT = Path(__file__).absolute().parent
 
 
 def walk(root: Path) -> Iterator[tuple[Path, bool]]:
