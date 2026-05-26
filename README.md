@@ -10,10 +10,6 @@
                  src="https://img.shields.io/pypi/v/zeraora?color=darkgreen" />
         </a>
         <a href="">
-            <img alt="[Conda Version]"
-                 src="https://img.shields.io/conda/v/conda-forge/zeraora" />
-        </a>
-        <a href="">
             <img alt="[Package Status]"
                  src="https://img.shields.io/pypi/status/Zeraora" />
         </a>
@@ -23,13 +19,13 @@
         </a>
     </p>
     <p>
-        <i>一堆实用小玩意儿，快如电，轻如猫</i>
+        <i>电猫工具包，快如电，轻如喵</i>
         <br />
         <i>Zeraora lightweight collection of utilities that save your dev time.</i>
     </p>
 </div>
 
-一个 Python 工具包，包含一堆杂七杂八的工具，大部分都是从日常业务代码里提取抽象的，有些是为了保障兼容性，希望能帮你少写几行代码。
+一个 Python 工具包，包含一堆杂七杂八的工具，大部分都是从个人与公司项目提取、封装、抽象的，希望能帮你少写几行代码。
 
 - [`zeraora.conf`](https://docs.navifox.net/zeraora/module/zeraora.conf)，配置辅助工具。
 - [`zeraora.django`](https://docs.navifox.net/zeraora/module/zeraora.django)，对经典 Web 框架 [Django](https://docs.djangoproject.com/zh-hans/5.2/) 的扩展和增强。
@@ -44,7 +40,131 @@
 用来兼容类型提示外，它**不强制依赖**任何第三方库。  
 缺点：优点太少。
 
-## 安装
+## 速览／Features
+
+### SnakeModel
+
+Django 默认会为以下模型生成一个名为 `wms_goodsskuinfo` 的表
+
+```python
+# ./apps/wms/models.py
+from django.db import models
+
+class GoodsSKUInfo(models.Model):
+    pass
+```
+
+而借助
+[SnakeModel](https://docs.navifox.net/zeraora/module/zeraora.django.html#SnakeModel)
+可以自动生成为 `wms_goods_sku_info`，你只需要
+
+```python
+# ./apps/wms/models.py
+from django.db import models
+from zeraora.django import SnakeModel
+
+class GoodsSKUInfo(models.Model, metaclass=SnakeModel):
+    pass
+```
+
+### Configuration
+
+在找一个具有类型提示的、能被 IDE 自动补全字段的、不依赖文件的、超轻量的 ORM？来试试
+[Configuration](https://docs.navifox.net/zeraora/module/zeraora.conf.html#Configuration) 吧。
+
+```python
+# ./apps/wms/models.py
+from django.db import models
+from zeraora.conf import Configuration
+
+
+class Store(models.Model):
+    ...
+    configuration = models.JSONField(default=dict)
+
+
+class StoreConfiguration(Configuration):
+    VERSION = 1
+
+    def __init__(self, __store: Store):
+        self.enableStorehouse = False
+        """启用仓库管理服务？"""
+        self.minSaleableStock = 1
+        """最低可售库存量。"""
+        super().__init__(store.configuration or dict())
+        self._store_ = __store
+
+    def fill(self, save=True, *args, **kwargs):
+        __store = self._store_
+        __store.configuration = self.dump()
+        if save:
+            __store.save()
+        return self
+
+
+store = Store.objects.get(id=1)
+store.configuration = {
+    "enableStorehouse": True,
+}
+configs = StoreConfiguration(store)
+print(configs.enableStorehouse)  # True
+print(configs.minSaleableStock)  # 1
+```
+
+### BearStopwatch
+
+想要一个代码计时器？这里有与 Python 日志系统相适配的
+[BearStopwatch](https://docs.navifox.net/zeraora/module/zeraora.time.html#BearStopwatch) 。
+
+```python
+from zeraora.time import BearStopwatch
+
+with BearStopwatch.configit() as fox:
+    # 业务逻辑
+    pass
+```
+
+要是是 Django 项目，可以直接在 `settings.py` 中配置：
+
+```python
+# ./my_project/settings.py
+from zeraora.time import BearStopwatch
+
+LOGGING = {
+    'version': 1,
+    'formatters': {...},
+    'filters': {...},
+    'handlers': {
+        'Console': {  # 确保有一个控制台输出
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+        },
+        # ...
+    },
+    'loggers': {
+        BearStopwatch.LOGGER: {  # 添加相应的日志记录器
+            'level': BearStopwatch.LEVEL,
+            'handlers': ['Console'],
+        },
+    },
+}
+```
+
+想要直接通过命令行打印？有的兄弟，有的！
+[FoxStopwatch](https://docs.navifox.net/zeraora/module/zeraora.time.html#FoxStopwatch)
+用法更简单：
+
+```python
+from zeraora.time import FoxStopwatch
+
+with FoxStopwatch() as fox:
+    # 业务逻辑
+    pass
+```
+
+## 安装／Install
+
+> uv 用户将 `pip install` 替换成 `uv pip install` 即可。
 
 可以这样，直接安装本体：
 
@@ -72,7 +192,7 @@ pip install Zeraora -i https://pypi.tuna.tsinghua.edu.cn/simple --trusted-host p
 pip install "Zeraora[client,restful]"
 ```
 
-## 兼容性
+## 兼容性／Compatibility
 
 | 依赖程度 | 兼容范围    |                                                                                                                                   |
 |:----:|---------|-----------------------------------------------------------------------------------------------------------------------------------|
@@ -83,16 +203,16 @@ pip install "Zeraora[client,restful]"
 | 非必需  | 3.13.0+ | [Django REST Framework](https://www.django-rest-framework.org/) · 基于 Django 的 RESTful Web 服务开发框架。                                 |
 | 非必需  | 3.14.0+ | [djangorestframework-stubs](https://pypi.org/project/djangorestframework-stubs/) · Django REST Framework 的类型提示。                   |
 
-## 文档
+## 文档／Documentations
 
 - 文档首页：https://docs.navifox.net/zeraora/
 - 更新日志：https://docs.navifox.net/zeraora/changelog
 
-## 许可证
+## 许可证／License
 
 [MIT](https://opensource.org/licenses/MIT)。源代码会保持简洁、优雅，方便随时分叉出去。
 
-## 社区
+## 交流／Community
 
 前往 [GitHub](https://github.com/aixcyi/Zeraora/issues)
 反馈 Bug，为项目添砖 Java；实在拿不准的话，就来[罗狐会馆](https://qm.qq.com/q/70TQXUMtQk)坐坐吧。

@@ -29,12 +29,6 @@ excerpt:
                  style="user-select: none" />
         </a>
         <a draggable="false" href="">
-            <img alt="Conda 适配进度"
-                 draggable="false"
-                 src="https://img.shields.io/conda/v/conda-forge/zeraora"
-                 style="user-select: none" />
-        </a>
-        <a draggable="false" href="">
             <img alt="PyPI 包状态"
                  draggable="false"
                  src="https://img.shields.io/pypi/status/Zeraora"
@@ -48,15 +42,15 @@ excerpt:
         </a>
     </p>
     <p style="text-align: center">
-        <i>一堆实用小玩意儿，快如电，轻如猫</i>
+        <i>电猫工具包，快如电，轻如喵</i>
         <br />
         <i>Zeraora lightweight collection of utilities that save your dev time.</i>
     </p>
 </div>
 
-## 特性 {#features}
+## 简介 {#intro}
 
-一个 Python 工具包，包含一堆杂七杂八的工具，大部分都是从日常业务代码里提取抽象的，有些是为了保障兼容性，希望能帮你少写几行代码。
+一个 Python 工具包，包含一堆杂七杂八的工具，大部分都是从个人与公司项目提取、封装、抽象的，希望能帮你少写几行代码。
 
 - [<pre>zeraora.conf</pre>](/module/zeraora.conf)，配置辅助工具。
 - [<pre>zeraora.django</pre>](/module/zeraora.django)，对经典 Web 框架 [Django](https://docs.djangoproject.com/zh-hans/5.2/) 的扩展和增强。
@@ -71,7 +65,131 @@ excerpt:
 用来兼容类型提示外，它**不强制依赖**任何第三方库。  
 缺点：优点太少。
 
+## 速览 {#features}
+
+### SnakeModel
+
+Django 默认会为以下模型生成一个名为 `wms_goodsskuinfo` 的表
+
+```python
+# ./apps/wms/models.py
+from django.db import models
+
+class GoodsSKUInfo(models.Model):
+    pass
+```
+
+而借助
+[SnakeModel](https://docs.navifox.net/zeraora/module/zeraora.django.html#SnakeModel)
+可以自动生成为 `wms_goods_sku_info`，你只需要
+
+```python
+# ./apps/wms/models.py
+from django.db import models
+from zeraora.django import SnakeModel
+
+class GoodsSKUInfo(models.Model, metaclass=SnakeModel):
+    pass
+```
+
+### Configuration
+
+在找一个具有类型提示的、能被 IDE 自动补全字段的、不依赖文件的、超轻量的 ORM？来试试
+[Configuration](https://docs.navifox.net/zeraora/module/zeraora.conf.html#Configuration) 吧。
+
+```python
+# ./apps/wms/models.py
+from django.db import models
+from zeraora.conf import Configuration
+
+
+class Store(models.Model):
+    ...
+    configuration = models.JSONField(default=dict)
+
+
+class StoreConfiguration(Configuration):
+    VERSION = 1
+
+    def __init__(self, __store: Store):
+        self.enableStorehouse = False
+        """启用仓库管理服务？"""
+        self.minSaleableStock = 1
+        """最低可售库存量。"""
+        super().__init__(store.configuration or dict())
+        self._store_ = __store
+
+    def fill(self, save=True, *args, **kwargs):
+        __store = self._store_
+        __store.configuration = self.dump()
+        if save:
+            __store.save()
+        return self
+
+
+store = Store.objects.get(id=1)
+store.configuration = {
+    "enableStorehouse": True,
+}
+configs = StoreConfiguration(store)
+print(configs.enableStorehouse)  # True
+print(configs.minSaleableStock)  # 1
+```
+
+### BearStopwatch
+
+想要一个代码计时器？这里有与 Python 日志系统相适配的
+[BearStopwatch](https://docs.navifox.net/zeraora/module/zeraora.time.html#BearStopwatch) 。
+
+```python
+from zeraora.time import BearStopwatch
+
+with BearStopwatch.configit() as fox:
+    # 业务逻辑
+    pass
+```
+
+要是是 Django 项目，可以直接在 `settings.py` 中配置：
+
+```python
+# ./my_project/settings.py
+from zeraora.time import BearStopwatch
+
+LOGGING = {
+    'version': 1,
+    'formatters': {...},
+    'filters': {...},
+    'handlers': {
+        'Console': {  # 确保有一个控制台输出
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+        },
+        # ...
+    },
+    'loggers': {
+        BearStopwatch.LOGGER: {  # 添加相应的日志记录器
+            'level': BearStopwatch.LEVEL,
+            'handlers': ['Console'],
+        },
+    },
+}
+```
+
+想要直接通过命令行打印？有的兄弟，有的！
+[FoxStopwatch](https://docs.navifox.net/zeraora/module/zeraora.time.html#FoxStopwatch)
+用法更简单：
+
+```python
+from zeraora.time import FoxStopwatch
+
+with FoxStopwatch() as fox:
+    # 业务逻辑
+    pass
+```
+
 ## 安装 {#install}
+
+> uv 用户将 `pip install` 替换成 `uv pip install` 即可。
 
 可以这样，直接安装本体：
 
