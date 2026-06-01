@@ -2,12 +2,15 @@ __all__ = [
     'uuid7',
     'uuid8',
     'uuid8i',
+    'RichUUID',
 ]
 
 import sys
 from random import getrandbits
 from time import time_ns
-from uuid import UUID
+from uuid import UUID, uuid1, uuid3, uuid4, uuid5, uuid6
+
+from typing_extensions import Self
 
 if sys.version_info >= (3, 14):
     from uuid import uuid7
@@ -31,9 +34,9 @@ if sys.version_info >= (3, 14):
     from uuid import uuid8
 else:
     def uuid8(
-            a: int = None,
-            b: int = None,
-            c: int = None,
+            a: int | None = None,
+            b: int | None = None,
+            c: int | None = None,
     ) -> UUID:
         """
         根据 RFC 9562 定义的第八版 UUID 生成一个自定义结构的 UUID。
@@ -69,3 +72,82 @@ def uuid8i(integer: int) -> UUID:
             | 0x8 << 76  # 表明是 RFC 9562 定义的第八版 UUID
             | 0b10 << 62  # 表明是 RFC 9562 定义的 UUID
     ))
+
+
+class RichUUID(UUID):
+    """
+    信息更加丰富的 UUID 对象。
+    """
+
+    NIL: 'RichUUID'
+    MAX: 'RichUUID'
+
+    @classmethod
+    def fromuuid(cls, __uuid: UUID, /):
+        return cls(int=__uuid.int)
+
+    @classmethod
+    def v1(cls, node: int | None = None, clock_seq: int | None = None):
+        return cls(int=uuid1(node, clock_seq).int)
+
+    @classmethod
+    def v3(cls, namespace: UUID | Self, name: str | bytes):
+        return cls(int=uuid3(namespace, name).int)
+
+    @classmethod
+    def v4(cls):
+        return cls(int=uuid4().int)
+
+    @classmethod
+    def v5(cls, namespace: UUID | Self, name: str | bytes):
+        return cls(int=uuid5(namespace, name).int)
+
+    @classmethod
+    def v6(cls, node: int | None = None, clock_seq: int | None = None):
+        return cls(int=uuid6(node, clock_seq).int)
+
+    @classmethod
+    def v7(cls):
+        return cls(int=uuid7().int)
+
+    @classmethod
+    def v8(cls, a: int | None = None, b: int | None = None, c: int | None = None):
+        return cls(int=uuid8(a, b, c).int)
+
+    @classmethod
+    def v8i(cls, i: int):
+        return cls(int=uuid8i(i).int)
+
+    @property
+    def uuid(self) -> UUID:
+        return UUID(int=self.int)
+
+    @property
+    def parts5(self) -> tuple[int, int, int, int, int]:
+        """
+        按出现顺序获取 version 和 variant 以及被它们分割的三个部分。
+        """
+        a, b, c, d, e, f = self.fields
+        return (
+            a << 16 | b,
+            c >> 12,  # version
+            c & 0x0FFF,
+            d >> 6,  # variant
+            (d & 0x3F) << 56 | e << 48 | f,
+        )
+
+    @property
+    def parts3(self) -> tuple[int, int, int]:
+        """
+        按出现顺序获取 variant 以及被它分割的两个部分。
+        """
+        a, b, c, d, e, f = self.fields
+        return (
+            a << 32 | b << 16 | c,
+            d >> 6,  # variant
+            (d & 0x3F) << 56 | e << 48 | f,
+        )
+
+
+RichUUID.NIL = RichUUID(int=0)
+RichUUID.MAX = RichUUID(int=0xFFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF)
