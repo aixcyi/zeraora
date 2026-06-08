@@ -1,0 +1,344 @@
+version = 1
+revision = 3
+requires-python = ">=3.10"
+conflicts = [[
+    { package = "zeraora", group = "dev" },
+    { package = "zeraora", group = "latest" },
+    { package = "zeraora", group = "legacy" },
+    { package = "zeraora", group = "stable" },
+    { package = "zeraora", group = "test" },
+    { package = "zeraora", group = "test-latest" },
+    { package = "zeraora", group = "test-legacy" },
+], [
+    { package = "zeraora", group = "dev" },
+    { package = "zeraora", group = "latest" },
+    { package = "zeraora", group = "test" },
+    { package = "zeraora", group = "test-latest" },
+    { package = "zeraora", group = "test-legacy" },
+], [
+    { package = "zeraora", group = "dev" },
+    { package = "zeraora", group = "test" },
+    { package = "zeraora", group = "test-latest" },
+    { package = "zeraora", group = "test-legacy" },
+], [
+    { package = "zeraora", group = "dev" },
+    { package = "zeraora", group = "latest" },
+    { package = "zeraora", group = "legacy" },
+    { package = "zeraora", group = "test" },
+    { package = "zeraora", group = "test-latest" },
+    { package = "zeraora", group = "test-legacy" },
+], [
+    { package = "zeraora", group = "dev" },
+    { package = "zeraora", group = "legacy" },
+    { package = "zeraora", group = "stable" },
+    { package = "zeraora", group = "test" },
+    { package = "zeraora", group = "test-latest" },
+    { package = "zeraora", group = "test-legacy" },
+], [
+    { package = "zeraora", group = "dev" },
+    { package = "zeraora", group = "legacy" },
+    { package = "zeraora", group = "test" },
+    { package = "zeraora", group = "test-latest" },
+    { package = "zeraora", group = "test-legacy" },
+], [
+    { package = "zeraora", group = "dev" },
+    { package = "zeraora", group = "latest" },
+    { package = "zeraora", group = "stable" },
+    { package = "zeraora", group = "test" },
+    { package = "zeraora", group = "test-latest" },
+    { package = "zeraora", group = "test-legacy" },
+], [
+    { package = "zeraora", group = "dev" },
+    { package = "zeraora", group = "stable" },
+    { package = "zeraora", group = "test" },
+    { package = "zeraora", group = "test-latest" },
+    { package = "zeraora", group = "test-legacy" },
+]]
+
+[[package]]
+name = "asgiref"
+version = "3.11.1"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "typing-extensions", marker = "python_full_version < '3.11' or (extra == 'group-7-zeraora-dev' and extra == 'group-7-zeraora-latest') or (extra == 'group-7-zeraora-dev' and extra == 'group-7-zeraora-legacy') or (extra == 'group-7-zeraora-dev' and extra == 'group-7-zeraora-stable') or (extra == 'group-7-zeraora-dev' and extra == 'group-7-zeraora-test') or (extra == 'group-7-zeraora-dev' and extra == 'group-7-zeraora-test-latest') or (extra == 'group-7-zeraora-dev' and extra == 'group-7-zeraora-test-legacy') or (extra == 'group-7-zeraora-latest' and extra == 'group-7-zeraora-legacy') or (extra == 'group-7-zeraora-latest' and extra == 'group-7-zeraora-stable') or (extra == 'group-7-zeraora-latest' and extra == 'group-7-zeraora-test') or (extra == 'group-7-zeraora-latest' and extra == 'group-7-zeraora-test-latest') or (extra == 'group-7-zeraora-latest' and extra == 'group-7-zeraora-test-legacy') or (extra == 'group-7-zeraora-legacy' and extra == 'group-7-zeraora-stable') or (extra == 'group-7-zeraora-legacy' and extra == 'group-7-zeraora-test') or (extra == 'group-7-zeraora-legacy' and extra == 'group-7-zeraora-test-latest') or (extra == 'group-7-zeraora-legacy' and extra == 'group-7-zeraora-test-legacy') or (extra == 'group-7-zeraora-stable' and extra == 'group-7-zeraora-test') or (extra == 'group-7-zeraora-stable' and extra == 'group-7-zeraora-test-latest') or (extra == 'group-7-zeraora-stable' and extra == 'group-7-zeraora-test-legacy') or (extra == 'group-7-zeraora-test' and extra == 'group-7-zeraora-test-latest') or (extra == 'group-7-zeraora-test' and extra == 'group-7-zeraora-test-legacy') or (extra == 'group-7-zeraora-test-latest' and extra == 'group-7-zeraora-test-legacy')" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/63/40/f03da1264ae8f7cfdbf9146542e5e7e8100a4c66ab48e791df9a03d3f6c0/asgiref-3.11.1.tar.gz", hash = "sha256:5f184dc43b7e763efe848065441eac62229c9f7b0475f41f80e207a114eda4ce", size = 38550, upload-time = "2026-02-03T13:30:14.33Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/5c/0a/a72d10ed65068e115044937873362e6e32fab1b7dce0046aeb224682c989/asgiref-3.11.1-py3-none-any.whl", hash = "sha256:e8667a091e69529631969fd45dc268fa79b99c92c5fcdda727757e52146ec133", size = 24345, upload-time = "2026-02-03T13:30:13.039Z" },
+]
+
+[[package]]
+name = "certifi"
+version = "2026.5.20"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/f3/ce/ee2ecad540810a79593028e88299baeae54d346cc7a0d94b6199988b89b1/certifi-2026.5.20.tar.gz", hash = "sha256:69dea482ab64caa7b9f6aba1c6bf48bb6a5448d1c0f1b17ab42ad8c763a5344d", size = 135422, upload-time = "2026-05-20T11:46:50.073Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/59/8c/57e832b7af6d7c5abe66eb3fbe3a3a32f4d11ea23a1aa7131371035be991/certifi-2026.5.20-py3-none-any.whl", hash = "sha256:3c52e209ba0a4ad7aebe60436a4ab349c39e1e602e8c134221e546902ad25897", size = 134134, upload-time = "2026-05-20T11:46:48.578Z" },
+]
+
+[[package]]
+name = "charset-normalizer"
+version = "2.0.12"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/56/31/7bcaf657fafb3c6db8c787a865434290b726653c912085fbd371e9b92e1c/charset-normalizer-2.0.12.tar.gz", hash = "sha256:2857e29ff0d34db842cd7ca3230549d1a697f96ee6d3fb071cfa6c7393832597", size = 79105, upload-time = "2022-02-12T14:33:13.788Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/06/b3/24afc8868eba069a7f03650ac750a778862dc34941a4bebeb58706715726/charset_normalizer-2.0.12-py3-none-any.whl", hash = "sha256:6881edbebdb17b39b4eaaa821b438bf6eddffb4468cf344f09f89def34a8b1df", size = 39623, upload-time = "2022-02-12T14:33:12.294Z" },
+]
+
+[[package]]
+name = "django"
+version = "3.2.25"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "asgiref", marker = "extra == 'group-7-zeraora-legacy' or (extra == 'group-7-zeraora-dev' and extra == 'group-7-zeraora-latest') or (extra == 'group-7-zeraora-latest' and extra == 'group-7-zeraora-stable') or (extra == 'group-7-zeraora-latest' and extra == 'group-7-zeraora-test') or (extra == 'group-7-zeraora-stable' and extra == 'group-7-zeraora-test') or (extra != 'group-7-zeraora-test' and extra == 'group-7-zeraora-test-latest') or (extra != 'group-7-zeraora-test' and extra == 'group-7-zeraora-test-legacy') or (extra == 'group-7-zeraora-dev' and extra != 'group-7-zeraora-legacy' and extra == 'group-7-zeraora-stable') or (extra == 'group-7-zeraora-dev' and extra != 'group-7-zeraora-legacy' and extra == 'group-7-zeraora-test') or (extra != 'group-7-zeraora-dev' and extra != 'group-7-zeraora-latest' and extra != 'group-7-zeraora-stable' and extra == 'group-7-zeraora-test-latest') or (extra != 'group-7-zeraora-dev' and extra != 'group-7-zeraora-latest' and extra != 'group-7-zeraora-stable' and extra == 'group-7-zeraora-test-legacy')" },
+    { name = "pytz", marker = "extra == 'group-7-zeraora-legacy' or (extra == 'group-7-zeraora-dev' and extra == 'group-7-zeraora-latest') or (extra == 'group-7-zeraora-latest' and extra == 'group-7-zeraora-stable') or (extra == 'group-7-zeraora-latest' and extra == 'group-7-zeraora-test') or (extra == 'group-7-zeraora-stable' and extra == 'group-7-zeraora-test') or (extra != 'group-7-zeraora-test' and extra == 'group-7-zeraora-test-latest') or (extra != 'group-7-zeraora-test' and extra == 'group-7-zeraora-test-legacy') or (extra == 'group-7-zeraora-dev' and extra != 'group-7-zeraora-legacy' and extra == 'group-7-zeraora-stable') or (extra == 'group-7-zeraora-dev' and extra != 'group-7-zeraora-legacy' and extra == 'group-7-zeraora-test') or (extra != 'group-7-zeraora-dev' and extra != 'group-7-zeraora-latest' and extra != 'group-7-zeraora-stable' and extra == 'group-7-zeraora-test-latest') or (extra != 'group-7-zeraora-dev' and extra != 'group-7-zeraora-latest' and extra != 'group-7-zeraora-stable' and extra == 'group-7-zeraora-test-legacy')" },
+    { name = "sqlparse", marker = "extra == 'group-7-zeraora-legacy' or (extra == 'group-7-zeraora-dev' and extra == 'group-7-zeraora-latest') or (extra == 'group-7-zeraora-latest' and extra == 'group-7-zeraora-stable') or (extra == 'group-7-zeraora-latest' and extra == 'group-7-zeraora-test') or (extra == 'group-7-zeraora-stable' and extra == 'group-7-zeraora-test') or (extra != 'group-7-zeraora-test' and extra == 'group-7-zeraora-test-latest') or (extra != 'group-7-zeraora-test' and extra == 'group-7-zeraora-test-legacy') or (extra == 'group-7-zeraora-dev' and extra != 'group-7-zeraora-legacy' and extra == 'group-7-zeraora-stable') or (extra == 'group-7-zeraora-dev' and extra != 'group-7-zeraora-legacy' and extra == 'group-7-zeraora-test') or (extra != 'group-7-zeraora-dev' and extra != 'group-7-zeraora-latest' and extra != 'group-7-zeraora-stable' and extra == 'group-7-zeraora-test-latest') or (extra != 'group-7-zeraora-dev' and extra != 'group-7-zeraora-latest' and extra != 'group-7-zeraora-stable' and extra == 'group-7-zeraora-test-legacy')" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/ec/68/0e744f07b57bfdf99abbb6b3eb14fcba188867021c05f4a104e04f6d56b8/Django-3.2.25.tar.gz", hash = "sha256:7ca38a78654aee72378594d63e51636c04b8e28574f5505dff630895b5472777", size = 9836336, upload-time = "2024-03-04T08:57:02.257Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/30/8e/cc23c762c5dcd1d367d73cf006a326e0df2bd0e785cba18b658b39904c1e/Django-3.2.25-py3-none-any.whl", hash = "sha256:a52ea7fcf280b16f7b739cec38fa6d3f8953a5456986944c3ca97e79882b4e38", size = 7890550, upload-time = "2024-03-04T08:56:47.529Z" },
+]
+
+[[package]]
+name = "django"
+version = "5.2.14"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "asgiref" },
+    { name = "sqlparse" },
+    { name = "tzdata", marker = "(sys_platform == 'win32' and extra == 'group-7-zeraora-dev') or (sys_platform == 'win32' and extra == 'group-7-zeraora-latest') or (sys_platform == 'win32' and extra == 'group-7-zeraora-stable') or (sys_platform == 'win32' and extra == 'group-7-zeraora-test') or (sys_platform == 'win32' and extra != 'group-7-zeraora-legacy' and extra != 'group-7-zeraora-test-latest' and extra != 'group-7-zeraora-test-legacy') or (extra == 'group-7-zeraora-dev' and extra == 'group-7-zeraora-latest') or (extra == 'group-7-zeraora-dev' and extra == 'group-7-zeraora-legacy') or (extra == 'group-7-zeraora-dev' and extra == 'group-7-zeraora-stable') or (extra == 'group-7-zeraora-dev' and extra == 'group-7-zeraora-test') or (extra == 'group-7-zeraora-dev' and extra == 'group-7-zeraora-test-latest') or (extra == 'group-7-zeraora-dev' and extra == 'group-7-zeraora-test-legacy') or (extra == 'group-7-zeraora-latest' and extra == 'group-7-zeraora-legacy') or (extra == 'group-7-zeraora-latest' and extra == 'group-7-zeraora-stable') or (extra == 'group-7-zeraora-latest' and extra == 'group-7-zeraora-test') or (extra == 'group-7-zeraora-latest' and extra == 'group-7-zeraora-test-latest') or (extra == 'group-7-zeraora-latest' and extra == 'group-7-zeraora-test-legacy') or (extra == 'group-7-zeraora-stable' and extra == 'group-7-zeraora-test') or (extra == 'group-7-zeraora-stable' and extra == 'group-7-zeraora-test-latest') or (extra == 'group-7-zeraora-stable' and extra == 'group-7-zeraora-test-legacy') or (extra == 'group-7-zeraora-test' and extra == 'group-7-zeraora-test-latest') or (extra == 'group-7-zeraora-test' and extra == 'group-7-zeraora-test-legacy') or (extra == 'group-7-zeraora-legacy' and extra == 'group-7-zeraora-stable') or (extra == 'group-7-zeraora-legacy' and extra == 'group-7-zeraora-test') or (extra == 'group-7-zeraora-legacy' and extra == 'group-7-zeraora-test-latest') or (extra == 'group-7-zeraora-legacy' and extra == 'group-7-zeraora-test-legacy') or (extra == 'group-7-zeraora-test-latest' and extra == 'group-7-zeraora-test-legacy')" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/65/95/95f7faa0950867afaa0bef2460c6263afd6a2c78cc9434046ed28160b015/django-5.2.14.tar.gz", hash = "sha256:58a63ba841662e5c686b57ba1fec52ddd68c0b93bd96ac3029d55728f00bf8a2", size = 10895118, upload-time = "2026-05-05T13:57:31.104Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/14/44/f172870cf87aa25afef48fb72adba89ee8b77fcab6f3b23d240b923f1528/django-5.2.14-py3-none-any.whl", hash = "sha256:6f712143bd3064310d1f50fac859c3e9a274bdcfc9595339853be7779297fc76", size = 8311320, upload-time = "2026-05-05T13:57:25.795Z" },
+]
+
+[[package]]
+name = "djangorestframework"
+version = "3.13.1"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "django", version = "3.2.25", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'group-7-zeraora-legacy' or (extra == 'group-7-zeraora-dev' and extra == 'group-7-zeraora-latest') or (extra == 'group-7-zeraora-latest' and extra == 'group-7-zeraora-stable') or (extra == 'group-7-zeraora-latest' and extra == 'group-7-zeraora-test') or (extra == 'group-7-zeraora-stable' and extra == 'group-7-zeraora-test') or (extra != 'group-7-zeraora-test' and extra == 'group-7-zeraora-test-latest') or (extra != 'group-7-zeraora-test' and extra == 'group-7-zeraora-test-legacy') or (extra == 'group-7-zeraora-dev' and extra != 'group-7-zeraora-legacy' and extra == 'group-7-zeraora-stable') or (extra == 'group-7-zeraora-dev' and extra != 'group-7-zeraora-legacy' and extra == 'group-7-zeraora-test') or (extra != 'group-7-zeraora-dev' and extra != 'group-7-zeraora-latest' and extra != 'group-7-zeraora-stable' and extra == 'group-7-zeraora-test-latest') or (extra != 'group-7-zeraora-dev' and extra != 'group-7-zeraora-latest' and extra != 'group-7-zeraora-stable' and extra == 'group-7-zeraora-test-legacy')" },
+    { name = "pytz", marker = "extra == 'group-7-zeraora-legacy' or (extra == 'group-7-zeraora-dev' and extra == 'group-7-zeraora-latest') or (extra == 'group-7-zeraora-latest' and extra == 'group-7-zeraora-stable') or (extra == 'group-7-zeraora-latest' and extra == 'group-7-zeraora-test') or (extra == 'group-7-zeraora-stable' and extra == 'group-7-zeraora-test') or (extra != 'group-7-zeraora-test' and extra == 'group-7-zeraora-test-latest') or (extra != 'group-7-zeraora-test' and extra == 'group-7-zeraora-test-legacy') or (extra == 'group-7-zeraora-dev' and extra != 'group-7-zeraora-legacy' and extra == 'group-7-zeraora-stable') or (extra == 'group-7-zeraora-dev' and extra != 'group-7-zeraora-legacy' and extra == 'group-7-zeraora-test') or (extra != 'group-7-zeraora-dev' and extra != 'group-7-zeraora-latest' and extra != 'group-7-zeraora-stable' and extra == 'group-7-zeraora-test-latest') or (extra != 'group-7-zeraora-dev' and extra != 'group-7-zeraora-latest' and extra != 'group-7-zeraora-stable' and extra == 'group-7-zeraora-test-legacy')" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/7e/40/efa7f7b2448194b1065572f34d3e6cadb478c67af62f6893957376d8a9be/djangorestframework-3.13.1.tar.gz", hash = "sha256:0c33407ce23acc68eca2a6e46424b008c9c02eceb8cf18581921d0092bc1f2ee", size = 954950, upload-time = "2021-12-15T15:18:44.593Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/c8/45/2588c7c5a01a7da6822c6ffbc9a731d498c318a803a29ae780ec635ea41d/djangorestframework-3.13.1-py3-none-any.whl", hash = "sha256:24c4bf58ed7e85d1fe4ba250ab2da926d263cd57d64b03e8dcef0ac683f8b1aa", size = 958323, upload-time = "2021-12-15T15:18:42.237Z" },
+]
+
+[[package]]
+name = "djangorestframework"
+version = "3.16.1"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "django", version = "5.2.14", source = { registry = "https://pypi.org/simple" } },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/8a/95/5376fe618646fde6899b3cdc85fd959716bb67542e273a76a80d9f326f27/djangorestframework-3.16.1.tar.gz", hash = "sha256:166809528b1aced0a17dc66c24492af18049f2c9420dbd0be29422029cfc3ff7", size = 1089735, upload-time = "2025-08-06T17:50:53.251Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/b0/ce/bf8b9d3f415be4ac5588545b5fcdbbb841977db1c1d923f7568eeabe1689/djangorestframework-3.16.1-py3-none-any.whl", hash = "sha256:33a59f47fb9c85ede792cbf88bde71893bcda0667bc573f784649521f1102cec", size = 1080442, upload-time = "2025-08-06T17:50:50.667Z" },
+]
+
+[[package]]
+name = "idna"
+version = "3.16"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/1a/88/bcf9709822fe69d02c2a6a77956c98ce6ea8ca8767a9aadcedc7eb6a2390/idna-3.16.tar.gz", hash = "sha256:d7a6da03db833450fca25d2358ac9ff06cd624577a4aea3a596d5c0f77b8e03d", size = 203770, upload-time = "2026-05-22T00:16:18.781Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/94/16/70255075a9859a0e3adb789b68ceb0e210dec03934245fd98d248226572f/idna-3.16-py3-none-any.whl", hash = "sha256:cc246e3a3f89580c3a951b5ad298ca4638078b2cdd4f115654332b5c26daded5", size = 74165, upload-time = "2026-05-22T00:16:16.698Z" },
+]
+
+[[package]]
+name = "pytz"
+version = "2026.2"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/ff/46/dd499ec9038423421951e4fad73051febaa13d2df82b4064f87af8b8c0c3/pytz-2026.2.tar.gz", hash = "sha256:0e60b47b29f21574376f218fe21abc009894a2321ea16c6754f3cad6eb7cdd6a", size = 320861, upload-time = "2026-05-04T01:35:29.667Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/ec/dd/96da98f892250475bdf2328112d7468abdd4acc7b902b6af23f4ed958ea0/pytz-2026.2-py2.py3-none-any.whl", hash = "sha256:04156e608bee23d3792fd45c94ae47fae1036688e75032eea2e3bf0323d1f126", size = 510141, upload-time = "2026-05-04T01:35:27.408Z" },
+]
+
+[[package]]
+name = "requests"
+version = "2.27.1"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "certifi", marker = "extra == 'group-7-zeraora-legacy' or (extra == 'group-7-zeraora-dev' and extra == 'group-7-zeraora-latest') or (extra == 'group-7-zeraora-latest' and extra == 'group-7-zeraora-stable') or (extra == 'group-7-zeraora-latest' and extra == 'group-7-zeraora-test') or (extra == 'group-7-zeraora-stable' and extra == 'group-7-zeraora-test') or (extra != 'group-7-zeraora-test' and extra == 'group-7-zeraora-test-latest') or (extra != 'group-7-zeraora-test' and extra == 'group-7-zeraora-test-legacy') or (extra == 'group-7-zeraora-dev' and extra != 'group-7-zeraora-legacy' and extra == 'group-7-zeraora-stable') or (extra == 'group-7-zeraora-dev' and extra != 'group-7-zeraora-legacy' and extra == 'group-7-zeraora-test') or (extra != 'group-7-zeraora-dev' and extra != 'group-7-zeraora-latest' and extra != 'group-7-zeraora-stable' and extra == 'group-7-zeraora-test-latest') or (extra != 'group-7-zeraora-dev' and extra != 'group-7-zeraora-latest' and extra != 'group-7-zeraora-stable' and extra == 'group-7-zeraora-test-legacy')" },
+    { name = "charset-normalizer", marker = "extra == 'group-7-zeraora-legacy' or (extra == 'group-7-zeraora-dev' and extra == 'group-7-zeraora-latest') or (extra == 'group-7-zeraora-latest' and extra == 'group-7-zeraora-stable') or (extra == 'group-7-zeraora-latest' and extra == 'group-7-zeraora-test') or (extra == 'group-7-zeraora-stable' and extra == 'group-7-zeraora-test') or (extra != 'group-7-zeraora-test' and extra == 'group-7-zeraora-test-latest') or (extra != 'group-7-zeraora-test' and extra == 'group-7-zeraora-test-legacy') or (extra == 'group-7-zeraora-dev' and extra != 'group-7-zeraora-legacy' and extra == 'group-7-zeraora-stable') or (extra == 'group-7-zeraora-dev' and extra != 'group-7-zeraora-legacy' and extra == 'group-7-zeraora-test') or (extra != 'group-7-zeraora-dev' and extra != 'group-7-zeraora-latest' and extra != 'group-7-zeraora-stable' and extra == 'group-7-zeraora-test-latest') or (extra != 'group-7-zeraora-dev' and extra != 'group-7-zeraora-latest' and extra != 'group-7-zeraora-stable' and extra == 'group-7-zeraora-test-legacy')" },
+    { name = "idna", marker = "extra == 'group-7-zeraora-legacy' or (extra == 'group-7-zeraora-dev' and extra == 'group-7-zeraora-latest') or (extra == 'group-7-zeraora-latest' and extra == 'group-7-zeraora-stable') or (extra == 'group-7-zeraora-latest' and extra == 'group-7-zeraora-test') or (extra == 'group-7-zeraora-stable' and extra == 'group-7-zeraora-test') or (extra != 'group-7-zeraora-test' and extra == 'group-7-zeraora-test-latest') or (extra != 'group-7-zeraora-test' and extra == 'group-7-zeraora-test-legacy') or (extra == 'group-7-zeraora-dev' and extra != 'group-7-zeraora-legacy' and extra == 'group-7-zeraora-stable') or (extra == 'group-7-zeraora-dev' and extra != 'group-7-zeraora-legacy' and extra == 'group-7-zeraora-test') or (extra != 'group-7-zeraora-dev' and extra != 'group-7-zeraora-latest' and extra != 'group-7-zeraora-stable' and extra == 'group-7-zeraora-test-latest') or (extra != 'group-7-zeraora-dev' and extra != 'group-7-zeraora-latest' and extra != 'group-7-zeraora-stable' and extra == 'group-7-zeraora-test-legacy')" },
+    { name = "urllib3", marker = "extra == 'group-7-zeraora-legacy' or (extra == 'group-7-zeraora-dev' and extra == 'group-7-zeraora-latest') or (extra == 'group-7-zeraora-latest' and extra == 'group-7-zeraora-stable') or (extra == 'group-7-zeraora-latest' and extra == 'group-7-zeraora-test') or (extra == 'group-7-zeraora-stable' and extra == 'group-7-zeraora-test') or (extra != 'group-7-zeraora-test' and extra == 'group-7-zeraora-test-latest') or (extra != 'group-7-zeraora-test' and extra == 'group-7-zeraora-test-legacy') or (extra == 'group-7-zeraora-dev' and extra != 'group-7-zeraora-legacy' and extra == 'group-7-zeraora-stable') or (extra == 'group-7-zeraora-dev' and extra != 'group-7-zeraora-legacy' and extra == 'group-7-zeraora-test') or (extra != 'group-7-zeraora-dev' and extra != 'group-7-zeraora-latest' and extra != 'group-7-zeraora-stable' and extra == 'group-7-zeraora-test-latest') or (extra != 'group-7-zeraora-dev' and extra != 'group-7-zeraora-latest' and extra != 'group-7-zeraora-stable' and extra == 'group-7-zeraora-test-legacy')" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/60/f3/26ff3767f099b73e0efa138a9998da67890793bfa475d8278f84a30fec77/requests-2.27.1.tar.gz", hash = "sha256:68d7c56fd5a8999887728ef304a6d12edc7be74f1cfa47714fc8b414525c9a61", size = 106758, upload-time = "2022-01-05T15:40:51.698Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/2d/61/08076519c80041bc0ffa1a8af0cbd3bf3e2b62af10435d269a9d0f40564d/requests-2.27.1-py2.py3-none-any.whl", hash = "sha256:f22fa1e554c9ddfd16e6e41ac79759e17be9e492b3587efa038054674760e72d", size = 63133, upload-time = "2022-01-05T15:40:49.334Z" },
+]
+
+[[package]]
+name = "requests"
+version = "2.32.5"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "certifi" },
+    { name = "charset-normalizer" },
+    { name = "idna" },
+    { name = "urllib3" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/c9/74/b3ff8e6c8446842c3f5c837e9c3dfcfe2018ea6ecef224c710c85ef728f4/requests-2.32.5.tar.gz", hash = "sha256:dbba0bac56e100853db0ea71b82b4dfd5fe2bf6d3754a8893c3af500cec7d7cf", size = 134517, upload-time = "2025-08-18T20:46:02.573Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/1e/db/4254e3eabe8020b458f1a747140d32277ec7a271daf1d235b70dc0b4e6e3/requests-2.32.5-py3-none-any.whl", hash = "sha256:2462f94637a34fd532264295e186976db0f5d453d1cdd31473c85a6a161affb6", size = 64738, upload-time = "2025-08-18T20:46:00.542Z" },
+]
+
+[[package]]
+name = "sqlparse"
+version = "0.5.5"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/90/76/437d71068094df0726366574cf3432a4ed754217b436eb7429415cf2d480/sqlparse-0.5.5.tar.gz", hash = "sha256:e20d4a9b0b8585fdf63b10d30066c7c94c5d7a7ec47c889a2d83a3caa93ff28e", size = 120815, upload-time = "2025-12-19T07:17:45.073Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/49/4b/359f28a903c13438ef59ebeee215fb25da53066db67b305c125f1c6d2a25/sqlparse-0.5.5-py3-none-any.whl", hash = "sha256:12a08b3bf3eec877c519589833aed092e2444e68240a3577e8e26148acc7b1ba", size = 46138, upload-time = "2025-12-19T07:17:46.573Z" },
+]
+
+[[package]]
+name = "typing-extensions"
+version = "4.14.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/d1/bc/51647cd02527e87d05cb083ccc402f93e441606ff1f01739a62c8ad09ba5/typing_extensions-4.14.0.tar.gz", hash = "sha256:8676b788e32f02ab42d9e7c61324048ae4c6d844a399eebace3d4979d75ceef4", size = 107423, upload-time = "2025-06-02T14:52:11.399Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/69/e0/552843e0d356fbb5256d21449fa957fa4eff3bbc135a74a691ee70c7c5da/typing_extensions-4.14.0-py3-none-any.whl", hash = "sha256:a1514509136dd0b477638fc68d6a91497af5076466ad0fa6c338e44e359944af", size = 43839, upload-time = "2025-06-02T14:52:10.026Z" },
+]
+
+[[package]]
+name = "tzdata"
+version = "2026.2"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/ba/19/1b9b0e29f30c6d35cb345486df41110984ea67ae69dddbc0e8a100999493/tzdata-2026.2.tar.gz", hash = "sha256:9173fde7d80d9018e02a662e168e5a2d04f87c41ea174b139fbef642eda62d10", size = 198254, upload-time = "2026-04-24T15:22:08.651Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/ce/e4/dccd7f47c4b64213ac01ef921a1337ee6e30e8c6466046018326977efd95/tzdata-2026.2-py2.py3-none-any.whl", hash = "sha256:bbe9af844f658da81a5f95019480da3a89415801f6cc966806612cc7169bffe7", size = 349321, upload-time = "2026-04-24T15:22:05.876Z" },
+]
+
+[[package]]
+name = "urllib3"
+version = "1.26.20"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/e4/e8/6ff5e6bc22095cfc59b6ea711b687e2b7ed4bdb373f7eeec370a97d7392f/urllib3-1.26.20.tar.gz", hash = "sha256:40c2dc0c681e47eb8f90e7e27bf6ff7df2e677421fd46756da1161c39ca70d32", size = 307380, upload-time = "2024-08-29T15:43:11.37Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/33/cf/8435d5a7159e2a9c83a95896ed596f68cf798005fe107cc655b5c5c14704/urllib3-1.26.20-py2.py3-none-any.whl", hash = "sha256:0ed14ccfbf1c30a9072c7ca157e4319b70d65f623e91e7b32fadb2853431016e", size = 144225, upload-time = "2024-08-29T15:43:08.921Z" },
+]
+
+[[package]]
+name = "zeraora"
+source = { editable = "." }
+dependencies = [
+    { name = "typing-extensions" },
+]
+
+[package.optional-dependencies]
+backend = [
+    { name = "django", version = "3.2.25", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'group-7-zeraora-legacy' or (extra == 'group-7-zeraora-dev' and extra == 'group-7-zeraora-latest') or (extra == 'group-7-zeraora-latest' and extra == 'group-7-zeraora-stable') or (extra == 'group-7-zeraora-latest' and extra == 'group-7-zeraora-test') or (extra == 'group-7-zeraora-stable' and extra == 'group-7-zeraora-test') or (extra != 'group-7-zeraora-test' and extra == 'group-7-zeraora-test-latest') or (extra != 'group-7-zeraora-test' and extra == 'group-7-zeraora-test-legacy') or (extra == 'group-7-zeraora-dev' and extra != 'group-7-zeraora-legacy' and extra == 'group-7-zeraora-stable') or (extra == 'group-7-zeraora-dev' and extra != 'group-7-zeraora-legacy' and extra == 'group-7-zeraora-test') or (extra != 'group-7-zeraora-dev' and extra != 'group-7-zeraora-latest' and extra != 'group-7-zeraora-stable' and extra == 'group-7-zeraora-test-latest') or (extra != 'group-7-zeraora-dev' and extra != 'group-7-zeraora-latest' and extra != 'group-7-zeraora-stable' and extra == 'group-7-zeraora-test-legacy')" },
+    { name = "django", version = "5.2.14", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'group-7-zeraora-dev' or extra == 'group-7-zeraora-latest' or extra == 'group-7-zeraora-stable' or extra == 'group-7-zeraora-test' or (extra == 'group-7-zeraora-legacy' and extra == 'group-7-zeraora-test-latest') or (extra == 'group-7-zeraora-legacy' and extra == 'group-7-zeraora-test-legacy') or (extra == 'group-7-zeraora-test-latest' and extra == 'group-7-zeraora-test-legacy') or (extra != 'group-7-zeraora-legacy' and extra != 'group-7-zeraora-test-latest' and extra != 'group-7-zeraora-test-legacy')" },
+]
+client = [
+    { name = "requests", version = "2.27.1", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'group-7-zeraora-legacy' or (extra == 'group-7-zeraora-dev' and extra == 'group-7-zeraora-latest') or (extra == 'group-7-zeraora-latest' and extra == 'group-7-zeraora-stable') or (extra == 'group-7-zeraora-latest' and extra == 'group-7-zeraora-test') or (extra == 'group-7-zeraora-stable' and extra == 'group-7-zeraora-test') or (extra != 'group-7-zeraora-test' and extra == 'group-7-zeraora-test-latest') or (extra != 'group-7-zeraora-test' and extra == 'group-7-zeraora-test-legacy') or (extra == 'group-7-zeraora-dev' and extra != 'group-7-zeraora-legacy' and extra == 'group-7-zeraora-stable') or (extra == 'group-7-zeraora-dev' and extra != 'group-7-zeraora-legacy' and extra == 'group-7-zeraora-test') or (extra != 'group-7-zeraora-dev' and extra != 'group-7-zeraora-latest' and extra != 'group-7-zeraora-stable' and extra == 'group-7-zeraora-test-latest') or (extra != 'group-7-zeraora-dev' and extra != 'group-7-zeraora-latest' and extra != 'group-7-zeraora-stable' and extra == 'group-7-zeraora-test-legacy')" },
+    { name = "requests", version = "2.32.5", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'group-7-zeraora-dev' or extra == 'group-7-zeraora-latest' or extra == 'group-7-zeraora-stable' or extra == 'group-7-zeraora-test' or (extra == 'group-7-zeraora-legacy' and extra == 'group-7-zeraora-test-latest') or (extra == 'group-7-zeraora-legacy' and extra == 'group-7-zeraora-test-legacy') or (extra == 'group-7-zeraora-test-latest' and extra == 'group-7-zeraora-test-legacy') or (extra != 'group-7-zeraora-legacy' and extra != 'group-7-zeraora-test-latest' and extra != 'group-7-zeraora-test-legacy')" },
+]
+restful = [
+    { name = "django", version = "3.2.25", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'group-7-zeraora-legacy' or (extra == 'group-7-zeraora-dev' and extra == 'group-7-zeraora-latest') or (extra == 'group-7-zeraora-latest' and extra == 'group-7-zeraora-stable') or (extra == 'group-7-zeraora-latest' and extra == 'group-7-zeraora-test') or (extra == 'group-7-zeraora-stable' and extra == 'group-7-zeraora-test') or (extra != 'group-7-zeraora-test' and extra == 'group-7-zeraora-test-latest') or (extra != 'group-7-zeraora-test' and extra == 'group-7-zeraora-test-legacy') or (extra == 'group-7-zeraora-dev' and extra != 'group-7-zeraora-legacy' and extra == 'group-7-zeraora-stable') or (extra == 'group-7-zeraora-dev' and extra != 'group-7-zeraora-legacy' and extra == 'group-7-zeraora-test') or (extra != 'group-7-zeraora-dev' and extra != 'group-7-zeraora-latest' and extra != 'group-7-zeraora-stable' and extra == 'group-7-zeraora-test-latest') or (extra != 'group-7-zeraora-dev' and extra != 'group-7-zeraora-latest' and extra != 'group-7-zeraora-stable' and extra == 'group-7-zeraora-test-legacy')" },
+    { name = "django", version = "5.2.14", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'group-7-zeraora-dev' or extra == 'group-7-zeraora-latest' or extra == 'group-7-zeraora-stable' or extra == 'group-7-zeraora-test' or (extra == 'group-7-zeraora-legacy' and extra == 'group-7-zeraora-test-latest') or (extra == 'group-7-zeraora-legacy' and extra == 'group-7-zeraora-test-legacy') or (extra == 'group-7-zeraora-test-latest' and extra == 'group-7-zeraora-test-legacy') or (extra != 'group-7-zeraora-legacy' and extra != 'group-7-zeraora-test-latest' and extra != 'group-7-zeraora-test-legacy')" },
+    { name = "djangorestframework", version = "3.13.1", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'group-7-zeraora-legacy' or (extra == 'group-7-zeraora-dev' and extra == 'group-7-zeraora-latest') or (extra == 'group-7-zeraora-latest' and extra == 'group-7-zeraora-stable') or (extra == 'group-7-zeraora-latest' and extra == 'group-7-zeraora-test') or (extra == 'group-7-zeraora-stable' and extra == 'group-7-zeraora-test') or (extra != 'group-7-zeraora-test' and extra == 'group-7-zeraora-test-latest') or (extra != 'group-7-zeraora-test' and extra == 'group-7-zeraora-test-legacy') or (extra == 'group-7-zeraora-dev' and extra != 'group-7-zeraora-legacy' and extra == 'group-7-zeraora-stable') or (extra == 'group-7-zeraora-dev' and extra != 'group-7-zeraora-legacy' and extra == 'group-7-zeraora-test') or (extra != 'group-7-zeraora-dev' and extra != 'group-7-zeraora-latest' and extra != 'group-7-zeraora-stable' and extra == 'group-7-zeraora-test-latest') or (extra != 'group-7-zeraora-dev' and extra != 'group-7-zeraora-latest' and extra != 'group-7-zeraora-stable' and extra == 'group-7-zeraora-test-legacy')" },
+    { name = "djangorestframework", version = "3.16.1", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'group-7-zeraora-dev' or extra == 'group-7-zeraora-latest' or extra == 'group-7-zeraora-stable' or extra == 'group-7-zeraora-test' or (extra == 'group-7-zeraora-legacy' and extra == 'group-7-zeraora-test-latest') or (extra == 'group-7-zeraora-legacy' and extra == 'group-7-zeraora-test-legacy') or (extra == 'group-7-zeraora-test-latest' and extra == 'group-7-zeraora-test-legacy') or (extra != 'group-7-zeraora-legacy' and extra != 'group-7-zeraora-test-latest' and extra != 'group-7-zeraora-test-legacy')" },
+]
+
+[package.dev-dependencies]
+dev = [
+    { name = "django", version = "5.2.14", source = { registry = "https://pypi.org/simple" } },
+    { name = "djangorestframework", version = "3.16.1", source = { registry = "https://pypi.org/simple" } },
+    { name = "requests", version = "2.32.5", source = { registry = "https://pypi.org/simple" } },
+    { name = "typing-extensions" },
+]
+latest = [
+    { name = "django", version = "5.2.14", source = { registry = "https://pypi.org/simple" } },
+    { name = "djangorestframework", version = "3.16.1", source = { registry = "https://pypi.org/simple" } },
+    { name = "requests", version = "2.32.5", source = { registry = "https://pypi.org/simple" } },
+    { name = "typing-extensions" },
+]
+legacy = [
+    { name = "django", version = "3.2.25", source = { registry = "https://pypi.org/simple" } },
+    { name = "djangorestframework", version = "3.13.1", source = { registry = "https://pypi.org/simple" } },
+    { name = "requests", version = "2.27.1", source = { registry = "https://pypi.org/simple" } },
+    { name = "typing-extensions" },
+]
+stable = [
+    { name = "django", version = "5.2.14", source = { registry = "https://pypi.org/simple" } },
+    { name = "djangorestframework", version = "3.16.1", source = { registry = "https://pypi.org/simple" } },
+    { name = "requests", version = "2.32.5", source = { registry = "https://pypi.org/simple" } },
+    { name = "typing-extensions" },
+]
+test = [
+    { name = "django", version = "5.2.14", source = { registry = "https://pypi.org/simple" } },
+    { name = "djangorestframework", version = "3.16.1", source = { registry = "https://pypi.org/simple" } },
+    { name = "requests", version = "2.32.5", source = { registry = "https://pypi.org/simple" } },
+    { name = "typing-extensions" },
+]
+test-latest = [
+    { name = "django", version = "3.2.25", source = { registry = "https://pypi.org/simple" } },
+    { name = "djangorestframework", version = "3.13.1", source = { registry = "https://pypi.org/simple" } },
+    { name = "requests", version = "2.27.1", source = { registry = "https://pypi.org/simple" } },
+    { name = "typing-extensions" },
+]
+test-legacy = [
+    { name = "django", version = "3.2.25", source = { registry = "https://pypi.org/simple" } },
+    { name = "djangorestframework", version = "3.13.1", source = { registry = "https://pypi.org/simple" } },
+    { name = "requests", version = "2.27.1", source = { registry = "https://pypi.org/simple" } },
+    { name = "typing-extensions" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "django", marker = "extra == 'backend'", specifier = ">=3.2" },
+    { name = "django", marker = "extra == 'restful'", specifier = ">=3.2" },
+    { name = "djangorestframework", marker = "extra == 'restful'", specifier = ">=3.13" },
+    { name = "requests", marker = "extra == 'client'", specifier = ">=2.27" },
+    { name = "typing-extensions", specifier = ">=4.14.0" },
+]
+provides-extras = ["client", "backend", "restful"]
+
+[package.metadata.requires-dev]
+dev = [
+    { name = "django", specifier = "==5.2.*" },
+    { name = "djangorestframework", specifier = "==3.16.*" },
+    { name = "requests", specifier = "==2.32.*" },
+    { name = "typing-extensions", specifier = "==4.*" },
+]
+latest = [
+    { name = "django" },
+    { name = "djangorestframework" },
+    { name = "requests" },
+    { name = "typing-extensions" },
+]
+legacy = [
+    { name = "django", specifier = "==3.2.*" },
+    { name = "djangorestframework", specifier = "==3.13.*" },
+    { name = "requests", specifier = "==2.27.*" },
+    { name = "typing-extensions", specifier = "==4.14.0" },
+]
+stable = [
+    { name = "django", specifier = "==5.2.*" },
+    { name = "djangorestframework", specifier = "==3.16.*" },
+    { name = "requests", specifier = "==2.32.*" },
+    { name = "typing-extensions", specifier = "==4.*" },
+]
+test = [
+    { name = "django", specifier = "==5.2.*" },
+    { name = "djangorestframework", specifier = "==3.16.*" },
+    { name = "requests", specifier = "==2.32.*" },
+    { name = "typing-extensions", specifier = "==4.*" },
+]
+test-latest = [
+    { name = "django" },
+    { name = "djangorestframework" },
+    { name = "requests" },
+    { name = "typing-extensions" },
+]
+test-legacy = [
+    { name = "django", specifier = "==3.2.*" },
+    { name = "djangorestframework", specifier = "==3.13.*" },
+    { name = "requests", specifier = "==2.27.*" },
+    { name = "typing-extensions", specifier = "==4.14.0" },
+]
